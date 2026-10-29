@@ -1,49 +1,175 @@
 <!doctype html>
-<html lang="en">
+<html lang="tr">
 <head>
   <meta charset="utf-8">
-  <meta name="google-site-verification" content="D9ERJX-krYYRtXL_Ry9ouWjNhxdd7iIdpwYAsB7Pt1E" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Learn German through pictures, short conversations and practical everyday situations. Baulingo is preparing its first Android open test.">
-  <meta name="theme-color" content="#F7F7F5">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; font-src 'self'; style-src 'self'; base-uri 'none'; form-action 'none'">
-  <title>Baulingo — German for everyday life</title>
+  <meta name="google-site-verification" content="D9ERJX-krYYRtXL_Ry9ouWjNhxdd7iIdpwYAsB7Pt1E">
+  <meta name="description" content="Türkçe açıklamalarla Almanca öğren. Günlük konuşmalar, der die das, cümle kurma ve hemen deneyebileceğin ücretsiz alıştırmalar.">
+  <meta name="theme-color" content="#FAF7F0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; media-src 'self'; base-uri 'none'; form-action 'self'">
+  <title>Baulingo — Almancada aradığın cevap.</title>
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="./assets/Newsreader-Bold.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.js"></script>
 </head>
 <body>
-  <a class="skip" href="#main">Skip to content</a>
+  <a class="skip" href="#main">İçeriğe geç</a>
   <div class="page">
     <header class="header">
-      <a href="./" aria-label="Baulingo home"><img class="logo" src="./assets/logo.svg" alt="Baulingo" width="240" height="64"></a>
-      <a class="quiet-link" href="./privacy/">Privacy policy</a>
+      <a class="brand" href="./" aria-label="Baulingo ana sayfa"><img src="./assets/logo.svg" alt="Baulingo" width="240" height="64"></a>
+      <nav class="navigation" aria-label="Ana menü">
+        <a class="active" href="#konular" aria-current="location">Konular</a>
+        <a href="#gunluk">Günlük Almanca</a>
+        <button class="nav-button" type="button" data-open="resources-dialog" aria-haspopup="dialog">Ücretsiz kaynaklar</button>
+      </nav>
+      <button class="language" type="button" data-open="language-dialog" aria-haspopup="dialog">Türkçe <img src="./assets/icons/caret-down.svg" width="16" height="16" alt=""></button>
     </header>
     <main id="main">
       <section class="hero" aria-labelledby="intro">
         <div class="hero-copy">
-          <h1 id="intro">German for everyday life.</h1>
-          <p class="intro">Learn through pictures, short conversations and practical exercises. Start with a moment you recognise: ordering a coffee, meeting someone or finding your way.</p>
-          <div class="test-note">
-            <h2>Our first Android open test is being prepared.</h2>
-            <p>Baulingo is an early test version for learners aged 13 and over. The Google Play link will appear here when the test is available.</p>
-            <a class="button" href="mailto:mahmutyoung@gmail.com?subject=Baulingo%20Android%20test">Ask about the Android test</a>
+          <h1 id="intro">Almancada<br>aradığın cevap.</h1>
+          <p class="hero-description">Türkçe açıklamalarla anla.<br>Kısa alıştırmalarla kullan.</p>
+          <form class="search-form" id="topic-search" role="search">
+            <label class="visually-hidden" for="search-query">Almancada neyi öğrenmek istiyorsun?</label>
+            <img src="./assets/icons/magnifying-glass.svg" width="26" height="26" alt="">
+            <input id="search-query" name="q" type="search" placeholder="Almancada neyi öğrenmek istiyorsun?" autocomplete="off" maxlength="120">
+            <button class="search-submit" type="submit">Ara</button>
+          </form>
+          <div class="quick-topics" aria-label="Arayabileceğin konular">
+            <button type="button" data-topic="cases" aria-haspopup="dialog">Akkusativ Dativ farkı <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></button>
+            <button type="button" data-topic="exams" aria-haspopup="dialog">B1 mektup <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></button>
+            <button type="button" data-topic="doctor" aria-haspopup="dialog">Doktorda Almanca <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></button>
           </div>
         </div>
-        <figure class="scene">
-          <img class="photo" src="./assets/cafe.webp" width="576" height="384" alt="A café counter with a server, from a Baulingo lesson." fetchpriority="high">
-          <div class="reply" lang="de">Einen Kaffee, bitte.</div>
-          <figcaption>A café conversation in Baulingo.</figcaption>
-        </figure>
+        <div class="hero-visual">
+          <img class="hero-photo" src="./assets/cafe-hero.png" width="1464" height="906" alt="Kafede, elinde bir fincan kahveyle siparişini bekleyen görevli." fetchpriority="high">
+          <div class="phrase-panel">
+            <div class="phrase-original"><p>Bu cümleyi Almanca söyle:</p><div class="phrase-with-audio"><strong lang="de">Einen Kaffee, bitte.</strong><button class="audio-button" id="play-phrase" type="button" aria-label="Einen Kaffee, bitte. Dinle"><img src="./assets/icons/speaker-high.svg" width="26" height="26" alt=""></button></div></div>
+            <div class="phrase-meaning"><p>Anlamı:</p><span>Bir kahve, lütfen.</span></div>
+            <button class="button button-primary phrase-action" id="launch-practice" type="button" data-open="practice-dialog" aria-haspopup="dialog">Cümleyi kur <img src="./assets/icons/arrow-right.svg" width="23" height="23" alt=""></button>
+          </div>
+          <audio id="phrase-audio" preload="none" src="./assets/audio/einen-kaffee-bitte.mp3"></audio>
+          <span class="visually-hidden" id="audio-status" role="status"></span>
+        </div>
       </section>
-      <section class="features" aria-label="Learning with Baulingo"><div><h2>See the situation.</h2><p>Pictures and dialogue put useful German in context.</p></div>
-<div><h2>Build your reply.</h2><p>Choose an answer, put words together and practise writing.</p></div>
-<div><h2>Keep practising.</h2><p>Revisit what you have learned. Progress stays on your device.</p></div></section>
-      <p class="privacy-note">No account required. Optional usage data and crash reports start switched off.</p>
+
+      <section class="needs" id="konular" aria-labelledby="needs-title">
+        <h2 id="needs-title">İhtiyacına göre başla</h2>
+        <p class="needs-description">Almancayı hedeflerine uygun konularla adım adım öğren.</p>
+        <div class="path-grid">
+          <article class="learning-path">
+            <div class="path-icon"><img src="./assets/icons/book-open.svg" width="34" height="34" alt=""></div>
+            <div class="path-content"><h3>Grameri anla</h3><p>Temel kuralları Türkçe açıklamalarla öğren. Örneklerle pekiştir.</p>
+              <ul class="path-links">
+                <li><button type="button" data-topic="articles" aria-haspopup="dialog">Der, die, das <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></button></li>
+                <li><button type="button" data-topic="cases" aria-haspopup="dialog">Akkusativ ve Dativ <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></button></li>
+                <li><button type="button" data-topic="word-order" aria-haspopup="dialog">Almanca cümle sırası <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></button></li>
+              </ul>
+            </div>
+          </article>
+          <article class="learning-path" id="gunluk">
+            <div class="path-icon"><img src="./assets/icons/chat-circle.svg" width="34" height="34" alt=""></div>
+            <div class="path-content"><h3>Günlük hayatta kullan</h3><p>Gerçek durumlar için pratik kelime ve kalıpları öğren.</p>
+              <ul class="path-links">
+                <li><button type="button" data-topic="doctor" aria-haspopup="dialog">Doktorda konuşma <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></button></li>
+                <li><button type="button" data-topic="doctor" aria-haspopup="dialog">Randevu alma <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></button></li>
+                <li><button type="button" data-open="practice-dialog" aria-haspopup="dialog">Kafede sipariş <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></button></li>
+              </ul>
+            </div>
+          </article>
+          <article class="learning-path">
+            <div class="path-icon"><img src="./assets/icons/file-text.svg" width="34" height="34" alt=""></div>
+            <div class="path-content"><h3>Sınava hazırlan</h3><p>Sınavlarda sık karşılaşılan konu ve ifade türlerini çalış.</p>
+              <ul class="path-links">
+                <li><button type="button" data-topic="exams" aria-haspopup="dialog">A1 aile birleşimi <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></button></li>
+                <li><button type="button" data-topic="exams" aria-haspopup="dialog">B1 mektup yazma <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></button></li>
+              </ul>
+              <p class="planned-note">Sınav içerikleri hazırlanıyor.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="resource-banner" aria-labelledby="resource-banner-title">
+        <div class="resource-banner-copy"><h2 id="resource-banner-title"><button type="button" data-open="resources-dialog" aria-haspopup="dialog">Kaydet, tekrar et</button></h2><p>Günlük hayatta işine yarayacak konular için<br class="desktop-break"> ücretsiz çalışma kâğıtlarıyla pratik yap.</p></div>
+      </section>
     </main>
+
     <footer class="footer">
-      <p>Mahmut Genc<br>Echterdingen, Germany</p>
-      <div><a href="mailto:mahmutyoung@gmail.com">Contact</a><a href="./privacy/">Privacy policy</a></div>
+      <p>Baulingo <span>Günlük hayatta işe yarayan Almanca.</span></p>
+      <div><button type="button" class="text-button" data-open="about-dialog" aria-haspopup="dialog">Uygulama hakkında</button><a href="mailto:mahmutyoung@gmail.com">İletişim</a><a href="./privacy/" lang="de">Datenschutz</a></div>
     </footer>
   </div>
+
+  <dialog class="content-dialog practice-dialog" id="practice-dialog" aria-labelledby="exercise-title">
+    <div class="dialog-top"><span class="dialog-brand">Kafede sipariş</span><button class="close-button" type="button" data-close>Kapat</button></div>
+      <section class="exercise-workspace" id="alistirma" aria-labelledby="exercise-title">
+        <div class="exercise">
+          <h2 id="exercise-title" tabindex="-1">Bir kahve isteyelim.</h2>
+          <p class="translation" id="translation">Bir kahve, lütfen.</p>
+          <p class="question" id="question">Almanca nasıl söylersin?</p>
+          <div class="answer-area">
+            <p class="visually-hidden" id="exercise-instructions">Kelimeleri sırayla seç. Seçtiğin bir kelimeyi geri almak için ona tekrar bas.</p>
+            <ol class="answer-slots" id="answer-slots" aria-label="Kurduğun cümle" aria-describedby="exercise-instructions">
+              <li><span class="empty-slot"><span class="visually-hidden">Birinci kelime boş</span></span></li>
+              <li><span class="empty-slot"><span class="visually-hidden">İkinci kelime boş</span></span></li>
+              <li><span class="empty-slot"><span class="visually-hidden">Üçüncü kelime boş</span></span></li>
+            </ol>
+            <div class="word-bank" id="word-bank" role="group" aria-label="Seçebileceğin kelimeler" lang="de">
+              <button class="word-tile" type="button" data-word="bitte">bitte.</button>
+              <button class="word-tile" type="button" data-word="einen">Einen</button>
+              <button class="word-tile" type="button" data-word="coffee">Kaffee,</button>
+            </div>
+          </div>
+          <div class="exercise-actions">
+            <button class="button button-primary" id="check-answer" type="button">Cümleyi kontrol et</button>
+            <button class="text-button hint-button" id="hint-toggle" type="button" aria-expanded="false" aria-controls="hint">İpucu göster</button>
+          </div>
+          <p class="hint" id="hint" hidden></p>
+          <div class="exercise-response">
+            <p class="feedback" id="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+            <button class="text-button reset-button" id="reset-exercise" type="button" hidden>Baştan başla</button>
+          </div>
+          <noscript><p class="noscript-note">Alıştırma için JavaScript'i aç. Bu cümlenin Almancası: <span lang="de">Einen Kaffee, bitte.</span> Açıklamaları aşağıda okuyabilirsin.</p></noscript>
+        </div>
+      </section>
+  </dialog>
+  <dialog class="content-dialog" id="language-dialog" aria-labelledby="language-title">
+    <div class="dialog-top"><span class="dialog-brand">Baulingo</span><button class="close-button" type="button" data-close>Kapat</button></div>
+    <h2 id="language-title">İçerik dili: Türkçe</h2><p>Baulingo ilk olarak Türkçe konuşan Almanca öğrenenler için hazırlanıyor.</p>
+  </dialog>
+
+  <dialog class="content-dialog" id="topic-dialog" aria-labelledby="topic-dialog-title">
+    <div class="dialog-top"><span class="dialog-brand">Baulingo ile öğren</span><button class="close-button" type="button" data-close>Kapat</button></div>
+    <article><h2 id="topic-dialog-title"></h2><p class="dialog-subtitle" id="topic-dialog-subtitle"></p><div id="topic-content"></div></article>
+    <button class="button button-primary dialog-practice" id="topic-practice" type="button">Cümle kurmayı dene</button>
+  </dialog>
+
+  <dialog class="content-dialog search-dialog" id="search-dialog" aria-labelledby="search-dialog-title">
+    <div class="dialog-top"><span class="dialog-brand">Baulingo</span><button class="close-button" type="button" data-close>Kapat</button></div>
+    <h2 id="search-dialog-title">Ne öğrenmek istersin?</h2>
+    <label class="visually-hidden" for="dialog-query">Konularda ara</label>
+    <input class="dialog-search-input" id="dialog-query" type="search" placeholder="Örneğin: artikel, cümle, doktor…" autocomplete="off" maxlength="120">
+    <p class="search-count" id="search-count" role="status" aria-live="polite"></p>
+    <ul class="search-results" id="search-results"></ul>
+    <div class="empty-search" id="empty-search" hidden><h3>Bu aramada bir konu bulamadık.</h3><p>“Artikel”, “cümle” veya “doktor” yazmayı dene.</p><button class="text-button" id="show-all-topics" type="button">Tüm konuları göster</button></div>
+  </dialog>
+
+  <dialog class="content-dialog" id="resources-dialog" aria-labelledby="resources-title">
+    <div class="dialog-top"><span class="dialog-brand">Yanında götür</span><button class="close-button" type="button" data-close>Kapat</button></div>
+    <h2 id="resources-title">Ücretsiz çalışma notları</h2>
+    <p>Telefona kaydet, yazdır veya kendi notlarına ekle. Üyelik gerekmez.</p>
+    <article class="resource"><h3>Kafede Almanca</h3><p>Kahve isterken kullanabileceğin 8 ifade, Türkçe anlamları ve küçük bir cümle kurma çalışması.</p><p class="resource-preview" lang="de">Einen Kaffee, bitte. · Die Rechnung, bitte.</p><a class="download-link" href="./downloads/kafede-almanca.txt" download>Çalışma notunu indir <span>TXT · UTF-8</span></a></article>
+    <article class="resource"><h3>Der, die, das: ilk kelimeler</h3><p>Artikelleri ve Türkçe anlamlarıyla 12 günlük kelime. Sonunda cevap anahtarlı bir tekrar var.</p><p class="resource-preview" lang="de">der Kaffee · die Rechnung · das Wasser</p><a class="download-link" href="./downloads/artikeller-ilk-kelimeler.txt" download>Kelime notunu indir <span>TXT · UTF-8</span></a></article>
+  </dialog>
+
+  <dialog class="content-dialog" id="about-dialog" aria-labelledby="about-title">
+    <div class="dialog-top"><span class="dialog-brand">Baulingo</span><button class="close-button" type="button" data-close>Kapat</button></div>
+    <h2 id="about-title">Almancayı bir durumun içinde öğren.</h2>
+    <p>Baulingo uygulamasında resimler, kısa konuşmalar ve pratik alıştırmalarla günlük Almanca çalışabilirsin. Cevabını seç, kelimelerle kur ve yazmayı dene.</p>
+    <p>Uygulama geliştirme ve test aşamasındadır. Android testi hakkında bilgi almak veya geri bildirim göndermek için bize yazabilirsin.</p>
+    <a class="button button-primary" href="mailto:mahmutyoung@gmail.com?subject=Baulingo%20Android%20testi">Android testi hakkında yaz</a>
+  </dialog>
 </body>
 </html>
