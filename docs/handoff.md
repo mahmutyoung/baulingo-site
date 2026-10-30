@@ -33,7 +33,7 @@ The tests and static build pass. Chrome checks cover the primary interactions, a
 4. The static hosting configuration for `dist/` is prepared and the CLI dry run passes. Obtain publication authorization and verify a deployment preview before connecting `baulingo.app`.
 5. Verify HTTPS, the `www` redirect, nested paths, asset loading, downloads and privacy access after deployment. Record actual results and the deployed revision.
 
-Keep old GitHub Pages privacy access during migration. The app's policy URL is a separate app task. The experiment address remains undecided.
+Keep old GitHub Pages privacy access during migration. The app's policy URL is a separate app task. Product experiments belong within existing website pages and the normal site deployment, to learn about Turkish-speaking visitors' demand and preferences. The previous separate experiment page/project/subdomain direction is superseded.
 
 The app repository still has a public-site export script. Do not use an older export to overwrite this independent website source.
 

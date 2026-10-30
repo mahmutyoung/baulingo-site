@@ -53,7 +53,7 @@ Deployment and maintenance checklist (the owner's initial deployment is already 
 5. Keep the existing GitHub Pages privacy URL reachable for the Android app. Its link and the sibling app's export script are separate app work. Do not overwrite the independent site with an older app export.
 6. Record the deployed Git revision and smoke-test it. Retain the previous Cloudflare deployment for rollback if necessary; do not assume local validation proves public DNS or TLS.
 
-The GitHub workflow runs tests, builds and saves an artifact; it does not deploy automatically. No experiment subdomain was selected.
+The GitHub workflow runs tests, builds and saves an artifact; it does not deploy automatically. Product experiments are embedded in the main website and ship with its normal deployment to understand visitor demand and preferences. They do not need a separate experiment page, project or subdomain. The WWW redirect Worker is hosting infrastructure.
 
 ## Evidence
 

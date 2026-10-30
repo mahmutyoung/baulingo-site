@@ -1,10 +1,12 @@
 # Baulingo website: shape and architecture
 
-Status: proposed foundation. The owner asked for the general shape and architecture, followed by incremental implementation. The latest supplied [homepage reference](design/homepage.md) is authoritative for layout and copy. The current homepage is a local visual/interaction draft.
+Status: live static foundation with incremental development. The owner asked for the general shape and architecture, followed by small implementation steps. The latest supplied [homepage reference](design/homepage.md) is authoritative for layout and copy. Product experiments are embedded in the main website to understand visitor demand and preferences.
 
 ## Purpose
 
 Serve Turkish speakers learning German. Help them find an explanation in Turkish, understand a German example and try a short exercise. Keep useful content accessible without signup.
+
+Use embedded interactions to learn which needs and learning experiences matter to this audience. Keep each experiment small enough to assess before expanding the product.
 
 ## Site shape
 
@@ -14,12 +16,21 @@ Serve Turkish speakers learning German. Help them find an explanation in Turkish
 - Free resources: descriptive pages and direct downloads.
 - Exam preparation: a later section with reviewed, exam-specific content.
 - About, contact and privacy: basic public information.
+- Embedded experiments: short interactions within the homepage or relevant existing content, using the same visual language and site deployment.
 
 Each published learning page follows one pattern: learner question → short Turkish explanation → German examples → optional practice → related topics.
 
+## Embedded experiment roadmap
+
+Experiments live inside the website's normal learner experience. The earlier separate experiment page, project and subdomain proposal is superseded. The dedicated WWW redirect Worker is infrastructure, not an experiment deployment.
+
+For each experiment, first name the learner question it will answer: which topic visitors need, which activity they choose or what they prefer after trying it. Then define the smallest embedded interaction and the evidence needed to decide whether to expand, adjust or stop it. Choices, completion and optional explicit feedback are candidate signals; the measurement approach must be specified when that experiment is implemented.
+
+The existing short sentence activity provides an initial interaction pattern. Extend it incrementally while preserving the selected homepage layout and Turkish wording. Ship experiments with the main website. No website measurement pipeline has been implemented by this architecture update; native app telemetry remains a separate concern.
+
 ## Proposed architecture
 
-Use the earlier Astro + TypeScript direction when the content foundation is introduced. Render learning pages as static HTML. Use Markdown for reviewed explanations and structured data for exercises. Add browser interaction only where an activity needs it. React islands are an option for richer exercises later.
+The current implementation uses static HTML/CSS and native JavaScript modules. Learning pages are generated from structured topic data; exercise rules are separate from DOM rendering. Continue with this foundation for embedded experiments. The earlier Astro + TypeScript direction remains an optional future content migration when justified by the content library. Render learning pages as static HTML and add browser interaction where an activity needs it. React islands remain an option for richer exercises later.
 
 ```text
 src/
@@ -37,7 +48,7 @@ Keep content, answer rules and presentation separate. A page selects an exercise
 
 Keep Turkish as the first language. Use a route/content structure that can later support language folders without building language switching now. Final route names should be settled before publishing a learning library.
 
-Build static output into `dist/` for the agreed Cloudflare hosting. Account setup, deployment and DNS remain separate steps. Accounts, progress sync and server features can be added when a defined learner need requires them.
+Build static output into `dist/` for the agreed Cloudflare hosting. The main site is live at `baulingo.app`; a dedicated WWW Worker redirects to the apex. Embedded experiments share the main site's build and deployment. Accounts, progress sync and server features can be added when a defined learner need requires them.
 
 ## Build in small steps
 
@@ -46,6 +57,6 @@ Build static output into `dist/` for the agreed Cloudflare hosting. Account setu
 3. Connect one reusable exercise and review its feedback and accessibility.
 4. Expand topics, downloads and search using that pattern. Add exam content after its requirements are reviewed.
 
-## Current draft
+## Current implementation
 
-The repository currently has static HTML/CSS, browser modules, a local preview, a public-file build and focused tests. The sentence activity, topic dialogs and text downloads are draft examples. Preserve them as reference material while establishing the foundation. No Astro migration, public deployment, DNS changes or app changes have been made.
+The repository has static HTML/CSS, browser modules, generated topic/resource pages, a production-output preview, an explicit public-file build and focused tests. The sentence activity, topic dialogs, recorded audio and text downloads work on the live site. Continue from these pieces rather than rebuilding the homepage. No Astro migration or native app changes have been made. See [production notes](production.md) for deployment verification.

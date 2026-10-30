@@ -25,16 +25,15 @@ Downloads are free. Do not require an account, email address or signup. Each res
 
 The site offers two original text study notes through a resource dialog and standalone resource page. Topic search, short Turkish explanations, recorded phrase audio and a sentence exercise work locally. Topic links also lead to static readable pages. Full exam packages remain planned.
 
-This is not a full web version of the learner app. Small interactive experiments can have their own deployment. Add Worker logic only when an agreed feature needs it.
+This is not a full web version of the learner app. Embed small interactive experiments within the main website to understand Turkish-speaking visitors' demand and preferences. Experiments use the site's existing pages, design and deployment. Add Worker logic only when an agreed feature needs it.
 
 ## Hosting and costs
 
 | Project name | Address | Purpose |
 | --- | --- | --- |
 | `baulingo-site` | `baulingo.app` | Public static website |
-| `baulingo-lab` | To be decided | Separate feature experiments |
 
-The experiment project name is proposed; its address remains undecided. The owner has now deployed `baulingo-site` at `baulingo.app`. A separate `baulingo-www-redirect` Worker handles only the authorized WWW redirect; see [current deployment notes](production.md).
+The owner has now deployed `baulingo-site` at `baulingo.app`. Product experiments are embedded within this website; the previous separate experiment project/subdomain proposal is superseded. A separate `baulingo-www-redirect` Worker handles only the authorized WWW redirect; see [current deployment notes](production.md).
 
 Use Cloudflare's Free domain plan and Workers Free with Static Assets. The domain purchase and renewal remain separate costs. Do not enable paid plans, usage billing or services that require a paid subscription.
 
@@ -64,8 +63,8 @@ Keep articles and resource descriptions in Markdown when a content build is adde
 - Preserve privacy access during migration. The local homepage has been replaced with the owner's approved Turkish layout; this does not change the currently deployed site.
 - Keep app source, environment files, Firebase configuration, credentials and signing keys out of this public repository.
 - Publish only a dedicated static output directory. Do not publish the repository root, Git metadata or handoff documents.
-- Keep experiment deployments separate from the public site and Android releases.
-- Decide experiment access and data needs when the first experiment is defined.
+- Ship embedded experiments with the public website; keep native Android releases independent.
+- Define each experiment's learner question, demand/preference signals and any feedback or data needs before implementing its measurement.
 - The app currently links to the GitHub Pages policy. Changing that app URL is a separate app task. Preserve access to the old policy during migration.
 - The app repository currently exports this site through `scripts/build-app-site.cjs`. Inspect that ownership before editing generated pages. Do not later overwrite independent website changes with an old export.
 
