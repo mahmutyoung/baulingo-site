@@ -17,6 +17,7 @@ Privacy policy: https://baulingo.app/privacy/. Preserve the legacy Android-app p
 The static website is live at `baulingo.app`, with a separate Worker redirecting WWW to the HTTPS apex. Product experiments are embedded in the main website to understand Turkish-speaking visitors' demand and preferences, and ship with the normal site deployment. Use free plans only. Resources and downloads require no signup. Live checks and local tests pass; account billing settings have not been independently audited. See [deployment notes](docs/production.md).
 
 - [Setup and agreed decisions](docs/setup.md)
+- [Agent working instructions](AGENTS.md)
 - [Long-term roadmap and next product milestone](docs/roadmap.md)
 - [Implementation handoff and verification checklist](docs/handoff.md)
 
