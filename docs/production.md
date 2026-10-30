@@ -1,6 +1,14 @@
 # Production preparation
 
-Verified locally on 30 October 2026. The approved homepage layout and Turkish copy remain authoritative. This work has not published the site or changed DNS.
+Prepared and verified on 30 October 2026. The approved homepage layout and Turkish copy remain authoritative. The owner subsequently deployed the main site and connected `baulingo.app`; live checks confirm its homepage matches the verified static build.
+
+## Live deployment
+
+`https://baulingo.app` serves the main static site. Its homepage, topic/legal pages and downloads return 200; missing pages return 404. Public responses include security headers and do not include the preview noindex header.
+
+The owner authorized and authenticated the WWW redirect setup. Wrangler's OAuth permission grants Worker routing, but the zone Redirect Rules API returns 403. A dedicated [WWW redirect Worker](../cloudflare/www-redirect/README.md) now serves only `www.baulingo.app/*`, returning 301 directly to HTTPS apex with the path/query preserved. Version: `12357254-9074-4dcb-acb0-c3b5218ca07c`. Live HTTP/HTTPS, nested-path, encoded-path and query checks pass. The apex stays on `baulingo-site`; no DNS edits or paid-plan changes were made for this redirect.
+
+The local Wrangler login is stored by Wrangler outside the repository. No credentials are committed. The WWW Worker has a separate explicit deployment command; the main site's Git-linked build does not deploy it.
 
 ## Build and verify
 
@@ -36,12 +44,12 @@ To validate with Cloudflare's local runtime:
 npx --yes wrangler@4.156.0 dev --local --port 4174
 ```
 
-Before public launch:
+Deployment and maintenance checklist (the owner's initial deployment is already live):
 
 1. Confirm the Cloudflare account remains on the agreed free plans and review the supplied publisher details at `/impressum/` and website hosting disclosure at `/privacy/`. No claim of comprehensive legal compliance is made by the build checks.
 2. Obtain explicit publication authorization, authenticate Wrangler and deploy the verified `dist/`. Do not run a normal deploy just to validate configuration.
 3. Inspect the workers.dev preview: homepage, topic routes, exercise, recorded audio, downloads, legal pages, custom 404/status and headers. Verify noindex on that preview hostname.
-4. Connect `baulingo.app` as a Custom Domain after the preview passes. Configure the `www` → apex redirect in Cloudflare dashboard rules, preserving path and query; `_redirects` is not a domain redirect configuration. Confirm HTTPS and canonical URLs on the real domain.
+4. The main site's `baulingo.app` Custom Domain and WWW redirect are active and verified. The WWW redirect is a separate Worker because the OAuth login cannot edit zone Redirect Rules. Preserve its narrow route during maintenance; `_redirects` is not a domain redirect configuration.
 5. Keep the existing GitHub Pages privacy URL reachable for the Android app. Its link and the sibling app's export script are separate app work. Do not overwrite the independent site with an older app export.
 6. Record the deployed Git revision and smoke-test it. Retain the previous Cloudflare deployment for rollback if necessary; do not assume local validation proves public DNS or TLS.
 
@@ -49,7 +57,7 @@ The GitHub workflow runs tests, builds and saves an artifact; it does not deploy
 
 ## Evidence
 
-- 15 automated checks: exercise/search behavior, canonical public paths, static routes/content, local references, deployment metadata, output boundary/size, response headers, errors, redirects, methods and downloads.
+- 18 automated checks: exercise/search behavior, canonical public paths, static routes/content, local references, deployment metadata, output boundary/size, response headers, errors, redirects, methods, downloads and the dedicated WWW redirect's path/query/hostname behavior.
 - Chrome interaction checks: recorded audio, sentence feedback/hints/continuation, keyboard controls, search, downloads, dialog focus return and clean console.
 - Eleven responsive widths from 320 to 1440 px; no horizontal or phrase-panel overflow.
 - JavaScript-disabled navigation: topics, resources and search fallback. Direct practice links open the exercise when JavaScript is enabled.

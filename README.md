@@ -14,7 +14,7 @@ Existing documented privacy policy: https://mahmutyoung.github.io/baulingo-site/
 
 ## Cloudflare website work
 
-The target is a static website at `baulingo.app`, with separate experiments whose address is still to be decided. Use free plans only. Resources and downloads require no signup. Cloudflare configuration and a CLI dry run are verified locally; deployment, account settings and domain configuration remain pending. See [the release checklist](docs/production.md).
+The static website is live at `baulingo.app`, with a separate Worker redirecting WWW to the HTTPS apex. Separate experiments still have no selected address. Use free plans only. Resources and downloads require no signup. Live checks and local tests pass; account billing settings have not been independently audited. See [deployment notes](docs/production.md).
 
 - [Setup and agreed decisions](docs/setup.md)
 - [Implementation handoff and verification checklist](docs/handoff.md)

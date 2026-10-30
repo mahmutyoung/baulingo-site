@@ -2,6 +2,8 @@
 
 Updated: 30 October 2026. [Production preparation](production.md) is the current verification and release checklist.
 
+Live status: the owner deployed the static site at `https://baulingo.app`. The authorized WWW-only redirect Worker is also deployed and verified for HTTP/HTTPS 301 redirects retaining paths and queries. See [its operational notes](../cloudflare/www-redirect/README.md). Cloudflare login is available through local Wrangler; no credentials are in Git. The historical next-steps list below predates that deployment; production.md records the current state.
+
 Read [the setup](setup.md), [the approved visual reference](design/homepage.md) and [the architecture](architecture.md). Continue in this website repository. Keep native app work in its separate repository.
 
 ## Current local draft
@@ -13,7 +15,7 @@ The draft has a search-led hero, a cafe phrase with recorded audio, three topic 
 The site uses static HTML/CSS and browser JavaScript modules. Pure exercise and search rules are separate from DOM rendering. No framework migration or backend was added.
 
 - `npm run dev` starts the local preview at http://127.0.0.1:4173.
-- `npm test` runs 15 checks for learning rules, Turkish search, public paths, generated pages, deployment output and HTTP behavior.
+- `npm test` runs 18 checks for learning rules, Turkish search, public paths, generated pages, deployment output, HTTP behavior and the WWW redirect.
 - `npm run build` writes an explicit public allowlist to `dist/`.
 - `.dev/`, `dist/`, local environment files and dependencies are ignored by Git.
 
@@ -37,4 +39,4 @@ The app repository still has a public-site export script. Do not use an older ex
 
 ## Limits
 
-Cloudflare access, account plans, DNS, custom domains, HTTPS, redirects and public deployment remain unverified. This work has not changed them. It has not changed native app code or telemetry. Local checks do not prove a public deployment.
+The main site, HTTPS custom domain and WWW redirects have now been verified live; account billing settings and the full DNS configuration have not been audited. The WWW setup added only its dedicated Worker route, with no DNS edits or paid-plan changes. Native app code and telemetry remain unchanged. Recheck live behavior after future deployments.

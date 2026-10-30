@@ -34,7 +34,7 @@ This is not a full web version of the learner app. Small interactive experiments
 | `baulingo-site` | `baulingo.app` | Public static website |
 | `baulingo-lab` | To be decided | Separate feature experiments |
 
-The experiment project name is proposed; its address remains undecided. No Cloudflare project has been created for this draft.
+The experiment project name is proposed; its address remains undecided. The owner has now deployed `baulingo-site` at `baulingo.app`. A separate `baulingo-www-redirect` Worker handles only the authorized WWW redirect; see [current deployment notes](production.md).
 
 Use Cloudflare's Free domain plan and Workers Free with Static Assets. The domain purchase and renewal remain separate costs. Do not enable paid plans, usage billing or services that require a paid subscription.
 
