@@ -1,6 +1,6 @@
 # Website setup
 
-Original decisions recorded: 29 October 2026. Updated: 30 October 2026. This records local work, not a deployment. See [production preparation](production.md) for the current build, configuration and release checklist; the longer-term routes below remain proposals.
+Original decisions recorded: 29 October 2026. Updated: 30 October 2026. See the [long-term roadmap](roadmap.md) for product sequencing and [production notes](production.md) for the live build, configuration and release checklist.
 
 ## Repository and current files
 
@@ -10,12 +10,13 @@ Original decisions recorded: 29 October 2026. Updated: 30 October 2026. This rec
 - Starting revision: `dff7162` (Sync public privacy policy with current in-app notice).
 - Local source: `index.html`, `style.css`, `app.js`, `src/`, `assets/`, `downloads/`, `privacy/` and `impressum/`. The owner supplied the public postal address; the privacy page now describes Cloudflare website hosting without changing native app telemetry wording.
 - Local tooling: `npm run dev`, `npm test` and `npm run build`. The build writes public files to `dist/`.
-- Current documented homepage: https://mahmutyoung.github.io/baulingo-site/
-- Current documented policy: https://mahmutyoung.github.io/baulingo-site/privacy/
+- Live homepage: https://baulingo.app/
+- Live policy: https://baulingo.app/privacy/
+- Legacy policy used by the Android app: https://mahmutyoung.github.io/baulingo-site/privacy/
 
 This is a separate local Git repository from the Android app. No website changes should require an Android build.
 
-The owner bought `baulingo.app` through Cloudflare. Account settings, DNS and current public responses have not been inspected in this task. The GitHub Pages addresses above come from the existing README. They were not retested during this handoff.
+The owner bought `baulingo.app` through Cloudflare and deployed the main site there. HTTPS, live site responses and the WWW redirect have been checked; account billing settings and the full DNS configuration have not been audited. Preserve the legacy GitHub Pages policy address; its availability was not retested during this documentation update.
 
 ## Agreed scope
 
@@ -23,9 +24,11 @@ The website is mainly static. Its first audience is Turkish speakers learning Ge
 
 Downloads are free. Do not require an account, email address or signup. Each resource should have a page with a description, preview, direct download and relevant app link.
 
-The site offers two original text study notes through a resource dialog and standalone resource page. Topic search, short Turkish explanations, recorded phrase audio and a sentence exercise work locally. Topic links also lead to static readable pages. Full exam packages remain planned.
+The site offers two original text study notes through a resource dialog and standalone resource page. Topic search, short Turkish explanations, recorded phrase audio and a sentence exercise are implemented. Topic links also lead to static readable pages. Full exam packages remain planned.
 
 This is not a full web version of the learner app. Embed small interactive experiments within the main website to understand Turkish-speaking visitors' demand and preferences. Experiments use the site's existing pages, design and deployment. Add Worker logic only when an agreed feature needs it.
+
+The current roadmap stage is understanding demand: define one embedded experiment and its evidence method before broad content or activity expansion. Later directions include stronger content, improved practice, continuing study, a relevant app connection and sustainable expansion. Accounts, synchronisation and paid learning products remain conditional options; see roadmap.md for decision gates.
 
 ## Hosting and costs
 
@@ -41,26 +44,26 @@ Serve pages and downloads directly as static assets. Do not invoke Worker code f
 
 Limits checked on 29 October 2026: Workers Free allows 20,000 static files per version and 25 MiB per static file. Keep downloads within these limits. Recheck limits when implementing. Do not add R2, a database or paid analytics to the initial setup.
 
-Connect the public domain after checking the deployment preview. Cloudflare Custom Domains manage the required DNS records and certificates. Redirect `www.baulingo.app` to `https://baulingo.app`, preserving paths and query strings.
+The public custom domain and the WWW-to-HTTPS-apex redirect are active. Recheck the preview and public domain after future releases. The separate WWW Worker preserves paths and query strings; its source and operational notes are in `cloudflare/www-redirect/`.
 
-## Longer-term content structure
+## Routes and future content
 
-These paths are longer-term proposals. The current build uses the approved homepage with dialogs and static `/konular/`, `/kaynaklar/`, `/impressum/` and `/privacy/` routes; it does not publish the following proposed article/update/support sections yet.
+The current routes support the approved homepage and static learning/resource content. Embedded experiments fit within these existing pages. Add routes when selected content requires them; the roadmap does not commit to separate update or support sections.
 
 | Path | Purpose |
 | --- | --- |
-| `/` | App introduction, examples and confirmed download links |
-| `/learn/` | Articles about German in everyday situations |
-| `/downloads/` | Resource pages and free files |
-| `/updates/` | App news |
-| `/support/` | Help and contact |
+| `/` | Approved Turkish homepage, topic discovery and short practice |
+| `/konular/` and topic pages | Turkish explanations and German examples |
+| `/kaynaklar/` | Resource descriptions and direct downloads |
+| `/downloads/*.txt` | Published free study files |
+| `/impressum/` | Publisher details and contact |
 | `/privacy/` | Accurate public privacy policy |
 
-Keep articles and resource descriptions in Markdown when a content build is added. A framework is not required for the first hosting migration. Do not invent app store links or publish placeholder worksheets as finished resources. Search traffic is a goal, not a guaranteed result.
+Keep the current structured topic source and generated page pattern while developing the first embedded experiment. Markdown and the optional architecture migration can be considered when the content library justifies them. Do not invent app store links or publish placeholder worksheets as finished resources. Search traffic is a goal, not a guaranteed result.
 
 ## Boundaries
 
-- Preserve privacy access during migration. The local homepage has been replaced with the owner's approved Turkish layout; this does not change the currently deployed site.
+- Preserve privacy access and the owner's approved Turkish layout during future changes.
 - Keep app source, environment files, Firebase configuration, credentials and signing keys out of this public repository.
 - Publish only a dedicated static output directory. Do not publish the repository root, Git metadata or handoff documents.
 - Ship embedded experiments with the public website; keep native Android releases independent.

@@ -2,15 +2,15 @@
 
 Updated: 30 October 2026. [Production preparation](production.md) is the current verification and release checklist.
 
-Live status: the owner deployed the static site at `https://baulingo.app`. The authorized WWW-only redirect Worker is also deployed and verified for HTTP/HTTPS 301 redirects retaining paths and queries. See [its operational notes](../cloudflare/www-redirect/README.md). Cloudflare login is available through local Wrangler; no credentials are in Git. The historical next-steps list below predates that deployment; production.md records the current state.
+Live status: the owner deployed the static site at `https://baulingo.app`. The authorized WWW-only redirect Worker is also deployed and verified for HTTP/HTTPS 301 redirects retaining paths and queries. See [its operational notes](../cloudflare/www-redirect/README.md). Cloudflare login is available through local Wrangler; no credentials are in Git. Deployment verification is recorded in production.md.
 
-Read [the setup](setup.md), [the approved visual reference](design/homepage.md) and [the architecture](architecture.md). Continue in this website repository. Keep native app work in its separate repository.
+Read [the roadmap](roadmap.md), [the setup](setup.md), [the approved visual reference](design/homepage.md) and [the architecture](architecture.md). The roadmap owns product sequencing; this handoff identifies the next implementation work. Continue in this website repository. Keep native app work in its separate repository.
 
-## Current local draft
+## Current live foundation
 
 The owner selected Turkish speakers as the first audience and supplied the final homepage screenshot. Its layout and visible wording are authoritative. Further development should proceed in small steps.
 
-The draft has a search-led hero, a cafe phrase with recorded audio, three topic columns and a resource banner. The sentence exercise, topic explanations, search, language information and resources open in accessible dialogs. Two original text study notes can be downloaded without signup. Exam packages remain planned.
+The site has a search-led hero, a cafe phrase with recorded audio, three topic columns and a resource banner. The sentence exercise, topic explanations, search, language information and resources open in accessible dialogs. Topic and resource content also has static readable pages. Two original text study notes can be downloaded without signup. Exam packages remain planned.
 
 The site uses static HTML/CSS and browser JavaScript modules. Pure exercise and search rules are separate from DOM rendering. No framework migration or backend was added.
 
@@ -27,11 +27,11 @@ The tests and static build pass. Chrome checks cover the primary interactions, a
 
 ## Next steps
 
-1. Review one small learner-facing change at a time against the approved reference. Keep its layout, Turkish wording and brand consistent.
-2. Establish one reviewed learning-page pattern before expanding the content library. The Astro/content structure in the architecture document remains a proposal.
-3. Inspect the Cloudflare account and domain settings when access is available. No account, plan or DNS state has been verified here.
-4. The static hosting configuration for `dist/` is prepared and the CLI dry run passes. Obtain publication authorization and verify a deployment preview before connecting `baulingo.app`.
-5. Verify HTTPS, the `www` redirect, nested paths, asset loading, downloads and privacy access after deployment. Record actual results and the deployed revision.
+1. Define one embedded experiment brief using the roadmap's question, experience, evidence and decision fields. Explore visitors' needs for explanations, everyday communication or exam preparation and useful activity formats; do not assume a winning category.
+2. Settle the smallest useful interaction, its placement within existing content and its measurement method. The existing sentence activity is an available pattern. No website measurement pipeline is implemented yet.
+3. Implement and review that small change against the approved layout and Turkish wording, including accessibility and mobile use. Native app telemetry is outside this task.
+4. Evaluate the evidence against the brief's success criteria, then expand, adjust or stop the experiment. Use that result to prioritise content and practice improvements in the roadmap.
+5. For website releases, follow production.md and recheck the preview, HTTPS, WWW redirect, nested paths, assets, downloads and legal pages. Account billing settings and the full DNS configuration remain unaudited; do not enable paid plans.
 
 Keep old GitHub Pages privacy access during migration. The app's policy URL is a separate app task. Product experiments belong within existing website pages and the normal site deployment, to learn about Turkish-speaking visitors' demand and preferences. The previous separate experiment page/project/subdomain direction is superseded.
 

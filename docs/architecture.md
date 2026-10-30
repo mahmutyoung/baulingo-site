@@ -2,6 +2,8 @@
 
 Status: live static foundation with incremental development. The owner asked for the general shape and architecture, followed by small implementation steps. The latest supplied [homepage reference](design/homepage.md) is authoritative for layout and copy. Product experiments are embedded in the main website to understand visitor demand and preferences.
 
+The [long-term roadmap](roadmap.md) owns product stages, audience priorities and experiment decisions. This document describes how to support that direction with the current implementation.
+
 ## Purpose
 
 Serve Turkish speakers learning German. Help them find an explanation in Turkish, understand a German example and try a short exercise. Keep useful content accessible without signup.
@@ -20,17 +22,19 @@ Use embedded interactions to learn which needs and learning experiences matter t
 
 Each published learning page follows one pattern: learner question → short Turkish explanation → German examples → optional practice → related topics.
 
-## Embedded experiment roadmap
+## Embedded experiment architecture
 
 Experiments live inside the website's normal learner experience. The earlier separate experiment page, project and subdomain proposal is superseded. The dedicated WWW redirect Worker is infrastructure, not an experiment deployment.
 
-For each experiment, first name the learner question it will answer: which topic visitors need, which activity they choose or what they prefer after trying it. Then define the smallest embedded interaction and the evidence needed to decide whether to expand, adjust or stop it. Choices, completion and optional explicit feedback are candidate signals; the measurement approach must be specified when that experiment is implemented.
+Use the roadmap's question → experience → evidence → decision cycle for each experiment. Keep its content, answer rules, presentation and any measurement logic separate so that the interaction can change without coupling it to a tracking provider. Specify the measurement method when the selected experiment is implemented; no website measurement pipeline exists yet.
 
 The existing short sentence activity provides an initial interaction pattern. Extend it incrementally while preserving the selected homepage layout and Turkish wording. Ship experiments with the main website. No website measurement pipeline has been implemented by this architecture update; native app telemetry remains a separate concern.
 
-## Proposed architecture
+## Current foundation and optional future architecture
 
 The current implementation uses static HTML/CSS and native JavaScript modules. Learning pages are generated from structured topic data; exercise rules are separate from DOM rendering. Continue with this foundation for embedded experiments. The earlier Astro + TypeScript direction remains an optional future content migration when justified by the content library. Render learning pages as static HTML and add browser interaction where an activity needs it. React islands remain an option for richer exercises later.
+
+The following tree is an optional future content structure, not the current repository layout:
 
 ```text
 src/
@@ -50,12 +54,12 @@ Keep Turkish as the first language. Use a route/content structure that can later
 
 Build static output into `dist/` for the agreed Cloudflare hosting. The main site is live at `baulingo.app`; a dedicated WWW Worker redirects to the apex. Embedded experiments share the main site's build and deployment. Accounts, progress sync and server features can be added when a defined learner need requires them.
 
-## Build in small steps
+## Implementation sequence
 
-1. Establish the shared layout, typography, spacing and navigation.
-2. Build one complete learning page to settle the content model and page pattern.
-3. Connect one reusable exercise and review its feedback and accessibility.
-4. Expand topics, downloads and search using that pattern. Add exam content after its requirements are reviewed.
+1. Preserve the live shared layout, topic-page pattern, search, downloads and sentence activity as the starting foundation.
+2. Define the first embedded experiment brief and the evidence method described in the roadmap's immediate milestone.
+3. Implement that small interaction using the existing site modules, then review its feedback, accessibility and mobile use.
+4. Use the result to choose the next content or practice improvement. Add deeper exam preparation after its requirements are reviewed. Introduce accounts, backend services or a framework migration when the selected product work requires them.
 
 ## Current implementation
 

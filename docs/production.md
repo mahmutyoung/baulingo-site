@@ -2,6 +2,8 @@
 
 Prepared and verified on 30 October 2026. The approved homepage layout and Turkish copy remain authoritative. The owner subsequently deployed the main site and connected `baulingo.app`; live checks confirm its homepage matches the verified static build.
 
+The [long-term roadmap](roadmap.md) owns product priorities. The next product milestone is one embedded demand/preference experiment with a defined evidence method. This document records delivery operations and verification; no measurement pipeline has been added by the roadmap update.
+
 ## Live deployment
 
 `https://baulingo.app` serves the main static site. Its homepage, topic/legal pages and downloads return 200; missing pages return 404. Public responses include security headers and do not include the preview noindex header.
@@ -63,7 +65,7 @@ The GitHub workflow runs tests, builds and saves an artifact; it does not deploy
 - JavaScript-disabled navigation: topics, resources and search fallback. Direct practice links open the exercise when JavaScript is enabled.
 - Fresh desktop/mobile screenshots stored locally under ignored `.dev/production-*.png`; photo compression preserves the approved composition and fonts preserve layout.
 - Independent code review found no significant issues. The app telemetry paragraphs are unchanged; privacy changes concern the supplied contact address and website hosting.
-- Cloudflare's local runtime parsed all four header rules and the redirect rule. HTTP checks passed for pages, actual 404 status, headers, downloads, canonical redirects and excluded files. Its slash redirects return 307; the local preview regression check matches that behavior. Public hostname rules, DNS and TLS still require launch verification.
+- Cloudflare's local runtime parsed all four header rules and the redirect rule. HTTP checks passed for pages, actual 404 status, headers, downloads, canonical redirects and excluded files. Its slash redirects return 307; the local preview regression check matches that behavior. Subsequent live checks verified HTTPS, the main site's responses and the dedicated WWW redirect. Recheck public behavior after future deployments; the full DNS configuration remains unaudited.
 
 ## Primary references
 
