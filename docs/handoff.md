@@ -1,6 +1,6 @@
 # Website implementation handoff
 
-Recorded: 29 October 2026.
+Updated: 30 October 2026. [Production preparation](production.md) is the current verification and release checklist.
 
 Read [the setup](setup.md), [the approved visual reference](design/homepage.md) and [the architecture](architecture.md). Continue in this website repository. Keep native app work in its separate repository.
 
@@ -13,13 +13,13 @@ The draft has a search-led hero, a cafe phrase with recorded audio, three topic 
 The site uses static HTML/CSS and browser JavaScript modules. Pure exercise and search rules are separate from DOM rendering. No framework migration or backend was added.
 
 - `npm run dev` starts the local preview at http://127.0.0.1:4173.
-- `npm test` runs nine focused tests for learning rules, Turkish search and canonical public paths.
+- `npm test` runs 15 checks for learning rules, Turkish search, public paths, generated pages, deployment output and HTTP behavior.
 - `npm run build` writes an explicit public allowlist to `dist/`.
 - `.dev/`, `dist/`, local environment files and dependencies are ignored by Git.
 
 ## Verification
 
-The nine tests and static build pass. Chrome checks cover the primary interactions, audio, downloads, focus return and console errors. Responsive checks cover eleven widths from 320 to 1440 px, including intermediate tablet widths. The existing privacy page was verified byte-for-byte unchanged. Build output excludes docs, tests, scripts, Git metadata and local browser files.
+The tests and static build pass. Chrome checks cover the primary interactions, audio, downloads, focus return and console errors. Responsive checks cover eleven widths from 320 to 1440 px, including intermediate tablet widths. Topic/resource navigation also works without JavaScript. The owner supplied the postal address for the new Impressum; privacy edits update publisher contact and website hosting only. Native app telemetry paragraphs are unchanged. Build output excludes docs, tests, scripts, Git metadata, source artwork, raw fonts and local browser files.
 
 [Design QA](../design-qa.md) records the visual comparisons, fixes and remaining minor differences. Local screenshots and browser logs are in the ignored `.dev/` directory. They are not deployed assets.
 
@@ -28,7 +28,7 @@ The nine tests and static build pass. Chrome checks cover the primary interactio
 1. Review one small learner-facing change at a time against the approved reference. Keep its layout, Turkish wording and brand consistent.
 2. Establish one reviewed learning-page pattern before expanding the content library. The Astro/content structure in the architecture document remains a proposal.
 3. Inspect the Cloudflare account and domain settings when access is available. No account, plan or DNS state has been verified here.
-4. Prepare the static hosting configuration for `dist/`. Verify a deployment preview before connecting `baulingo.app`.
+4. The static hosting configuration for `dist/` is prepared and the CLI dry run passes. Obtain publication authorization and verify a deployment preview before connecting `baulingo.app`.
 5. Verify HTTPS, the `www` redirect, nested paths, asset loading, downloads and privacy access after deployment. Record actual results and the deployed revision.
 
 Keep old GitHub Pages privacy access during migration. The app's policy URL is a separate app task. The experiment address remains undecided.

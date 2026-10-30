@@ -5,11 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="google-site-verification" content="D9ERJX-krYYRtXL_Ry9ouWjNhxdd7iIdpwYAsB7Pt1E">
   <meta name="description" content="Türkçe açıklamalarla Almanca öğren. Günlük konuşmalar, der die das, cümle kurma ve hemen deneyebileceğin ücretsiz alıştırmalar.">
+  <link rel="canonical" href="https://baulingo.app/">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:site_name" content="Baulingo">
+  <meta property="og:title" content="Baulingo — Almancada aradığın cevap.">
+  <meta property="og:description" content="Türkçe açıklamalarla anla. Kısa alıştırmalarla kullan.">
+  <meta property="og:url" content="https://baulingo.app/">
+  <meta property="og:image" content="https://baulingo.app/assets/cafe-hero.webp">
+  <meta property="og:image:alt" content="Baulingo ile kafede Almanca.">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#FAF7F0">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; media-src 'self'; base-uri 'none'; form-action 'self'">
   <title>Baulingo — Almancada aradığın cevap.</title>
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
-  <link rel="preload" href="./assets/Newsreader-Bold.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="./assets/Newsreader-Bold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="./style.css">
   <script type="module" src="./app.js"></script>
 </head>
@@ -21,7 +31,7 @@
       <nav class="navigation" aria-label="Ana menü">
         <a class="active" href="#konular" aria-current="location">Konular</a>
         <a href="#gunluk">Günlük Almanca</a>
-        <button class="nav-button" type="button" data-open="resources-dialog" aria-haspopup="dialog">Ücretsiz kaynaklar</button>
+        <a class="nav-button" href="/kaynaklar/" data-open="resources-dialog" aria-haspopup="dialog">Ücretsiz kaynaklar</a>
       </nav>
       <button class="language" type="button" data-open="language-dialog" aria-haspopup="dialog">Türkçe <img src="./assets/icons/caret-down.svg" width="16" height="16" alt=""></button>
     </header>
@@ -30,25 +40,26 @@
         <div class="hero-copy">
           <h1 id="intro">Almancada<br>aradığın cevap.</h1>
           <p class="hero-description">Türkçe açıklamalarla anla.<br>Kısa alıştırmalarla kullan.</p>
-          <form class="search-form" id="topic-search" role="search">
+          <form class="search-form" id="topic-search" role="search" action="/konular/" method="get">
             <label class="visually-hidden" for="search-query">Almancada neyi öğrenmek istiyorsun?</label>
             <img src="./assets/icons/magnifying-glass.svg" width="26" height="26" alt="">
             <input id="search-query" name="q" type="search" placeholder="Almancada neyi öğrenmek istiyorsun?" autocomplete="off" maxlength="120">
             <button class="search-submit" type="submit">Ara</button>
           </form>
           <div class="quick-topics" aria-label="Arayabileceğin konular">
-            <button type="button" data-topic="cases" aria-haspopup="dialog">Akkusativ Dativ farkı <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></button>
-            <button type="button" data-topic="exams" aria-haspopup="dialog">B1 mektup <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></button>
-            <button type="button" data-topic="doctor" aria-haspopup="dialog">Doktorda Almanca <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></button>
+            <a href="/konular/cases/" data-topic="cases" aria-haspopup="dialog">Akkusativ Dativ farkı <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a>
+            <a href="/konular/exams/" data-topic="exams" aria-haspopup="dialog">B1 mektup <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a>
+            <a href="/konular/doctor/" data-topic="doctor" aria-haspopup="dialog">Doktorda Almanca <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a>
           </div>
         </div>
         <div class="hero-visual">
-          <img class="hero-photo" src="./assets/cafe-hero.png" width="1464" height="906" alt="Kafede, elinde bir fincan kahveyle siparişini bekleyen görevli." fetchpriority="high">
+          <img class="hero-photo" src="./assets/cafe-hero.webp" width="1464" height="906" alt="Kafede, elinde bir fincan kahveyle siparişini bekleyen görevli." fetchpriority="high">
           <div class="phrase-panel">
             <div class="phrase-original"><p>Bu cümleyi Almanca söyle:</p><div class="phrase-with-audio"><strong lang="de">Einen Kaffee, bitte.</strong><button class="audio-button" id="play-phrase" type="button" aria-label="Einen Kaffee, bitte. Dinle"><img src="./assets/icons/speaker-high.svg" width="26" height="26" alt=""></button></div></div>
             <div class="phrase-meaning"><p>Anlamı:</p><span>Bir kahve, lütfen.</span></div>
-            <button class="button button-primary phrase-action" id="launch-practice" type="button" data-open="practice-dialog" aria-haspopup="dialog">Cümleyi kur <img src="./assets/icons/arrow-right.svg" width="23" height="23" alt=""></button>
+            <a class="button button-primary phrase-action" id="launch-practice" href="/konular/kafede-siparis/" data-open="practice-dialog" aria-haspopup="dialog">Cümleyi kur <img src="./assets/icons/arrow-right.svg" width="23" height="23" alt=""></a>
           </div>
+          <noscript><p class="noscript-note">Konuları bağlantılardan okuyabilir, çalışma notlarını indirebilirsin. Cümle kurma alıştırması için JavaScript gerekir.</p></noscript>
           <audio id="phrase-audio" preload="none" src="./assets/audio/einen-kaffee-bitte.mp3"></audio>
           <span class="visually-hidden" id="audio-status" role="status"></span>
         </div>
@@ -62,9 +73,9 @@
             <div class="path-icon"><img src="./assets/icons/book-open.svg" width="34" height="34" alt=""></div>
             <div class="path-content"><h3>Grameri anla</h3><p>Temel kuralları Türkçe açıklamalarla öğren. Örneklerle pekiştir.</p>
               <ul class="path-links">
-                <li><button type="button" data-topic="articles" aria-haspopup="dialog">Der, die, das <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></button></li>
-                <li><button type="button" data-topic="cases" aria-haspopup="dialog">Akkusativ ve Dativ <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></button></li>
-                <li><button type="button" data-topic="word-order" aria-haspopup="dialog">Almanca cümle sırası <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></button></li>
+                <li><a href="/konular/articles/" data-topic="articles" aria-haspopup="dialog">Der, die, das <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
+                <li><a href="/konular/cases/" data-topic="cases" aria-haspopup="dialog">Akkusativ ve Dativ <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
+                <li><a href="/konular/word-order/" data-topic="word-order" aria-haspopup="dialog">Almanca cümle sırası <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
               </ul>
             </div>
           </article>
@@ -72,9 +83,9 @@
             <div class="path-icon"><img src="./assets/icons/chat-circle.svg" width="34" height="34" alt=""></div>
             <div class="path-content"><h3>Günlük hayatta kullan</h3><p>Gerçek durumlar için pratik kelime ve kalıpları öğren.</p>
               <ul class="path-links">
-                <li><button type="button" data-topic="doctor" aria-haspopup="dialog">Doktorda konuşma <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></button></li>
-                <li><button type="button" data-topic="doctor" aria-haspopup="dialog">Randevu alma <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></button></li>
-                <li><button type="button" data-open="practice-dialog" aria-haspopup="dialog">Kafede sipariş <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></button></li>
+                <li><a href="/konular/doctor/" data-topic="doctor" aria-haspopup="dialog">Doktorda konuşma <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
+                <li><a href="/konular/doctor/" data-topic="doctor" aria-haspopup="dialog">Randevu alma <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
+                <li><a href="/konular/kafede-siparis/" data-open="practice-dialog" aria-haspopup="dialog">Kafede sipariş <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
               </ul>
             </div>
           </article>
@@ -82,8 +93,8 @@
             <div class="path-icon"><img src="./assets/icons/file-text.svg" width="34" height="34" alt=""></div>
             <div class="path-content"><h3>Sınava hazırlan</h3><p>Sınavlarda sık karşılaşılan konu ve ifade türlerini çalış.</p>
               <ul class="path-links">
-                <li><button type="button" data-topic="exams" aria-haspopup="dialog">A1 aile birleşimi <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></button></li>
-                <li><button type="button" data-topic="exams" aria-haspopup="dialog">B1 mektup yazma <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></button></li>
+                <li><a href="/konular/exams/" data-topic="exams" aria-haspopup="dialog">A1 aile birleşimi <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
+                <li><a href="/konular/exams/" data-topic="exams" aria-haspopup="dialog">B1 mektup yazma <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
               </ul>
               <p class="planned-note">Sınav içerikleri hazırlanıyor.</p>
             </div>
@@ -92,13 +103,13 @@
       </section>
 
       <section class="resource-banner" aria-labelledby="resource-banner-title">
-        <div class="resource-banner-copy"><h2 id="resource-banner-title"><button type="button" data-open="resources-dialog" aria-haspopup="dialog">Kaydet, tekrar et</button></h2><p>Günlük hayatta işine yarayacak konular için<br class="desktop-break"> ücretsiz çalışma kâğıtlarıyla pratik yap.</p></div>
+        <div class="resource-banner-copy"><h2 id="resource-banner-title"><a href="/kaynaklar/" data-open="resources-dialog" aria-haspopup="dialog">Kaydet, tekrar et</a></h2><p>Günlük hayatta işine yarayacak konular için<br class="desktop-break"> ücretsiz çalışma kâğıtlarıyla pratik yap.</p></div>
       </section>
     </main>
 
     <footer class="footer">
       <p>Baulingo <span>Günlük hayatta işe yarayan Almanca.</span></p>
-      <div><button type="button" class="text-button" data-open="about-dialog" aria-haspopup="dialog">Uygulama hakkında</button><a href="mailto:mahmutyoung@gmail.com">İletişim</a><a href="./privacy/" lang="de">Datenschutz</a></div>
+      <div><button type="button" class="text-button" data-open="about-dialog" aria-haspopup="dialog">Uygulama hakkında</button><a href="mailto:mahmutyoung@gmail.com">İletişim</a><a href="/impressum/" lang="de">Impressum</a><a href="./privacy/" lang="de">Datenschutz</a></div>
     </footer>
   </div>
 

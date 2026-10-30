@@ -1,6 +1,6 @@
 # Website setup
 
-Recorded: 29 October 2026. This records the agreed setup and local draft, not a deployment.
+Original decisions recorded: 29 October 2026. Updated: 30 October 2026. This records local work, not a deployment. See [production preparation](production.md) for the current build, configuration and release checklist; the longer-term routes below remain proposals.
 
 ## Repository and current files
 
@@ -8,7 +8,7 @@ Recorded: 29 October 2026. This records the agreed setup and local draft, not a 
 - Local folder: `C:\Users\90505\Documents\POS\german-app\baulingo-site`
 - Working branch: `main`.
 - Starting revision: `dff7162` (Sync public privacy policy with current in-app notice).
-- Local draft: `index.html`, `style.css`, `app.js`, `src/`, `assets/`, `downloads/` and the preserved `privacy/` page.
+- Local source: `index.html`, `style.css`, `app.js`, `src/`, `assets/`, `downloads/`, `privacy/` and `impressum/`. The owner supplied the public postal address; the privacy page now describes Cloudflare website hosting without changing native app telemetry wording.
 - Local tooling: `npm run dev`, `npm test` and `npm run build`. The build writes public files to `dist/`.
 - Current documented homepage: https://mahmutyoung.github.io/baulingo-site/
 - Current documented policy: https://mahmutyoung.github.io/baulingo-site/privacy/
@@ -23,7 +23,7 @@ The website is mainly static. Its first audience is Turkish speakers learning Ge
 
 Downloads are free. Do not require an account, email address or signup. Each resource should have a page with a description, preview, direct download and relevant app link.
 
-The current draft offers two original text study notes through a resource dialog. Topic search, short Turkish explanations, recorded phrase audio and a sentence exercise work locally. Full exam packages remain planned.
+The site offers two original text study notes through a resource dialog and standalone resource page. Topic search, short Turkish explanations, recorded phrase audio and a sentence exercise work locally. Topic links also lead to static readable pages. Full exam packages remain planned.
 
 This is not a full web version of the learner app. Small interactive experiments can have their own deployment. Add Worker logic only when an agreed feature needs it.
 
@@ -46,7 +46,7 @@ Connect the public domain after checking the deployment preview. Cloudflare Cust
 
 ## Longer-term content structure
 
-These paths are proposals. The current draft uses one homepage with topic, resource and exercise dialogs; it does not publish the following sections yet.
+These paths are longer-term proposals. The current build uses the approved homepage with dialogs and static `/konular/`, `/kaynaklar/`, `/impressum/` and `/privacy/` routes; it does not publish the following proposed article/update/support sections yet.
 
 | Path | Purpose |
 | --- | --- |

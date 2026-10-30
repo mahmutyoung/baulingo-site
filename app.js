@@ -120,7 +120,9 @@ for (const dialog of document.querySelectorAll('dialog')) {
   dialog.querySelector('[data-close]').addEventListener('click', () => dialog.close());
 }
 for (const button of document.querySelectorAll('[data-open]')) {
-  button.addEventListener('click', () => {
+  button.addEventListener('click', event => {
+    if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button > 0) return;
+    event.preventDefault();
     if (button.dataset.open === 'practice-dialog') openPractice(button);
     else openDialog(document.getElementById(button.dataset.open), button);
   });
@@ -146,7 +148,11 @@ function openTopic(topicId, trigger = document.activeElement) {
   $('#topic-dialog').scrollTop = 0;
 }
 for (const button of document.querySelectorAll('[data-topic]')) {
-  button.addEventListener('click', () => openTopic(button.dataset.topic, button));
+  button.addEventListener('click', event => {
+    if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button > 0) return;
+    event.preventDefault();
+    openTopic(button.dataset.topic, button);
+  });
 }
 $('#topic-practice').addEventListener('click', () => {
   openPractice($('#launch-practice'));
@@ -219,3 +225,4 @@ $('#show-all-topics').addEventListener('click', () => {
   $('#dialog-query').focus();
 });
 renderExercise();
+if (location.hash === '#alistirma') openPractice($('#launch-practice'));

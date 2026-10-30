@@ -7,11 +7,11 @@ const root = path.resolve('example-site');
 test('the preview resolves public pages and assets', () => {
   assert.equal(resolvePublicFile(root, '/'), path.join(root, 'index.html'));
   assert.equal(resolvePublicFile(root, '/privacy/'), path.join(root, 'privacy/index.html'));
-  assert.equal(resolvePublicFile(root, '/assets/cafe.webp'), path.join(root, 'assets/cafe.webp'));
+  assert.equal(resolvePublicFile(root, '/assets/cafe-hero.webp'), path.join(root, 'assets/cafe-hero.webp'));
 });
 
 test('canonical paths cannot bypass the public allowlist', () => {
-  for (const file of ['/README.md', '/.git/config', '/assets/../README.md', '/assets/../.git/config', '/assets/../.env', '/src/../docs/setup.md', '/assets/../../outside.txt', '/assets/..\\.git/config', '/assets/\0']) {
+  for (const file of ['/README.md', '/.git/config', '/_headers', '/assets/private.txt', '/assets/cafe-hero.png', '/assets/../README.md', '/assets/../.git/config', '/assets/../.env', '/src/../docs/setup.md', '/assets/../../outside.txt', '/assets/..\\.git/config', '/assets/\0']) {
     assert.equal(resolvePublicFile(root, file), null, file);
   }
 });
