@@ -136,6 +136,11 @@ function openTopic(topicId, trigger = document.activeElement) {
   const content = $('#topic-content');
   content.replaceChildren();
   for (const text of topic.paragraphs) content.append(element('p', text));
+  for (const link of topic.links || []) {
+    const anchor = element('a', link.label, 'button button-primary');
+    anchor.href = link.href;
+    const paragraph = element('p'); paragraph.append(anchor); content.append(paragraph);
+  }
   if (topic.examples.length) {
     const list = element('ul', undefined, 'topic-examples');
     list.lang = 'de';

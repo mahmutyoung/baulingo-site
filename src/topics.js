@@ -43,15 +43,17 @@ export const topics = [
     examples: ['Ich möchte einen Termin vereinbaren.', 'Ich habe Kopfschmerzen.', 'Können Sie das bitte wiederholen?'],
   },
   {
-    id: 'exams', title: 'A1 ve B1 sınavlarına hazırlık', subtitle: 'Sınav içerikleri hazırlanıyor',
+    id: 'exams', title: 'DTZ denemesi ve sınava hazırlık', subtitle: 'DTZ denemesi hazır; diğer içerikler planlanıyor',
     keywords: 'a1 b1 aile birleşimi mektup yazma schreiben sprechen goethe telc dtz sınav',
     planned: true,
     paragraphs: [
-      'Türkçe konuşan öğrenenler için A1 aile birleşimi hazırlığı ve B1 düzeyinde yazma çalışmaları planlıyoruz. Bu ilk sürümde tamamlanmış bir sınav paketi veya deneme sınavı bulunmuyor.',
+      'Ücretsiz DTZ A2–B1 denemesinde tam dinleme kaydı, 20 dinleme ve 25 okuma sorusu, yazma ve konuşma görevleri bulunur. Otomatik sonuç yalnızca dinleme ve okumayı kapsar; resmî sınav sonucu değildir.',
+      'A1 aile birleşimi hazırlığı ve diğer B1 yazma paketleri planlanıyor; henüz tamamlanmış paketler olarak sunulmuyor.',
       'Goethe, telc ve DTZ aynı sınav değildir. Hazırlık içeriği, ilgili sınavın görevleri ve değerlendirme ölçütleri incelendikten sonra yayımlanacak.',
       'Bu sırada günlük istek kurma, artikeller ve cümle sırası gibi temel konularla çalışabilirsin. Bu alıştırmalar resmî sınav soruları değildir.',
     ],
     examples: [],
+    links: [{ href: '/dtz-deneme-sinavi/', label: 'Ücretsiz DTZ denemesine başla' }],
     practice: true,
   },
 ];

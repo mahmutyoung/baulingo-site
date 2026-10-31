@@ -4,6 +4,7 @@ import { readFile, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import './build-fixture.mjs';
 import { topics } from '../src/topics.js';
+import { dtzMediaFiles } from '../scripts/public-files.mjs';
 
 const read = file => readFile(path.join('dist', file), 'utf8');
 
@@ -39,15 +40,17 @@ test('deployment includes discovery, real 404 handling and security headers', as
   assert.equal(config.assets.not_found_handling, '404-page');
 });
 
-test('public build excludes source artwork, raw fonts and private files and stays under 2 MB', async () => {
-  let bytes = 0;
+test('public build excludes private files and retains separate core and lazy DTZ media budgets', async () => {
+  let bytes = 0, mediaBytes = 0;
   for (const file of await readdir('dist', { recursive: true })) {
     const info = await stat(path.join('dist', file));
     if (!info.isFile()) continue;
     assert.doesNotMatch(file, /(?:\.png|\.ttf|\.md|\.test\.mjs|package\.json|\.env)$/);
-    bytes += info.size;
+    if (dtzMediaFiles.includes(file.replaceAll('\\', '/'))) mediaBytes += info.size;
+    else bytes += info.size;
   }
   assert.ok(bytes < 2_000_000, `${bytes} bytes exceeds the public payload budget`);
+  assert.ok(mediaBytes < 10_000_000, `${mediaBytes} bytes exceeds the approved DTZ media budget`);
 });
 
 test('all built HTML references resolve to public output, including nested pages and 404', async () => {

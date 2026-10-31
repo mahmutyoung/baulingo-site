@@ -1,8 +1,9 @@
 import { copyFile, mkdir, rm, lstat, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { publicFiles } from './public-files.mjs';
+import { publicFiles, generatedFiles } from './public-files.mjs';
 import { generatePages } from './pages.mjs';
+import { fingerprintAssets, rewriteAssetURLs } from './assets.mjs';
 
 const root = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
 const output = path.resolve(root, 'dist');
@@ -27,6 +28,16 @@ export async function build() {
     await mkdir(path.dirname(path.join(output, file)), { recursive: true });
     await writeFile(path.join(output, file), html);
   }
+  const mapping = await fingerprintAssets(output);
+  for (const file of [...publicFiles, ...generatedFiles].filter(name => /\.(?:html|css)$/.test(name))) {
+    const target = path.join(output, file);
+    await writeFile(target, rewriteAssetURLs(await readFile(target, 'utf8'), mapping));
+  }
+  // Cloudflare's default revalidation remains on mutable URLs. Exact paths avoid
+  // conflicting Cache-Control rules and never give missing hashes a year-long TTL.
+  const headerPath = path.join(output, '_headers');
+  const immutableRules = [...mapping.values()].map(file => `/${file}\n  Cache-Control: public, max-age=31536000, immutable`).join('\n\n');
+  await writeFile(headerPath, `${await readFile(headerPath, 'utf8')}\n\n${immutableRules}\n`);
   return output;
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

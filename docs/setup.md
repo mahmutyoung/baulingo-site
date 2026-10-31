@@ -24,13 +24,15 @@ The website is mainly static. Its first audience is Turkish speakers learning Ge
 
 Downloads are free. Do not require an account, email address or signup. Each resource should have a page with a description, preview, direct download and relevant app link.
 
-The site offers two original text study notes through a resource dialog and standalone resource page. Topic search, short Turkish explanations, recorded phrase audio and a sentence exercise are implemented. Topic links also lead to static readable pages. Full exam packages remain planned.
+The live site offers two original text study notes, topic search, Turkish explanations, recorded phrase audio and a sentence exercise. Topic links also lead to static readable pages. The requested original DTZ simulation is now implemented locally at `/dtz-deneme-sinavi/`, with 45 scored listening/reading questions plus ungraded writing/speaking; publication is pending. Other exam packages remain planned. See [DTZ implementation notes](content/dtz-web.md).
 
 This is not a full web version of the learner app. Embed small interactive experiments within the main website to understand Turkish-speaking visitors' demand and preferences. Experiments use the site's existing pages, design and deployment. Add Worker logic only when an agreed feature needs it.
 
 The current roadmap stage is understanding demand: define one embedded experiment and its evidence method before broad content or activity expansion. Later directions include stronger content, improved practice, continuing study, a relevant app connection and sustainable expansion. Accounts, synchronisation and paid learning products remain conditional options; see roadmap.md for decision gates.
 
 ## Hosting and costs
+
+For local human review, use `/dev/review/` on the development server. The current session runs on port 4180; the normal default is 4173. Review uses the existing local server and no external service or paid plan. `npm run preview` disables its endpoints. See [the review guide](development/review.md).
 
 | Project name | Address | Purpose |
 | --- | --- | --- |
@@ -55,6 +57,7 @@ The current routes support the approved homepage and static learning/resource co
 | `/` | Approved Turkish homepage, topic discovery and short practice |
 | `/konular/` and topic pages | Turkish explanations and German examples |
 | `/kaynaklar/` | Resource descriptions and direct downloads |
+| `/dtz-deneme-sinavi/` | Full original DTZ practice simulation; locally implemented, pending publication |
 | `/downloads/*.txt` | Published free study files |
 | `/impressum/` | Publisher details and contact |
 | `/privacy/` | Accurate public privacy policy |

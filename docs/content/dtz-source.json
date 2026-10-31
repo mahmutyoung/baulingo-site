@@ -1,0 +1,11 @@
+{
+  "source": "german-exam-app",
+  "exam": "dtz-mock-01",
+  "importedAt": "2026-10-30T19:02:00.919Z",
+  "hashes": {
+    "src/features/mock-exam/dtzMockExam.ts": "c42614c8abcee8a67dcbe90e16045c9815310be2f14598202f75430681fd60bf",
+    "assets/dtz-mock-01/dtz-mock-01-listening.mp3": "20061189d9a0dc8e160417f9ac147a91172a70e25efc111467ebd49338bcc88d",
+    "assets/dtz-mock-01/images/speaking-neighbor-help-a.webp": "e5d20f98aabfc9b4834adf16a5c2fc7e144840dc574713558fe2079b9966f6c2",
+    "assets/dtz-mock-01/images/speaking-neighbor-help-b.webp": "6d933139e1c70b695aed50e1a75495013c916b1b0fac654a98344f8d0accb066"
+  }
+}

@@ -26,9 +26,9 @@ Each published learning page follows one pattern: learner question → short Tur
 
 Experiments live inside the website's normal learner experience. The earlier separate experiment page, project and subdomain proposal is superseded. The dedicated WWW redirect Worker is infrastructure, not an experiment deployment.
 
-Use the roadmap's question → experience → evidence → decision cycle for each experiment. Keep its content, answer rules, presentation and any measurement logic separate so that the interaction can change without coupling it to a tracking provider. Specify the measurement method when the selected experiment is implemented; no website measurement pipeline exists yet.
+Use the roadmap's question → experience → evidence → decision cycle for each experiment. Keep its content, answer rules, presentation and any measurement logic separate so that the interaction can change without coupling it to a tracking provider. Specify the measurement method when the selected experiment is implemented; no experiment event pipeline exists yet. Cloudflare automatically injects its Web Analytics beacon for aggregate traffic and browser performance. The site CSP permits its unversioned and versioned script paths and same-origin RUM reporting; see [analytics operations](analytics.md).
 
-The existing short sentence activity provides an initial interaction pattern. Extend it incrementally while preserving the selected homepage layout and Turkish wording. Ship experiments with the main website. No website measurement pipeline has been implemented by this architecture update; native app telemetry remains a separate concern.
+The existing short sentence activity provides an initial interaction pattern. Extend it incrementally while preserving the selected homepage layout and Turkish wording. Ship experiments with the main website. Aggregate website analytics does not collect exercise or preference events; native app telemetry remains a separate concern.
 
 ## Current foundation and optional future architecture
 
@@ -63,4 +63,12 @@ Build static output into `dist/` for the agreed Cloudflare hosting. The main sit
 
 ## Current implementation
 
+Local developer review uses `/dev/review/` with a maintained change catalog, the real website in a sandboxed same-origin preview, DTZ sample-state shortcuts and local feedback. Refresh rebuilds generated output in a fresh Node worker; approvals are bound to current source and matching preview versions. Review assets/middleware and feedback are excluded from the public static build. Normal production-style preview keeps review routes disabled and frame protections intact. See [review instructions](development/review.md).
+
+The DTZ simulation is implemented locally at `/dtz-deneme-sinavi/` as a new page within the main static build; publication is pending. `scripts/import-dtz.mjs` exports only the existing app's exam data and three media files. `src/dtz/content.js` holds that snapshot, `src/dtz/rules.js` owns pure state/scoring/deadline rules, `src/dtz/player.js` enhances the static output from `scripts/dtz-page.mjs`, and `dtz.css` extends the site's design. Normal builds do not read the app repository. The current attempt is stored only in localStorage; drafts and answers are never submitted. The core output retains its 2 MB budget, with the owner's separately approved 10 MB allowance for exact, lazy-loaded DTZ media. See [the port notes](content/dtz-web.md) for scope, provenance and verification. Other exam packages remain planned.
+
 The repository has static HTML/CSS, browser modules, generated topic/resource pages, a production-output preview, an explicit public-file build and focused tests. The sentence activity, topic dialogs, recorded audio and text downloads work on the live site. Continue from these pieces rather than rebuilding the homepage. No Astro migration or native app changes have been made. See [production notes](production.md) for deployment verification.
+
+## Static asset optimization
+
+The build generates content-hashed copies of explicit core assets with `scripts/assets.mjs`, rewrites HTML/CSS references and appends exact immutable-cache rules. Dynamic hashes remain constrained to allowlisted source names. Mutable URLs retain revalidation, and DTZ media is not duplicated. Responsive hero copies and local font subsets are generated offline; normal Node builds use tracked assets. See [performance notes](performance.md).

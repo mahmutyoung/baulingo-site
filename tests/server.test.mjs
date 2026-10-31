@@ -28,7 +28,7 @@ test('production preview serves real pages, errors, headers and downloads', asyn
     const download = await get('/downloads/kafede-almanca.txt');
     assert.match(download.headers.get('content-disposition'), /attachment/);
     assert.match(await download.text(), /KAFEDE/);
-    assert.equal((await get('/assets/Lato-Regular.woff2')).headers.get('content-type'), 'font/woff2');
+    assert.equal((await get('/assets/BaulingoSans-Regular.woff2')).headers.get('content-type'), 'font/woff2');
     assert.equal((await get('/assets/audio/einen-kaffee-bitte.mp3')).headers.get('content-type'), 'audio/mpeg');
     assert.equal((await fetch(origin, { method: 'HEAD' })).status, 200);
     assert.equal(await (await fetch(origin, { method: 'HEAD' })).text(), '');

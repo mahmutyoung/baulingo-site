@@ -16,22 +16,24 @@
   <meta property="og:image:alt" content="Baulingo ile kafede Almanca.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#FAF7F0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; media-src 'self'; base-uri 'none'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://static.cloudflareinsights.com/beacon.min.js https://static.cloudflareinsights.com/beacon.min.js/; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; media-src 'self'; base-uri 'none'; form-action 'self'">
   <title>Baulingo — Almancada aradığın cevap.</title>
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="./assets/Newsreader-Bold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="./style.css">
   <script type="module" src="./app.js"></script>
+  <script type="module" src="./src/navigation.js"></script>
 </head>
 <body>
   <a class="skip" href="#main">İçeriğe geç</a>
   <div class="page">
     <header class="header">
       <a class="brand" href="./" aria-label="Baulingo ana sayfa"><img src="./assets/logo.svg" alt="Baulingo" width="240" height="64"></a>
-      <nav class="navigation" aria-label="Ana menü">
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-navigation" hidden>Menü <span aria-hidden="true">☰</span></button>
+      <nav id="main-navigation" class="navigation" aria-label="Ana menü">
         <a class="active" href="#konular" aria-current="location">Konular</a>
         <a href="#gunluk">Günlük Almanca</a>
-        <a class="nav-button" href="/kaynaklar/" data-open="resources-dialog" aria-haspopup="dialog">Ücretsiz kaynaklar</a>
+        <a href="/dtz-deneme-sinavi/">Sınavlar</a>
       </nav>
       <button class="language" type="button" data-open="language-dialog" aria-haspopup="dialog">Türkçe <img src="./assets/icons/caret-down.svg" width="16" height="16" alt=""></button>
     </header>
@@ -53,7 +55,7 @@
           </div>
         </div>
         <div class="hero-visual">
-          <img class="hero-photo" src="./assets/cafe-hero.webp" width="1464" height="906" alt="Kafede, elinde bir fincan kahveyle siparişini bekleyen görevli." fetchpriority="high">
+          <img class="hero-photo" src="./assets/cafe-hero.webp" srcset="./assets/cafe-hero-480.webp 480w, ./assets/cafe-hero-800.webp 800w, ./assets/cafe-hero-1200.webp 1200w, ./assets/cafe-hero.webp 1594w" sizes="(max-width: 700px) calc(100vw - 32px), (max-width: 1450px) 53vw, (max-width: 1600px) 54vw, 864px" width="1594" height="987" alt="Kafede, elinde bir fincan kahveyle siparişini bekleyen görevli." fetchpriority="high">
           <div class="phrase-panel">
             <div class="phrase-original"><p>Bu cümleyi Almanca söyle:</p><div class="phrase-with-audio"><strong lang="de">Einen Kaffee, bitte.</strong><button class="audio-button" id="play-phrase" type="button" aria-label="Einen Kaffee, bitte. Dinle"><img src="./assets/icons/speaker-high.svg" width="26" height="26" alt=""></button></div></div>
             <div class="phrase-meaning"><p>Anlamı:</p><span>Bir kahve, lütfen.</span></div>
@@ -93,10 +95,10 @@
             <div class="path-icon"><img src="./assets/icons/file-text.svg" width="34" height="34" alt=""></div>
             <div class="path-content"><h3>Sınava hazırlan</h3><p>Sınavlarda sık karşılaşılan konu ve ifade türlerini çalış.</p>
               <ul class="path-links">
-                <li><a href="/konular/exams/" data-topic="exams" aria-haspopup="dialog">A1 aile birleşimi <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
                 <li><a href="/konular/exams/" data-topic="exams" aria-haspopup="dialog">B1 mektup yazma <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
+                <li><a href="/dtz-deneme-sinavi/">Ücretsiz DTZ denemesi <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
               </ul>
-              <p class="planned-note">Sınav içerikleri hazırlanıyor.</p>
+              <p class="planned-note">DTZ denemesi hazır. Diğer sınav içerikleri hazırlanıyor.</p>
             </div>
           </article>
         </div>
@@ -171,6 +173,7 @@
     <div class="dialog-top"><span class="dialog-brand">Yanında götür</span><button class="close-button" type="button" data-close>Kapat</button></div>
     <h2 id="resources-title">Ücretsiz çalışma notları</h2>
     <p>Telefona kaydet, yazdır veya kendi notlarına ekle. Üyelik gerekmez.</p>
+    <article class="resource"><h3>DTZ A2–B1 denemesi</h3><p>Dinleme kaydı, 45 soru, yazma ve konuşma görevleriyle ücretsiz çevrimiçi deneme. Otomatik sonuç dinleme ve okumayı kapsar.</p><a class="download-link" href="/dtz-deneme-sinavi/">DTZ denemesini aç <span>Çevrimiçi · Ücretsiz</span></a></article>
     <article class="resource"><h3>Kafede Almanca</h3><p>Kahve isterken kullanabileceğin 8 ifade, Türkçe anlamları ve küçük bir cümle kurma çalışması.</p><p class="resource-preview" lang="de">Einen Kaffee, bitte. · Die Rechnung, bitte.</p><a class="download-link" href="./downloads/kafede-almanca.txt" download>Çalışma notunu indir <span>TXT · UTF-8</span></a></article>
     <article class="resource"><h3>Der, die, das: ilk kelimeler</h3><p>Artikelleri ve Türkçe anlamlarıyla 12 günlük kelime. Sonunda cevap anahtarlı bir tekrar var.</p><p class="resource-preview" lang="de">der Kaffee · die Rechnung · das Wasser</p><a class="download-link" href="./downloads/artikeller-ilk-kelimeler.txt" download>Kelime notunu indir <span>TXT · UTF-8</span></a></article>
   </dialog>

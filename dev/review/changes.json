@@ -1,0 +1,229 @@
+[
+  {
+    "id": "review-comments-2026-10-31",
+    "title": "Review comments and component feedback",
+    "date": "2026-10-31",
+    "summary": "Applied the three saved comments. Every visible website component has a local review comment button.",
+    "before": "Phone navigation stayed expanded; the header included Free resources; the DTZ introduction had an extra final sentence. Feedback targeted whole walkthrough stops.",
+    "after": "Phone navigation opens with Menu. The Free resources header link and final DTZ introduction sentence are removed. Plus buttons attach feedback to a named component and page; original notes are preserved for your review.",
+    "addresses": [
+      "a6dfdff5-6f1b-46ca-b44f-f190588b58a1",
+      "38d378ee-7a68-4a23-a862-20962fe82cde",
+      "c2bc4801-1d50-42f6-a0a2-31c910fcd8b2"
+    ],
+    "files": [
+      "index.html",
+      "style.css",
+      "src/navigation.js",
+      "scripts/pages.mjs",
+      "scripts/dtz-page.mjs",
+      "scripts/public-files.mjs",
+      "scripts/server.mjs",
+      "scripts/review-server.mjs",
+      "dev/review/index.html",
+      "dev/review/review.js",
+      "dev/review/review.css",
+      "dev/review/bridge.js",
+      "dev/review/preview.css"
+    ],
+    "steps": [
+      {
+        "id": "header",
+        "title": "Phone menu",
+        "path": "/",
+        "focus": ".header",
+        "check": "Choose Phone: open Menu, follow a link and close with Escape. Free resources is absent from the navigation; downloads remain available in the homepage."
+      },
+      {
+        "id": "landing",
+        "title": "DTZ introduction",
+        "path": "/dtz-deneme-sinavi/",
+        "focus": "#dtz-start-panel",
+        "check": "The final sentence about opening the page without downloading audio has been removed."
+      },
+      {
+        "id": "components",
+        "title": "Component comments",
+        "path": "/",
+        "check": "Click a plus beside a heading, link, section or control. The editor names that component. Save a note, or clear the target to review the whole stop. Toggle component buttons off to walk through unobstructed."
+      },
+      {
+        "id": "dialog",
+        "title": "Dialogs and live content",
+        "path": "/",
+        "focus": ".language",
+        "check": "On desktop open the language dialog; comment buttons also work inside it. Navigate freely to topic and legal pages."
+      }
+    ]
+  },
+  {
+    "id": "homepage-performance-2026-10-31",
+    "title": "Faster homepage, same design",
+    "date": "2026-10-31",
+    "summary": "Responsive café images, smaller Turkish/German fonts and content-versioned asset caching. Changes are local; new live PageSpeed scores have not been measured.",
+    "before": "The 215 KB café image was sent to all screens. The two main Lato fonts totaled 425 KB. Mutable asset URLs required browser revalidation.",
+    "after": "Phones can request a 38 KB or 76 KB hero variant. The two Lato-derived faces (renamed Baulingo Sans) total 92 KB. Built image/font URLs include content hashes and receive immutable caching; normal HTML still revalidates.",
+    "files": [
+      "index.html",
+      "style.css",
+      "_headers",
+      "scripts/build.mjs",
+      "scripts/assets.mjs",
+      "scripts/public-files.mjs",
+      "scripts/server.mjs",
+      "scripts/optimize-assets.py",
+      "assets/cafe-hero.webp",
+      "assets/cafe-hero-480.webp",
+      "assets/cafe-hero-800.webp",
+      "assets/cafe-hero-1200.webp",
+      "assets/BaulingoSans-Regular.woff2",
+      "assets/BaulingoSans-SemiBold.woff2",
+      "assets/BaulingoSans-Bold.woff2",
+      "assets/Newsreader-Bold.woff2",
+      "assets/Newsreader-SemiBold.woff2",
+      "assets/BaulingoSans-OFL.txt",
+      "dev/review/review.css"
+    ],
+    "steps": [
+      {
+        "id": "mobile-hero",
+        "title": "Phone image",
+        "path": "/",
+        "focus": ".hero-visual",
+        "check": "Choose Phone and check the same café photo, crop and phrase panel. The smaller responsive image should remain clear."
+      },
+      {
+        "id": "desktop",
+        "title": "Desktop homepage",
+        "path": "/",
+        "focus": ".hero",
+        "check": "Choose Desktop and check headline, spacing and photo quality. Artwork and typefaces are unchanged."
+      },
+      {
+        "id": "turkish-german",
+        "title": "Turkish / German text",
+        "path": "/konular/cases/",
+        "check": "Check accents, umlauts, Turkish letters and punctuation. Font subsets retain their original glyph outlines and metrics."
+      },
+      {
+        "id": "exam-text",
+        "title": "DTZ writing",
+        "path": "/dtz-deneme-sinavi/",
+        "stage": "writing",
+        "check": "Inspect task lettering and type Turkish/German text into the sample draft. This is still an isolated review attempt."
+      },
+      {
+        "id": "resources",
+        "title": "Resources",
+        "path": "/#gunluk",
+        "focus": ".resource-banner",
+        "check": "Check the resource banner and open the free notes. Asset caching changes should not change their appearance or access."
+      }
+    ]
+  },
+  {
+    "id": "homepage-exams-navigation",
+    "title": "Exam navigation and homepage cleanup",
+    "date": "2026-10-30",
+    "summary": "Sınavlar now comes before Ücretsiz kaynaklar. The unfinished A1 family reunification link was removed from the homepage.",
+    "before": "The top menu had no exam entry. The exam column included the unfinished A1 family reunification link.",
+    "after": "Konular → Günlük Almanca → Sınavlar → Ücretsiz kaynaklar. Sınavlar opens the DTZ simulation. The A1 link is gone.",
+    "files": [
+      "index.html",
+      "style.css",
+      "scripts/pages.mjs",
+      "src/topics.js",
+      "app.js"
+    ],
+    "steps": [
+      {
+        "id": "header",
+        "title": "Top navigation",
+        "path": "/",
+        "focus": ".header",
+        "check": "Check the menu order and open Sınavlar. At 320 px the menu uses two rows."
+      },
+      {
+        "id": "exam-column",
+        "title": "Exam links",
+        "path": "/#gunluk",
+        "focus": ".learning-path:last-child",
+        "check": "The unfinished A1 link should be absent. The free DTZ link should open the full simulation."
+      },
+      {
+        "id": "exam-page",
+        "title": "Exam destination",
+        "path": "/dtz-deneme-sinavi/",
+        "focus": ".navigation",
+        "check": "Sınavlar is the active navigation entry. Confirm the same menu order on this page."
+      },
+      {
+        "id": "resources",
+        "title": "Free resources",
+        "path": "/kaynaklar/",
+        "check": "The DTZ entry and both existing free study notes remain accessible."
+      }
+    ]
+  },
+  {
+    "id": "dtz-web-simulation",
+    "title": "Full DTZ simulation on the website",
+    "date": "2026-10-30",
+    "summary": "The original app simulation now has a web player with listening, reading, writing, speaking and receptive results.",
+    "before": "The website offered short topic explanations and a sentence activity. The full DTZ simulation was available only in the app repository.",
+    "after": "A free web simulation with the original audio, 45 scored questions, writing/speaking prompts, local resume and answer review. Writing and speaking are not automatically graded.",
+    "files": [
+      "scripts/dtz-page.mjs",
+      "src/dtz/content.js",
+      "src/dtz/rules.js",
+      "src/dtz/player.js",
+      "dtz.css",
+      "assets/dtz/speaking-neighbor-help-a.webp",
+      "assets/dtz/speaking-neighbor-help-b.webp",
+      "assets/dtz/dtz-mock-01-listening.mp3"
+    ],
+    "steps": [
+      {
+        "id": "landing",
+        "title": "Landing page",
+        "path": "/dtz-deneme-sinavi/",
+        "check": "Check the introduction, timings, free access and practice-only disclaimer. Opening this page should not download the audio."
+      },
+      {
+        "id": "listening",
+        "title": "Listening",
+        "path": "/dtz-deneme-sinavi/",
+        "stage": "listening",
+        "check": "Start the real audio and try the answer controls. Use Next stop to inspect reading without waiting for the full recording."
+      },
+      {
+        "id": "reading",
+        "title": "Reading",
+        "path": "/dtz-deneme-sinavi/",
+        "stage": "reading",
+        "check": "Inspect the texts, examples, radio choices and 45-minute timer. This is an isolated sample attempt."
+      },
+      {
+        "id": "writing",
+        "title": "Writing",
+        "path": "/dtz-deneme-sinavi/",
+        "stage": "writing",
+        "check": "Switch between tasks A/B and edit the sample draft. This preview never touches your normal saved attempt."
+      },
+      {
+        "id": "speaking",
+        "title": "Speaking",
+        "path": "/dtz-deneme-sinavi/",
+        "stage": "speaking",
+        "check": "Switch candidates A/B. Check both pictures and the three speaking tasks. No microphone recording or automatic grade is offered."
+      },
+      {
+        "id": "result",
+        "title": "Results and answers",
+        "path": "/dtz-deneme-sinavi/",
+        "stage": "result",
+        "check": "Inspect an example result and expand the answers/model letters. This is sample progress, not a real learner result."
+      }
+    ]
+  }
+]

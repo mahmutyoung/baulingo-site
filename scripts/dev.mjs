@@ -6,5 +6,8 @@ const flag = (name, fallback) => args.includes(name) ? args[args.indexOf(name) +
 const port = Number(flag('--port', process.env.PORT || 4173));
 const host = flag('--host', '127.0.0.1');
 if (!args.includes('--production')) await build();
-const server = await createPreviewServer();
-server.listen(port, host, () => console.log(`Baulingo build preview: http://${host}:${port}`));
+const server = await createPreviewServer({ review: !args.includes('--production') });
+server.listen(port, host, () => {
+  console.log(`Baulingo build preview: http://${host}:${port}`);
+  if (!args.includes('--production')) console.log(`Review my work: http://${host}:${port}/dev/review/`);
+});

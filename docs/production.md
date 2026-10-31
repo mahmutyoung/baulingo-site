@@ -14,6 +14,16 @@ The local Wrangler login is stored by Wrangler outside the repository. No creden
 
 ## Build and verify
 
+### DTZ simulation — local implementation, not deployed
+
+The owner requested the app's original full DTZ simulation on the website and approved a separate 10 MB lazy-media allowance, retaining the 2 MB core limit. `/dtz-deneme-sinavi/`, its homepage/topic/resource entries, local-only attempt storage and the corresponding website privacy disclosure are implemented locally. These DTZ changes have not been published; the analytics version recorded above remains the live release. The independent app and legacy GitHub Pages policy are unchanged. See [content/provenance and verification notes](content/dtz-web.md). The port is a technical adaptation, not an assertion of official certification or completed human editorial/audio review.
+
+25 tests pass locally, including DTZ content/state/scoring/deadline boundaries, static output and audio ranges. Chrome checks pass for the complete four-section flow and 45/45 result, with real media loading/decoding and seek-to-end completion; reload/deadlines, local draft persistence, keyboard, audio failure/retry, storage denial, corrupt-state deletion, no-JavaScript fallback and 320/390/768/1440 px layouts. There were no answer/draft POSTs in the full local flow. A fresh read-only reviewer found no important bugs and independently ran the five pure DTZ tests. These are local checks, not live DTZ verification.
+
+### Analytics deployment
+
+On 30 October 2026 the owner authorized publication of Cloudflare analytics support and the website privacy disclosure. The zone API confirms the Free Website plan. Final main-site version: `f08cba0f-c32c-4a16-aaa8-df1a22d063f0`, deployed from working-tree changes based on `57d04316378916291ac92765ca78b4ec74411440` (no commit or push requested). Initial version `22138c30-76a8-4dbf-9f1b-21f8dcbe8bc1` allowed only the unversioned beacon; a live browser revealed Cloudflare's versioned script path, so both CSP policies were corrected and redeployed. Live Chrome checks now confirm the automatically injected script loads (HTTP 200) and homepage/topic-index RUM POSTs succeed (HTTP 204) without CSP or network errors. A network trace locates this check in Germany. Non-browser fetches did not receive an injected beacon, so raw HTML checks alone are insufficient. The refreshed Wrangler login can access the zone and Worker, but Web Analytics inspection returns HTTP 403 because the login lacks account-settings permissions. A subsequently supplied read-only token in the ignored local `.env` permits RUM configuration and GraphQL reporting checks. Automatic collection and the ruleset are enabled, with one active inclusive host `*` / paths `["*"]` rule. The reporting API confirms four page views (two homepage, two topic index) on 30 October 2026, consistent with verification traffic. No account settings were changed; narrower hostname/path exclusions remain proposed and regional options were not established. The dashboard UI was not inspected. No manual beacon was added. [Analytics configuration](analytics.md) records the remaining account checks and useful review views.
+
 Use Node 24; normal builds need no installed packages.
 
 ```powershell
@@ -24,13 +34,13 @@ npm run preview
 
 Preview http://127.0.0.1:4173. `npm run dev` also builds before serving; it does not watch for edits. The preview serves `dist/`, not repository files. It mirrors common security headers, downloads, slash redirects and real 404 responses. Cloudflare controls its own edge cache, TLS and hostname rules.
 
-`scripts/public-files.mjs` is the publication boundary. Source photos and TTF files stay in Git but are excluded from deployment; the build publishes WebP/WOFF2 and their licenses. Adding a file under `assets/` does not automatically publish it. Source symlinks are rejected. The automated public-output budget is 2 MB; the current output is approximately 1.2 MB, down from 6.6 MB. Runtime needs no database, cookies, analytics, remote fonts or third-party scripts.
+`scripts/public-files.mjs` is the publication boundary. Source photos and TTF files stay in Git but are excluded from deployment; the build publishes WebP/WOFF2 and their licenses. Adding a file under `assets/` does not automatically publish it. Source symlinks are rejected. The automated core-output budget remains 2 MB. The owner approved a separate 10 MB limit for the exact three-file DTZ media allowlist; its original audio/images total 8,913,392 bytes. Exam audio is requested only when listening starts, not when the homepage or landing page opens. The static site needs no database, learning-state cookies or remote fonts. DTZ attempts/drafts use localStorage only; Cloudflare automatically injects its Web Analytics script for aggregate traffic and performance measurement.
 
-Optional asset re-encoding uses `scripts/optimize-assets.py` with the pinned Python dependencies documented in its header. Normal builds use the tracked encoded files. Image dimensions and font glyph coverage are preserved.
+Optional asset encoding uses `scripts/optimize-assets.py` with its pinned Python dependencies. It generates responsive WebP copies and Latin/Turkish/German WOFF2 subsets from retained original sources. The Lato-derived subsets have their own Baulingo Sans names and published modification/license notice. Normal builds use tracked outputs without Python. See [performance notes](performance.md).
 
 Learning content remains in `src/topics.js`; build-time templates in `scripts/pages.mjs` generate `/konular/`, individual topic pages, the café phrase page and `/kaynaklar/`. Homepage links open the existing dialogs when JavaScript is available and navigate to readable pages otherwise. Search falls back to the topic index without JavaScript. The interactive sentence exercise requires JavaScript. A normal click retains the approved interaction; opening a topic in another tab uses its real URL.
 
-The build includes canonical metadata, social preview metadata on the homepage, robots.txt, sitemap.xml, a custom 404 and security headers. Mutable asset names revalidate instead of receiving an unsafe immutable cache policy. `_headers` allows inline styles for the existing privacy page; the homepage's meta CSP is stricter. Preview workers.dev hostnames receive noindex. Authentication is separate from indexing; preview URLs are not private.
+The build includes canonical metadata, social preview metadata on the homepage, robots.txt, sitemap.xml, a custom 404 and security headers. Mutable asset names revalidate. The builder creates content-hashed copies of explicit core assets and appends exact immutable-header rules for those paths only. `_headers` allows inline styles for the existing privacy page; the homepage's meta CSP is stricter. Preview workers.dev hostnames receive noindex. Authentication is separate from indexing; preview URLs are not private.
 
 ## Cloudflare validation and publication
 
@@ -73,3 +83,11 @@ The GitHub workflow runs tests, builds and saves an artifact; it does not deploy
 - [Headers](https://developers.cloudflare.com/workers/static-assets/headers/)
 - [Static routing](https://developers.cloudflare.com/workers/static-assets/routing/static-site-generation/)
 - [Cloudflare privacy](https://www.cloudflare.com/privacypolicy/)
+
+## Local review workspace
+
+Development mode now provides `/dev/review/` for recent change summaries, real website walkthroughs, isolated DTZ sample states and locally saved feedback. It is absent from the static build and disabled in production-style preview. Refresh rebuilds generated pages and sample answers in a fresh Node worker. The current suite has 30 passing tests. Browser checks verify all DTZ shortcuts, normal-attempt isolation, privacy/impressum return links, note persistence, draft retention after failures and pending-save edits, plus desktop/mobile layout. A fresh reviewer found and rechecked the corrected source/preview, legal-navigation and draft-race issues. No deployment was performed for this developer tool. See [the local review guide](development/review.md).
+
+## Performance preparation — 31 October 2026
+
+The owner authorized the PageSpeed fixes. Responsive hero images, smaller font subsets and content-versioned core asset caching are implemented locally and registered in the review workspace. The supplied live baseline remains mobile 97 / desktop 99; no new live score or deployment is claimed. See [measurements and verification](performance.md).

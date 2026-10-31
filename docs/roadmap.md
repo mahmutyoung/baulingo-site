@@ -32,7 +32,7 @@ Start with Turkish-speaking learners' actual questions in three areas:
 - Using German in daily life: appointments, doctors, shopping, work and official situations.
 - Preparing for a specific goal: A1 family reunification or a particular B1 exam. Review each exam's tasks and requirements separately before publishing preparation content.
 
-These are candidate areas, not a preselected winner. Demand evidence determines what receives deeper treatment. Complete exam packages are not currently available; retain the website's existing preparation status wording.
+These are candidate areas, not a preselected winner. Demand evidence determines what receives deeper treatment. The owner subsequently requested the app's existing original DTZ simulation as a website traffic resource. That port is implemented locally, with publication pending; it does not establish exam-preparation demand. Other A1/B1 exam packages remain planned. Keep the available DTZ resource distinct from those unfinished packages.
 
 ## Experiment decision cycle
 
@@ -45,13 +45,13 @@ For each embedded experiment, record:
 
 Possible signals include topic or situation choices, activity starts and completions, requests for help and explicit usefulness feedback. An unfinished activity alone does not establish disinterest; the interaction may be confusing or the learner may need an explanation. Page views alone do not establish learning value.
 
-No website measurement pipeline is currently implemented. The existing search and practice run in the browser; do not describe them as collected demand data. Specify any data collection, storage and relevant privacy updates as part of the selected experiment. Native app telemetry and first-install behaviour are outside this website roadmap task.
+Cloudflare Web Analytics now measures aggregate website traffic and browser performance; see [analytics operations](analytics.md). No experiment event pipeline is implemented. The existing search and practice run in the browser; do not describe them as collected demand data. Specify any data collection, storage and relevant privacy updates as part of the selected experiment. Native app telemetry and first-install behaviour are outside this website roadmap task.
 
 ## Immediate next milestone
 
-Define one embedded experiment brief before adding more activities or an analytics system. The initial question is which need visitors most want help with: explanations, everyday communication or exam preparation, and which activity format helps with that need.
+The owner's latest priority is acquiring traffic before adding a preference experiment. Prepare and publish the existing DTZ simulation as a useful, free resource in the main site, then test relevant community/teacher distribution and search discovery. The [DTZ port](content/dtz-web.md) is implemented locally; publication remains pending. Search Console impressions/clicks and Cloudflare page/referrer reports can inform acquisition, but no channel results or learner demand have yet been established. Do not treat implementation checks as real visitor evidence.
 
-The current sentence-building activity is an available interaction pattern. Select the smallest useful experiment, its placement and evidence method without redesigning the approved homepage. Implement it incrementally, review accessibility and mobile use, then decide its next step from the results.
+Once relevant visitors arrive, define one embedded experiment brief before expanding activities or adding event tracking. The initial question remains which need visitors most want help with and which activity format helps. Use the existing sentence activity or DTZ experience where appropriate; choose placement and an evidence method without redesigning the homepage.
 
 ## Delivery constraints
 
