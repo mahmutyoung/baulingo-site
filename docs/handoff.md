@@ -56,3 +56,7 @@ The main site, HTTPS custom domain and WWW redirects have now been verified live
 The performance review entry is **Faster homepage, same design** at `http://127.0.0.1:4180/dev/review/`. It covers responsive hero copies, Turkish/German font subsets (Lato-derived Baulingo Sans), and content-hashed immutable core assets. These changes are not deployed; baseline PageSpeed scores remain mobile 97 / desktop 99. See [performance notes](performance.md).
 
 The newest review entry applies the owner's three saved comments: a collapsible phone menu, removal of the free-resource header link, and removal of the last DTZ pre-start sentence. Component **+** buttons now attach local feedback to individual sections, text and controls, including dialogs. Notes and approvals remain local; the original owner notes are preserved and await review. See [review instructions](development/review.md).
+
+## Local resources removal
+
+The owner requested removal of the free resources section. The local website no longer publishes its page or downloads; the original source files remain in the repository. This does not change the independent Android app. This change is not deployed.

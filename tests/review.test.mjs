@@ -65,6 +65,16 @@ test('review notes persist and reject stale sources, foreign origins and oversiz
       const componentNote = (await componentResponse.json()).note;
       assert.deepEqual(componentNote.component, targeted.component);
       assert.equal(componentNote.componentVersion, model.componentVersion);
+      const edit = { action: 'edit-note', id: componentNote.id, expectedText: componentNote.text, text: 'Updated feedback' };
+      assert.equal((await post(edit, 'https://other.example')).status, 403);
+      assert.equal((await post(edit)).status, 200);
+      assert.equal((await post(edit)).status, 409);
+      const edited = JSON.parse(await readFile(store, 'utf8')).notes.find(note => note.id === componentNote.id);
+      assert.equal(edited.text, 'Updated feedback');
+      assert.deepEqual(edited.component, componentNote.component);
+      assert.equal((await post({ action: 'delete-note', id: componentNote.id, expectedText: componentNote.text })).status, 409);
+      assert.equal((await post({ action: 'delete-note', id: componentNote.id, expectedText: edited.text })).status, 200);
+      assert.equal(JSON.parse(await readFile(store, 'utf8')).notes.length, 1);
       await writeFile(store, 'corrupt');
       assert.equal((await post(payload)).status, 409);
       assert.equal(await readFile(store, 'utf8'), 'corrupt');

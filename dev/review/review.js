@@ -71,8 +71,42 @@ function renderNotes() {
     if (note.component) card.append(element('p', `${note.component.label} · ${note.component.path}`, 'subtle'));
     if (model.changes.some(change => change.addresses?.includes(note.id))) card.append(element('p', 'Applied locally · awaiting your review', 'subtle'));
     if (note.text) card.append(element('p', note.text));
+    const controls = element('div', undefined, 'note-actions');
+    const edit = element('button', 'Edit'); edit.type = 'button';
+    const remove = element('button', 'Delete'); remove.type = 'button';
+    edit.addEventListener('click', () => {
+      const editor = element('textarea'); editor.value = note.text; editor.maxLength = 4000; editor.rows = 3;
+      editor.setAttribute('aria-label', 'Edit saved review');
+      const saveEdit = element('button', 'Save edit'); saveEdit.type = 'button';
+      const cancel = element('button', 'Cancel'); cancel.type = 'button';
+      controls.replaceChildren(editor, saveEdit, cancel); editor.focus();
+      cancel.addEventListener('click', () => renderNotes());
+      saveEdit.addEventListener('click', async () => {
+        if (!editor.value.trim()) { status('Enter feedback before saving.'); editor.focus(); return; }
+        saveEdit.disabled = true;
+        try { await mutateNote('edit-note', note, editor.value); }
+        finally { saveEdit.disabled = false; }
+      });
+    });
+    remove.addEventListener('click', async () => {
+      if (!confirm('Delete this saved review?')) return;
+      remove.disabled = true;
+      try { await mutateNote('delete-note', note); }
+      finally { remove.disabled = false; }
+    });
+    controls.append(edit, remove); card.append(controls);
     list.append(card);
   }
+}
+async function mutateNote(action, note, text) {
+  try {
+    const response = await fetch('/dev/review/api', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action, id: note.id, expectedText: note.text, text }) });
+    const data = await response.json();
+    if (!response.ok) throw Error(data.error || 'Could not update the review.');
+    const index = model.notes.findIndex(item => item.id === note.id);
+    if (index >= 0) { if (action === 'delete-note') model.notes.splice(index, 1); else model.notes[index] = data.note; }
+    renderSteps(); renderNotes(); status(action === 'delete-note' ? 'Review deleted locally.' : 'Review updated locally.');
+  } catch (error) { status(error.message); }
 }
 function render() {
   const change = currentChange(), step = currentStep(); if (!change || !step) return;
@@ -138,7 +172,6 @@ $('#previous').addEventListener('click', () => { if (stepIndex > 0) { selectComp
 $('#next').addEventListener('click', () => { if (stepIndex < currentChange().steps.length - 1) { selectComponent(null); stepIndex++; render(); } });
 $('#reload-preview').addEventListener('click', () => { if (currentStep()) { selectComponent(null); loadPreview(); } });
 $('#approve').addEventListener('click', () => save('approved'));
-$('#needs-changes').addEventListener('click', () => save('changes'));
 $('#save-note').addEventListener('click', () => save('note'));
 for (const button of document.querySelectorAll('[data-width]')) button.addEventListener('click', () => {
   $('#preview-canvas').dataset.width = button.dataset.width;

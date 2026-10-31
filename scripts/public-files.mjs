@@ -12,8 +12,7 @@ export const publicFiles = [
   'index.html', 'style.css', 'app.js', '.nojekyll', 'privacy/index.html', 'impressum/index.html',
   'src/exercise.js', 'src/topics.js', 'src/navigation.js',
   'dtz.css', 'src/dtz/content.js', 'src/dtz/rules.js', 'src/dtz/player.js', ...dtzMediaFiles,
-  'downloads/kafede-almanca.txt', 'downloads/artikeller-ilk-kelimeler.txt',
-  'assets/logo.svg', 'assets/favicon.svg', 'assets/cafe-hero.webp', 'assets/resources-banner.webp',
+  'assets/logo.svg', 'assets/favicon.svg', 'assets/cafe-hero.webp',
   ...[480, 800, 1200].map(width => `assets/cafe-hero-${width}.webp`),
   'assets/audio/einen-kaffee-bitte.mp3',
   ...['Newsreader-Bold', 'Newsreader-SemiBold', 'BaulingoSans-Regular', 'BaulingoSans-SemiBold', 'BaulingoSans-Bold'].map(name => `assets/${name}.woff2`),
@@ -24,7 +23,7 @@ export const publicFiles = [
 export const generatedFiles = [
   '404.html', 'robots.txt', 'sitemap.xml', 'konular/index.html',
   ...topics.map(topic => `konular/${topic.id}/index.html`),
-  'konular/kafede-siparis/index.html', 'kaynaklar/index.html',
+  'konular/kafede-siparis/index.html',
   'dtz-deneme-sinavi/index.html',
 ];
 

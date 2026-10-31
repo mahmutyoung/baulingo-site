@@ -45,7 +45,7 @@ src/
   exercises/    Exercise data, answer rules and small browser players
 public/
   assets/       Approved images, fonts and icons
-  downloads/    Published learning files
+  downloads/    Retained source files; no longer published
 ```
 
 Keep content, answer rules and presentation separate. A page selects an exercise; it does not define its answer logic. Keep one reviewed source for content shared with the app. Use a controlled export when sharing becomes necessary. Do not copy the private application into this public repository.

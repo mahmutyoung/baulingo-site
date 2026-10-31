@@ -8,6 +8,16 @@ const storageKey = 'baulingo.dtz.mock-01.v1';
 const labels = { listening: '01 · Dinleme', reading: '02 · Okuma', writing: '03 · Yazma', speaking: '04 · Konuşma', result: 'Sonuç' };
 const audio = $('#dtz-audio');
 let attempt = null, active = false, audioStarted = false, audioLoading = false, invalidSaved = false;
+let scrollScheduled = false;
+function updateToolbar() {
+  const toolbar = $('#dtz-toolbar');
+  const pinned = !toolbar.hidden && $('#dtz-toolbar-sentinel').getBoundingClientRect().bottom + 20 <= 0;
+  toolbar.classList.toggle('is-compact', pinned && ['reading', 'speaking'].includes(attempt?.phase));
+}
+window.addEventListener('scroll', () => {
+  if (!scrollScheduled) { scrollScheduled = true; requestAnimationFrame(() => { scrollScheduled = false; updateToolbar(); }); }
+}, { passive: true });
+window.addEventListener('resize', updateToolbar);
 
 function status(message) { $('#dtz-status').textContent = message; }
 function save() {
@@ -46,6 +56,7 @@ function render() {
   $('#dtz-resume').textContent = phase === 'result' ? 'Sonucumu göster' : 'Kaldığım yerden devam et';
   $('#dtz-clear').hidden = !attempt && !invalidSaved;
   $('#dtz-toolbar').hidden = !active || phase === 'result';
+  updateToolbar();
   $('#dtz-current-section').textContent = labels[phase] || '';
   for (const section of $$('[data-phase]')) section.hidden = !active || section.dataset.phase !== phase;
   for (const actions of $$('[data-action-for]')) actions.hidden = !active || actions.dataset.actionFor !== phase;

@@ -18,7 +18,7 @@
     layer.setAttribute('aria-label', 'Bileşen yorumları');
     document.body.append(layer);
     const targets = new Map();
-    const candidates = 'header,nav,section,article,form,fieldset,dialog,footer,h1,h2,h3,p,button,a,input:not([type="hidden"]),textarea,summary,img[alt]:not([alt=""]),audio,[role="group"],.hero-copy,.hero-visual,.phrase-panel,.phrase-meaning,.quick-topics,.answer-area,.exercise-actions,.dtz-reference,.dtz-actions';
+    const candidates = 'header,section,article,form,fieldset,dialog,footer,.hero-copy,.hero-visual,.phrase-panel,.dtz-reference,.dtz-actions';
     function selectorFor(node) {
       const parts = [];
       while (node && node !== document.body) {

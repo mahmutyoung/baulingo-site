@@ -1,5 +1,109 @@
 [
   {
+    "id": "dtz-compact-toolbar-2026-11-01",
+    "title": "Compact DTZ toolbar",
+    "date": "2026-11-01",
+    "summary": "The reading and speaking toolbar becomes compact when pinned during scrolling.",
+    "before": "The sticky toolbar occupied extra vertical space.",
+    "after": "When pinned, only the timer or suggested duration and save/pause control remain.",
+    "addresses": [
+      "789314bb-fe64-4083-94c9-c55beb921d78",
+      "884aab20-3e51-4e43-b99e-c939854a8c31"
+    ],
+    "files": [
+      "scripts/dtz-page.mjs",
+      "src/dtz/player.js",
+      "dtz.css"
+    ],
+    "steps": [
+      {
+        "id": "reading",
+        "title": "Reading toolbar",
+        "path": "/dtz-deneme-sinavi/",
+        "stage": "reading",
+        "focus": "[data-phase=\"reading\"]",
+        "check": "Scroll down: only countdown and Kaydet ve ara ver remain. Scroll up to restore the full bar."
+      },
+      {
+        "id": "speaking",
+        "title": "Speaking toolbar",
+        "path": "/dtz-deneme-sinavi/",
+        "stage": "speaking",
+        "focus": "[data-phase=\"speaking\"]",
+        "check": "Scroll down and check the compact suggested duration and save control on desktop and phone."
+      }
+    ]
+  },
+  {
+    "id": "review-controls-2026-11-01",
+    "title": "Simpler review comments",
+    "date": "2026-11-01",
+    "summary": "Comment buttons now target main components. Saved reviews can be edited or deleted.",
+    "before": "Plus buttons appeared on many small elements; saved feedback could not be changed.",
+    "after": "Main components have plus buttons. Each saved review has Edit and Delete; Approved and Save note remain.",
+    "addresses": [
+      "37e9c4ed-c192-47fd-9663-db5e35a93a4e",
+      "ec5fe98d-a412-47c2-a6fd-d665cfa2449b",
+      "720c3be5-6ed1-4f53-8253-a5f22f652eba"
+    ],
+    "files": [
+      "dev/review/bridge.js",
+      "dev/review/review.js",
+      "dev/review/index.html",
+      "dev/review/review.css",
+      "scripts/review-server.mjs"
+    ],
+    "steps": [
+      {
+        "id": "components",
+        "title": "Main components",
+        "path": "/",
+        "check": "Plus buttons appear on main areas. Open a dialog to review its main components."
+      },
+      {
+        "id": "notes",
+        "title": "Edit and delete",
+        "path": "/",
+        "check": "Save a note, edit its text, then delete it. Existing reviews are preserved until you change them."
+      }
+    ]
+  },
+  {
+    "id": "remove-resources-2026-11-01",
+    "title": "Remove free resources section",
+    "date": "2026-11-01",
+    "summary": "The free resources section and downloads are removed from the local website output.",
+    "before": "The site generated a resources page and published two study files.",
+    "after": "The page and downloads return 404; topic and DTZ pages remain.",
+    "addresses": [
+      "c6f01fb8-dd70-4dfd-87a9-d56470201cf5",
+      "d7fe2088-6be1-462e-806a-37a1e5ae9c68",
+      "1bbe590a-589b-4ce2-b71f-f2a478a1f132",
+      "3dafd4d8-c2e0-42e4-8713-e87692982cd2"
+    ],
+    "files": [
+      "index.html",
+      "style.css",
+      "scripts/pages.mjs",
+      "scripts/public-files.mjs"
+    ],
+    "steps": [
+      {
+        "id": "home",
+        "title": "Homepage",
+        "path": "/",
+        "focus": "#konular",
+        "check": "Resource banner and unfinished B1 letter link are removed."
+      },
+      {
+        "id": "topic",
+        "title": "Café topic",
+        "path": "/konular/kafede-siparis/",
+        "check": "The topic remains available without a download link."
+      }
+    ]
+  },
+  {
     "id": "review-comments-2026-10-31",
     "title": "Review comments and component feedback",
     "date": "2026-10-31",

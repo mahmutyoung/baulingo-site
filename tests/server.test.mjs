@@ -14,7 +14,7 @@ test('production preview serves real pages, errors, headers and downloads', asyn
     assert.match(home.headers.get('content-security-policy'), /frame-ancestors 'none'/);
     assert.equal(home.headers.get('x-content-type-options'), 'nosniff');
     assert.equal(home.headers.get('x-frame-options'), 'DENY');
-    for (const route of ['/konular/cases/', '/kaynaklar/', '/privacy/', '/impressum/']) assert.equal((await get(route)).status, 200, route);
+    for (const route of ['/konular/cases/', '/privacy/', '/impressum/']) assert.equal((await get(route)).status, 200, route);
     for (const route of ['/missing', '/.git/config', '/assets/%2e%2e%2fREADME.md', '/_headers']) {
       const missing = await get(route);
       assert.equal(missing.status, 404, route);
@@ -25,9 +25,7 @@ test('production preview serves real pages, errors, headers and downloads', asyn
     assert.equal(redirect.status, 307);
     assert.equal(redirect.headers.get('location'), '/konular/cases/?q=artikel');
     assert.equal((await get('/index.html')).headers.get('location'), '/');
-    const download = await get('/downloads/kafede-almanca.txt');
-    assert.match(download.headers.get('content-disposition'), /attachment/);
-    assert.match(await download.text(), /KAFEDE/);
+    for (const route of ['/kaynaklar/', '/downloads/kafede-almanca.txt', '/downloads/artikeller-ilk-kelimeler.txt']) assert.equal((await get(route)).status, 404, route);
     assert.equal((await get('/assets/BaulingoSans-Regular.woff2')).headers.get('content-type'), 'font/woff2');
     assert.equal((await get('/assets/audio/einen-kaffee-bitte.mp3')).headers.get('content-type'), 'audio/mpeg');
     assert.equal((await fetch(origin, { method: 'HEAD' })).status, 200);

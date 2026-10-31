@@ -32,6 +32,13 @@ async function loadNotes(store) {
   }
 }
 
+async function saveNotes(store, saved) {
+  await mkdir(path.dirname(store), { recursive: true });
+  const temporary = `${store}.${randomUUID()}.tmp`;
+  try { await writeFile(temporary, JSON.stringify(saved, null, 2) + '\n', { flag: 'wx' }); await rename(temporary, store); }
+  finally { await unlink(temporary).catch(() => {}); }
+}
+
 async function model(root, store) {
   const catalog = JSON.parse(await readFile(path.join(root, 'dev/review/changes.json'), 'utf8'));
   const changes = await Promise.all(catalog.map(async change => {
@@ -97,6 +104,20 @@ export async function createReviewHandler({ root, storePath = path.join(root, '.
           previewVersions = new Map(after.changes.filter(change => before.changes.some(old => old.id === change.id && old.sourceVersion === change.sourceVersion)).map(change => [change.id, change.sourceVersion]));
           send(200, await workspace()); return;
         }
+        if (body?.action === 'edit-note' || body?.action === 'delete-note') {
+          if (typeof body.id !== 'string' || body.id.length > 100 || typeof body.expectedText !== 'string' || (body.action === 'edit-note' && (typeof body.text !== 'string' || !body.text.trim() || body.text.length > 4000))) {
+            send(400, { error: 'Invalid note.' }); return;
+          }
+          const saved = await loadNotes(storePath);
+          const index = saved.notes.findIndex(note => note.id === body.id);
+          if (index < 0) { send(404, { error: 'Note no longer exists. Refresh changes.' }); return; }
+          if (saved.notes[index].text !== body.expectedText) { send(409, { error: 'This note changed elsewhere. Refresh changes before editing.' }); return; }
+          const note = saved.notes[index];
+          if (body.action === 'delete-note') saved.notes.splice(index, 1);
+          else { note.text = body.text.trim(); note.updatedAt = new Date().toISOString(); }
+          await saveNotes(storePath, saved);
+          send(200, { note }); return;
+        }
         const current = await workspace();
         const change = current.changes.find(c => c.id === body?.changeId);
         if (!change || !change.steps.some(step => step.id === body.stepId) || !['note', 'approved', 'changes'].includes(body.status) || typeof body.text !== 'string' || body.text.length > 4000 || (body.status === 'changes' && !body.text.trim())) {
@@ -117,10 +138,7 @@ export async function createReviewHandler({ root, storePath = path.join(root, '.
         const note = { id: randomUUID(), changeId: change.id, stepId: body.stepId, sourceVersion: change.sourceVersion, status: body.status, text: body.text.trim(), createdAt: new Date().toISOString() };
         if (component) Object.assign(note, { component, componentVersion: current.componentVersion });
         saved.notes.push(note);
-        await mkdir(path.dirname(storePath), { recursive: true });
-        const temporary = `${storePath}.${randomUUID()}.tmp`;
-        try { await writeFile(temporary, JSON.stringify(saved, null, 2) + '\n', { flag: 'wx' }); await rename(temporary, storePath); }
-        finally { await unlink(temporary).catch(() => {}); }
+        await saveNotes(storePath, saved);
         send(200, { note });
       };
       const pending = writes.then(write);

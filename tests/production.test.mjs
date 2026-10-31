@@ -13,7 +13,7 @@ test('homepage keeps approved copy and offers real topic and resource links', as
   assert.match(html, /Almancada<br>aradığın cevap\./);
   assert.match(html, /<a [^>]*href="\/konular\/cases\/"[^>]*data-topic="cases"/);
   assert.match(html, /action="\/konular\/"/);
-  assert.match(html, /href="\/kaynaklar\/"/);
+  assert.doesNotMatch(html, /class="resource-banner"/);
   assert.match(html, /rel="canonical" href="https:\/\/baulingo.app\/"/);
 });
 
@@ -24,7 +24,7 @@ test('every topic is readable without JavaScript and has its own canonical URL',
     for (const text of topic.paragraphs) assert.ok(html.includes(text));
     assert.ok(html.includes(`https://baulingo.app/konular/${topic.id}/`));
   }
-  assert.match(await read('kaynaklar/index.html'), /downloads\/kafede-almanca.txt/);
+  assert.doesNotMatch(await read('sitemap.xml'), /\/kaynaklar\//);
   assert.match(await read('konular/kafede-siparis/index.html'), /Einen Kaffee, bitte\./);
 });
 

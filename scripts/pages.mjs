@@ -30,17 +30,13 @@ export function generatePages(homepage) {
   output.set('konular/index.html', page('Almanca konuları', 'Türkçe açıklamalarla Almanca konuları.', '/konular/',
     `<h1>İhtiyacına göre başla</h1><p>Almancayı hedeflerine uygun konularla adım adım öğren.</p><ul class="topic-index">${topics.map(topic => `<li><a href="${topicURL(topic)}">${escape(topic.title)}</a><p>${escape(topic.subtitle)}</p></li>`).join('')}<li><a href="/konular/kafede-siparis/">Kafede sipariş</a></li></ul>`));
   output.set('konular/kafede-siparis/index.html', page('Kafede sipariş', 'Bir kahve, lütfen. Kafede kullanabileceğin Almanca bir istek.', '/konular/kafede-siparis/',
-    '<h1>Kafede sipariş</h1><p>Bu cümleyi Almanca söyle:</p><p class="topic-examples" lang="de">Einen Kaffee, bitte.</p><p>Anlamı: Bir kahve, lütfen.</p><audio controls preload="none" src="/assets/audio/einen-kaffee-bitte.mp3" aria-label="Einen Kaffee, bitte. Dinle"></audio><p><a class="button button-primary" href="/#alistirma">Cümleyi kur</a></p><p>Kelime seçme alıştırması JavaScript ile çalışır. Çevrimdışı çalışmak için <a href="/downloads/kafede-almanca.txt" download>çalışma notunu indir</a>.</p>'));
-  // Reuse the selected resource wording and real download links instead of maintaining two copies.
-  const resources = homepage.match(/<h2 id="resources-title">([\s\S]*?)<\/dialog>/)?.[0].replace(/<\/dialog>$/, '').replaceAll('./downloads/', '/downloads/');
-  if (!resources) throw new Error('Resource dialog content is missing.');
-  output.set('kaynaklar/index.html', page('Ücretsiz çalışma notları', 'Telefona kaydet, yazdır veya kendi notlarına ekle. Üyelik gerekmez.', '/kaynaklar/', resources.replace('<h2 id="resources-title">', '<h1>').replace('</h2>', '</h1>')));
+    '<h1>Kafede sipariş</h1><p>Bu cümleyi Almanca söyle:</p><p class="topic-examples" lang="de">Einen Kaffee, bitte.</p><p>Anlamı: Bir kahve, lütfen.</p><audio controls preload="none" src="/assets/audio/einen-kaffee-bitte.mp3" aria-label="Einen Kaffee, bitte. Dinle"></audio><p><a class="button button-primary" href="/#alistirma">Cümleyi kur</a></p><p>Kelime seçme alıştırması JavaScript ile çalışır.</p>'));
   output.set('404.html', page('Sayfa bulunamadı', 'Aradığın sayfa bulunamadı.', '/404.html', '<h1>Sayfa bulunamadı</h1><p>Aradığın sayfa taşınmış veya kaldırılmış olabilir.</p><p><a class="button button-primary" href="/">Ana sayfaya dön</a></p><p><a href="/konular/">Konulara göz at</a></p>', true));
   output.set('dtz-deneme-sinavi/index.html', page('Ücretsiz DTZ deneme sınavı A2–B1', 'Türkçe yönergelerle ücretsiz DTZ denemesi: tam dinleme kaydı, 45 soru, yazma ve konuşma görevleri. Üyelik gerekmez.', '/dtz-deneme-sinavi/', dtzPageContent())
     .replace('class="reading-page"', 'class="reading-page dtz-main"')
     .replace('<script type="module" src="/src/navigation.js"></script></head>', '<link rel="stylesheet" href="/dtz.css"><script type="module" src="/src/navigation.js"></script></head>')
     .replace('</body>', '<script type="module" src="/src/dtz/player.js"></script></body>'));
-  const urls = ['/', '/konular/', ...topics.map(topicURL), '/konular/kafede-siparis/', '/kaynaklar/', '/dtz-deneme-sinavi/'];
+  const urls = ['/', '/konular/', ...topics.map(topicURL), '/konular/kafede-siparis/', '/dtz-deneme-sinavi/'];
   output.set('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.map(url => `<url><loc>${origin}${url}</loc></url>`).join('')}</urlset>\n`);
   output.set('robots.txt', `User-agent: *\nAllow: /\nSitemap: ${origin}/sitemap.xml\n`);
   return output;
