@@ -10,7 +10,7 @@ export const dtzMediaFiles = [
 // Explicit publication boundary: adding a file under assets/ never publishes it by accident.
 export const publicFiles = [
   'index.html', 'style.css', 'app.js', '.nojekyll', 'privacy/index.html', 'impressum/index.html',
-  'src/exercise.js', 'src/topics.js', 'src/navigation.js',
+  'src/exercise.js', 'src/topics.js', 'src/navigation.js', 'src/dtz-study-filter.js',
   'dtz.css', 'src/dtz/content.js', 'src/dtz/rules.js', 'src/dtz/player.js', ...dtzMediaFiles,
   'assets/logo.svg', 'assets/favicon.svg', 'assets/cafe-hero.webp',
   ...[480, 800, 1200].map(width => `assets/cafe-hero-${width}.webp`),
@@ -24,7 +24,7 @@ export const generatedFiles = [
   '404.html', 'robots.txt', 'sitemap.xml', 'konular/index.html',
   ...topics.map(topic => `konular/${topic.id}/index.html`),
   'konular/kafede-siparis/index.html',
-  'dtz-deneme-sinavi/index.html',
+  'dtz-deneme-sinavi/index.html', 'dtz-kelime-kalip-cumle/index.html',
 ];
 
 export const cacheableAssets = publicFiles.filter(file => file.startsWith('assets/') && /\.(?:woff2|webp|svg|mp3)$/.test(file) && !dtzMediaFiles.includes(file));

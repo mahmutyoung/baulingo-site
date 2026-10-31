@@ -1,5 +1,66 @@
 [
   {
+    "id": "dtz-curated-lists-2026-11-01",
+    "title": "DTZ listeleri ve filtreler",
+    "date": "2026-11-01",
+    "summary": "Kelime, kalıp ve cümleler konuya ve sınav bölümüne göre düzenlendi.",
+    "before": "Ham kelime ve ifade adayları hatalar ve eksik parçalar içeriyordu.",
+    "after": "Gözden geçirilmiş kelimeler ve tam ifadeler ile özgün örnek cümleler konuya ayrıldı; kelimeler türüne göre filtrelenebilir.",
+    "files": [
+      "src/dtz-study.js",
+      "src/dtz-study-filter.js",
+      "scripts/pages.mjs",
+      "scripts/public-files.mjs",
+      "style.css"
+    ],
+    "steps": [
+      {
+        "id": "words",
+        "title": "Kelime türleri ve konular",
+        "path": "/dtz-kelime-kalip-cumle/",
+        "focus": "#kelimeler",
+        "check": "İsim, fiil, sıfat ve zarfı; sınav bölümü ve konu seçimlerini dene."
+      },
+      {
+        "id": "phrases",
+        "title": "Kalıplar ve cümleler",
+        "path": "/dtz-kelime-kalip-cumle/",
+        "focus": "#kaliplar",
+        "check": "Konu ve sınav bölümü filtrelerini kontrol et; cümleler ayrı bir bölümde."
+      }
+    ]
+  },
+  {
+    "id": "dtz-study-2026-11-01",
+    "title": "DTZ kelime, kalıp ve cümleler",
+    "date": "2026-11-01",
+    "summary": "Obsidian analizindeki kelime biçimleri, tüm kalıp adayları ve 260 özgün örnek cümle.",
+    "before": "Sınav bölümünde yalnızca DTZ denemesi vardı.",
+    "after": "Temel işlev sözcükleri dışında tüm kelime biçimleri, 3.627 otomatik kalıp adayı ve 260 örnek cümle listelenir; kaynak sınırları belirtilir.",
+    "files": [
+      "index.html",
+      "src/topics.js",
+      "src/dtz-study.js",
+      "scripts/pages.mjs",
+      "scripts/public-files.mjs"
+    ],
+    "steps": [
+      {
+        "id": "home",
+        "title": "Sınav bölümü",
+        "path": "/",
+        "focus": "#konular",
+        "check": "Üç yeni bağlantıyı masaüstü ve telefonda kontrol et."
+      },
+      {
+        "id": "study",
+        "title": "Çalışma sayfası",
+        "path": "/dtz-kelime-kalip-cumle/",
+        "check": "Listelerin kapsamını, 100 öğelik grupları ve kaynak sınırlamalarını kontrol et."
+      }
+    ]
+  },
+  {
     "id": "dtz-compact-toolbar-2026-11-01",
     "title": "Compact DTZ toolbar",
     "date": "2026-11-01",

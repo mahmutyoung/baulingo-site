@@ -29,3 +29,7 @@ The original MP3 is 8,698,988 bytes and decodes to approximately 24 minutes 10 s
 No commit, push, deployment, new analytics service or app change is part of the local implementation. Publication needs its own authorization and live checks.
 
 The local reading and speaking toolbars compact when pinned by scrolling. Reading retains the countdown and save/pause control; speaking retains its suggested duration and save/pause control. Full labels return on scrolling up.
+
+## DTZ çalışma listeleri
+
+Yerel çalışma sayfası ham istatistik tabloları yerine gözden geçirilmiş 69 kelime, 19 bağımsız ifade ve özgün bankadan 258 cümle sunar; kişi adı içeren iki cümle çıkarılmıştır. Kelime türü, konu ve sınav bölümü filtreleri tarayıcıda çalışır; JavaScript kapalıyken bütün listeler okunur. Kelime ve ifadelerin sınav bölümü, incelenen kaynaklarda ilgili biçimin görüldüğü bölümlerdir; örnek cümlelerde bankanın bölüm etiketidir. Kaynak analiz ve tablo bilgileri german-exam-obsidian Sentence Game Word Frequency, Chunk Frequency ve Universal Sentence Bank kayıtlarındadır. Bu derleme tüm DTZ kelime dağarcığını kapsadığını veya gelecekte hangi ifadenin çıkacağını iddia etmez.

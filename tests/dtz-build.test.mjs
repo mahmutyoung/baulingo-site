@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import './build-fixture.mjs';
 import { createPreviewServer } from '../scripts/server.mjs';
+import { dtzWords, dtzPhrases, dtzSentences } from '../src/dtz-study.js';
 
 test('DTZ landing page is indexable and contains the complete static simulation and discovery links', async () => {
   const html = await readFile('dist/dtz-deneme-sinavi/index.html', 'utf8');
@@ -15,6 +16,29 @@ test('DTZ landing page is indexable and contains the complete static simulation 
   assert.doesNotMatch(html, /id="dtz-audio"[^>]*\ssrc=/);
   assert.match(await readFile('dist/index.html', 'utf8'), /href="\/dtz-deneme-sinavi\/"/);
   assert.match(await readFile('dist/sitemap.xml', 'utf8'), /https:\/\/baulingo.app\/dtz-deneme-sinavi\//);
+});
+
+test('DTZ study page is discoverable and keeps source statistics out of the page', async () => {
+  const html = await readFile('dist/dtz-kelime-kalip-cumle/index.html', 'utf8');
+  for (const id of ['kelimeler', 'kaliplar', 'cumleler']) {
+    assert.ok(html.includes(`id="${id}"`));
+    assert.ok((await readFile('dist/index.html', 'utf8')).includes(`/dtz-kelime-kalip-cumle/#${id}`));
+  }
+  assert.match(html, /DTZ’de çıkabilecek kelimeler/);
+  assert.doesNotMatch(html, /Kaynak:|tekrar\/öğe|üzerinden yapılan analiz/);
+  assert.match(await readFile('dist/sitemap.xml', 'utf8'), /dtz-kelime-kalip-cumle/);
+});
+
+test('study content has usable grammatical, topic and section metadata', () => {
+  assert.deepEqual(new Set(dtzWords.map(word => word.type)), new Set(['isim', 'fiil', 'sifat', 'zarf']));
+  for (const item of [...dtzWords, ...dtzPhrases, ...dtzSentences]) {
+    assert.ok(item.topic && item.parts.length);
+    assert.ok(item.parts.every(part => ['Hören', 'Lesen', 'Schreiben', 'Sprechen'].includes(part)));
+    assert.doesNotMatch(item.text, /\b(?:Herr|Frau)\s+Klein\b/);
+  }
+  assert.ok(dtzWords.some(word => word.text === 'die Wohnung' && word.type === 'isim'));
+  assert.ok(dtzPhrases.some(phrase => phrase.text === 'mit dem Bus'));
+  assert.ok(!dtzPhrases.some(phrase => phrase.text.toLowerCase() === 'ich möchte'));
 });
 
 test('DTZ audio preview serves byte ranges and rejects unsatisfiable ranges', async () => {

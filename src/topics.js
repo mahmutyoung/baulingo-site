@@ -53,7 +53,7 @@ export const topics = [
       'Bu sırada günlük istek kurma, artikeller ve cümle sırası gibi temel konularla çalışabilirsin. Bu alıştırmalar resmî sınav soruları değildir.',
     ],
     examples: [],
-    links: [{ href: '/dtz-deneme-sinavi/', label: 'Ücretsiz DTZ denemesine başla' }],
+    links: [{ href: '/dtz-deneme-sinavi/', label: 'Ücretsiz DTZ denemesine başla' }, { href: '/dtz-kelime-kalip-cumle/', label: 'DTZ kelime, kalıp ve cümleler' }],
     practice: true,
   },
 ];
