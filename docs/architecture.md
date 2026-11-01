@@ -16,7 +16,7 @@ Use embedded interactions to learn which needs and learning experiences matter t
 - Grammar: articles, cases and word order, explained in Turkish.
 - Everyday German: situations such as appointments, shopping and speaking to a doctor.
 - Free resources: removed from the pending website output at the owner’s request; source downloads remain in the repository.
-- Exam preparation: the DTZ simulation and study page are prepared locally; other packages remain planned.
+- Exam preparation: `/sinavlar/` is the local static overview, leading with DTZ simulation and study cards; a secondary disclosure contains the guide to exam audiences. Other preparation packages remain planned.
 - About, contact and privacy: basic public information.
 - Embedded experiments: short interactions within the homepage or relevant existing content, using the same visual language and site deployment.
 

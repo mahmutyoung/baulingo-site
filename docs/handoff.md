@@ -74,3 +74,9 @@ The local English homepage now leads with beginner German, original English expl
 English homepage and lesson practice now use the same DOM controller and pure selection/checking rules as Turkish. Independent English task data supplies coffee/tea, word order, articles and appointment sentences with contextual hints. English tasks have three to five words; longer tasks wrap into two columns on phones. Readable examples remain available without JavaScript. The Turkish café flow is preserved.
 
 The full saved-comment audit is recorded in [review follow-up](development/review-followup.md). The remaining B1 letter shortcut now leads to the available DTZ simulation. Turkish practice meanings were checked against their German sentences.
+
+## Local exam overview and saved review
+
+The Sınavlar header link now opens `/sinavlar/`. This static overview has DTZ mock-test and study-list links plus a brief Turkish guide to DTZ, Goethe/telc, DTB and TestDaF/DSH audiences, linked to official sources. Only DTZ preparation is offered. The mock test and study page link back to the overview. The single saved comment requesting removal of the printer example was applied; the original local feedback is retained. These changes are prepared locally and are not deployed.
+
+The exam overview now prioritises the available DTZ test and study lists in two prominent content cards. The complete exam-audience guide is secondary, below the materials in a native disclosure under “Sınavlar hakkında”; it is collapsed by default and remains accessible without JavaScript.

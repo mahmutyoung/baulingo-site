@@ -18,7 +18,7 @@
     layer.setAttribute('aria-label', 'Bileşen yorumları');
     document.body.append(layer);
     const targets = new Map();
-    const candidates = 'header,section,article,form,fieldset,dialog,footer,.hero-copy,.hero-visual,.phrase-panel,.dtz-reference,.dtz-actions';
+    const candidates = '[data-review-item],header,section,article,form,fieldset,dialog,footer,.hero-copy,.hero-visual,.phrase-panel,.dtz-reference,.dtz-actions';
     function selectorFor(node) {
       const parts = [];
       while (node && node !== document.body) {
@@ -31,7 +31,7 @@
       return parts.join(' > ');
     }
     function labelFor(node) {
-      const label = node.getAttribute('aria-label') || node.labels?.[0]?.textContent || node.getAttribute('alt') || node.querySelector('h1,h2,h3,legend')?.textContent || node.textContent || node.localName;
+      const label = node.dataset.reviewItem || node.getAttribute('aria-label') || node.labels?.[0]?.textContent || node.getAttribute('alt') || node.querySelector('h1,h2,h3,legend')?.textContent || node.textContent || node.localName;
       return `${node.localName} · ${label.replace(/\s+/g, ' ').trim()}`.slice(0, 200);
     }
     let scheduled = false;
@@ -42,6 +42,7 @@
         if (node.closest('.review-component-layer,.review-preview-banner') || node.closest('[aria-hidden="true"]') || targets.has(node)) continue;
         const button = document.createElement('button');
         button.type = 'button'; button.className = 'review-component-button'; button.textContent = '+';
+        button.dataset.reviewTarget = selectorFor(node);
         button.addEventListener('click', event => {
           event.preventDefault(); event.stopPropagation();
           const component = { path: location.pathname, selector: selectorFor(node), label: labelFor(node) };

@@ -6,7 +6,7 @@ import path from 'node:path';
 import http from 'node:http';
 import './build-fixture.mjs';
 import { createPreviewServer } from '../scripts/server.mjs';
-import { createReviewHandler } from '../scripts/review-server.mjs';
+import { createReviewHandler, isLocalReviewRequest } from '../scripts/review-server.mjs';
 
 async function withServer(options, work) {
   const server = await createPreviewServer(options);
@@ -136,4 +136,38 @@ test('review decisions require the displayed build to match current source', asy
     await post({ action: 'refresh' });
     assert.equal((await post(target)).status, 200);
   } finally { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); await rm(scratch, { recursive: true, force: true }); }
+});
+
+test('a fresh local review store hides cleared changes and contains no feedback', async () => {
+  const scratch = await mkdtemp(path.join(os.tmpdir(), 'baulingo-review-empty-'));
+  const store = path.join(scratch, 'notes.json');
+  const catalog = JSON.parse(await readFile('dev/review/changes.json', 'utf8'));
+  await writeFile(store, JSON.stringify({version:1, notes:[], dismissedChanges:catalog.map(c=>c.id)}));
+  try {
+    await withServer({review:true, reviewStore:store}, async origin => {
+      const model = await (await fetch(origin+'/dev/review/api')).json();
+      assert.deepEqual(model.changes, []);
+      assert.deepEqual(model.notes, []);
+      assert.equal(model.storageError, '');
+      const browse = model.websiteReview;
+      assert.equal(browse.steps[0].path, '/?lang=tr');
+      const payload = {changeId:browse.id, stepId:browse.steps[0].id, sourceVersion:browse.sourceVersion, status:'note', text:'Check this section.', component:{path:'/',selector:'#main',label:'Main content'}, componentVersion:model.componentVersion};
+      const post = body => fetch(origin+'/dev/review/api',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify(body)});
+      assert.equal((await post({...payload,sourceVersion:'old'})).status,409);
+      assert.equal((await post(payload)).status,200);
+      const after = await (await fetch(origin+'/dev/review/api')).json();
+      assert.deepEqual(after.changes,[]);
+      assert.equal(after.notes[0].text,payload.text);
+    });
+  } finally { await rm(scratch,{recursive:true,force:true}); }
+});
+
+
+test('review accepts this computer LAN interfaces and rejects unrecognised hosts', async () => {
+  const {networkInterfaces} = await import('node:os');
+  for(const entry of Object.values(networkInterfaces()).flat()) {
+    if(/^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(entry.address)) assert.equal(isLocalReviewRequest({headers:{host:entry.address+':4173'}}),true);
+  }
+  assert.equal(isLocalReviewRequest({headers:{host:'untrusted.example:4173'}}),false);
+  assert.equal(isLocalReviewRequest({headers:{host:'8.8.8.8:4173'}}),false);
 });

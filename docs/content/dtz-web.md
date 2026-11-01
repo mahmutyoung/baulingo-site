@@ -33,3 +33,35 @@ The local reading and speaking toolbars compact when pinned by scrolling. Readin
 ## DTZ çalışma listeleri
 
 Yerel çalışma sayfası ham istatistik tabloları yerine gözden geçirilmiş 69 kelime, 19 bağımsız ifade ve özgün bankadan 258 cümle sunar; kişi adı içeren iki cümle çıkarılmıştır. Kelime türü, konu ve sınav bölümü filtreleri tarayıcıda çalışır; JavaScript kapalıyken bütün listeler okunur. Kelime ve ifadelerin sınav bölümü, incelenen kaynaklarda ilgili biçimin görüldüğü bölümlerdir; örnek cümlelerde bankanın bölüm etiketidir. Kaynak analiz ve tablo bilgileri german-exam-obsidian Sentence Game Word Frequency, Chunk Frequency ve Universal Sentence Bank kayıtlarındadır. Bu derleme tüm DTZ kelime dağarcığını kapsadığını veya gelecekte hangi ifadenin çıkacağını iddia etmez.
+
+## Expanded phrase list
+
+The local study page now has 80 authored phrase entries across ten situations. Each has a Turkish meaning, a complete German example and a stable row ID. Existing topic/section filters apply to these entries; each row can receive an individual comment in development review. Phrase selection is editorial, not a frequency or exam-probability ranking.
+
+## CEFR-first study lists
+
+The study page now groups A1, A2 and B1 first, then situations, with word, phrase and sentence-frame tables within each situation. A1 adds 24 authored entries per content type. Existing A2/B1 sentence levels and frame families are retained from the original seed bank; word/phrase levels are editorial labels for the chosen examples. Current totals: 93 words, 104 phrases and 282 sentence/frame entries. The generator is `scripts/study-page.mjs`; the browser filter handles level, situation, content kind, word type and exam section. Existing word/phrase/sentence anchors remain usable.
+
+Level design uses the [Council of Europe global scale](https://www.coe.int/en/web/common-european-framework-reference-languages/table-1-cefr-3.3-common-reference-levels-global-scale/) as guidance; individual item labels are teaching assignments, not official CEFR certification.
+
+## Study list sizes
+
+The level-first lists now offer cumulative Temel, Genişletilmiş and Full liste selections, independently of CEFR level. Each item has explicit `listTier` metadata. The initial selection rule uses the first two entries per level/situation/content type for Temel, the next three for Genişletilmiş, and remaining entries for Full. These are starting selections in current editorial order, not frequency-based rankings. Genişletilmiş includes Temel; Full includes all 479 current entries. The default/reset selection is Temel.
+
+## Expansion from the frame tables
+
+The current collection has 218 words, 180 reusable phrases and 1,387 sentence/frame examples. A1 has 60 entries per content type. The phrase bank incorporates all 120 entries from `docs/content/dtz-frames/phrase-frames.md`, plus the 60 authored A1 phrases. Word additions are editorial vocabulary entries with Turkish meanings and authored examples informed by the source situations; the 2,062 raw inflected word forms are not presented as a finished dictionary.
+
+The sentence collection imports 1,299 of the 1,300 original ladder rows, preserving `sourceLadder`, `sourceFrame` and `sourceLevel`, and keeps 28 original seed examples not present verbatim in the ladder plus 60 A1 examples. A2.1/A2.2 map to A2; the bridge A2-B1 and B1.1/B1.2 rows map to B1. Frames identify a communicative family; its examples may rephrase the pattern. One source greeting’s surname was changed to Weber to preserve the existing website convention.
+
+List sizes now use up to four entries per level/situation/content type for Temel and up to eight for Genişletilmiş. Sentence selection prioritises different frame families before close variants. Full liste includes all 1,785 current entries. The cumulative totals are 318 / 551 / 1,785. Generated markup shares group context and uses compact per-item metadata; JavaScript restores the filter attributes while all examples remain readable in static HTML. This keeps the existing 2 MB core publication limit.
+
+## Expression and sentence-pattern distinction
+
+Public terminology is now Kelimeler / İfadeler / Cümle kalıpları. Source arrays retain all full text and provenance. `entryKind` classifies complete fixed formulas and lexical combinations as expressions; variable sentence structures use stable `frameId` values that normalise placeholder naming. Sentence lists select structures and retain their examples together. The live counters count distinct structure keys separately from example sentences. Non-sentence greetings, closings and short ordering formulas are shown with expressions, not counted as sentence patterns. The remaining 1,387 source examples are preserved verbatim, alongside the complete examples associated with the original 180 phrase records. Old category anchors remain supported.
+
+Sentence patterns use the same three-column table format as words and expressions: Cümle kalıbı / Türkçe anlamı / Örnek. Turkish template meanings are authored in `scripts/sentence-meanings.mjs`. Long text wraps inside its cell without truncation; on phones the three labelled cells stack. Filters hide the whole pattern row when none of its complete examples match. Compact filter metadata shares the pattern context while preserving individual record identifiers and every example.
+
+Study filters now depend on earlier selections in this order: CEFR level, list size, situation, content type, word type and exam section. Each dropdown contains only choices with matching content in that context. Incompatible downstream selections clear; compatible selections remain. Word type is hidden for expressions and sentence patterns. Reset and level links use the same rules.
+
+The owner’s saved review requested removal of “Der neue Drucker funktioniert nicht.” under “Mit {product} gibt es ein Problem.” The website record `sentence-081` (`LADDER-081-1`) is removed; this explicit omission accounts for the reduced source and list totals. The original source documents remain intact. `/sinavlar/` now groups the DTZ mock test and study lists; both pages link back to that overview.

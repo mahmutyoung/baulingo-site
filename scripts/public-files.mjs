@@ -22,7 +22,7 @@ export const publicFiles = [
 ];
 export const generatedFiles = [
   'en/index.html', 'en/word-order/index.html', 'en/articles/index.html', 'en/appointments/index.html',
-  '404.html', 'robots.txt', 'sitemap.xml', 'konular/index.html', 'uygulama/index.html',
+  '404.html', 'robots.txt', 'sitemap.xml', 'sinavlar/index.html', 'konular/index.html', 'uygulama/index.html',
   ...topics.map(topic => `konular/${topic.id}/index.html`),
   'konular/kafede-siparis/index.html',
   'dtz-deneme-sinavi/index.html', 'dtz-kelime-kalip-cumle/index.html',

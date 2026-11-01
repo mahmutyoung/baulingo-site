@@ -6,3 +6,4 @@
 #component-target{padding:12px;background:#e9ede3;border-radius:10px;margin-bottom:16px}#component-label{overflow-wrap:anywhere;margin:0 0 8px}.annotation-control{display:flex;align-items:center;gap:8px;font-size:14px}
 
 .note-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.note-actions button{font-size:13px;min-height:36px;padding:6px 12px}.note-actions textarea{width:100%;min-height:80px}
+[hidden]{display:none!important}

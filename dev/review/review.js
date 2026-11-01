@@ -2,8 +2,12 @@ const $ = selector => document.querySelector(selector);
 let model = null, changeId = '', stepIndex = 0, saving = false;
 let previewScroll = null;
 let component = null;
+let pendingDraft = null;
+const draftStorageKey = 'baulingo.website-review-draft';
+function captureDraft() { return currentStep() && $('#note').value.trim() ? { changeId, stepId: currentStep().id, component, text: $('#note').value } : null; }
+function persistDraft(draft) { try { if (draft) sessionStorage.setItem(draftStorageKey, JSON.stringify(draft)); else sessionStorage.removeItem(draftStorageKey); } catch { /* Drafts still work in memory. */ } }
 const drafts = new Map();
-const currentChange = () => model?.changes.find(change => change.id === changeId);
+const currentChange = () => model?.changes.find(change => change.id === changeId) || (changeId === model?.websiteReview?.id ? model.websiteReview : undefined);
 const currentStep = () => currentChange()?.steps[stepIndex];
 const draftKey = () => JSON.stringify([changeId, currentStep()?.id, component?.path, component?.selector]);
 const element = (tag, text, className) => {
@@ -13,7 +17,7 @@ const element = (tag, text, className) => {
   return node;
 };
 function status(message) { $('#status').textContent = message; }
-function retainDraft() { if (currentStep()) drafts.set(draftKey(), $('#note').value); }
+function retainDraft() { if (currentStep()) { drafts.set(draftKey(), $('#note').value); persistDraft(captureDraft()); } }
 function selectComponent(target) {
   retainDraft(); component = target;
   $('#component-target').hidden = !target;
@@ -32,8 +36,11 @@ function savePosition() {
   try { sessionStorage.setItem('baulingo.website-review-position', JSON.stringify({ changeId, stepId: currentStep().id })); } catch { /* Optional convenience. */ }
 }
 function loadPreview() {
+  pendingDraft ||= captureDraft();
   previewScroll = { left: window.scrollX, top: window.scrollY, behavior: 'instant' };
-  $('#preview').src = previewURL();
+  const url = new URL(previewURL());
+  url.searchParams.set('__review_reload', String(Date.now()));
+  $('#preview').src = url.href;
   $('#open-preview').href = previewURL();
 }
 function renderChanges() {
@@ -110,7 +117,7 @@ async function mutateNote(action, note, text) {
 }
 function render() {
   const change = currentChange(), step = currentStep(); if (!change || !step) return;
-  $('#change-date').textContent = `${model.changes[0].id === change.id ? 'LATEST CHANGE · ' : ''}${change.date}`;
+  $('#change-date').textContent = `${model.changes[0]?.id === change.id ? 'LATEST CHANGE · ' : ''}${change.date}`;
   $('#change-title').textContent = change.title;
   $('#change-summary').textContent = change.summary;
   $('#before').textContent = change.before; $('#after').textContent = change.after;
@@ -125,14 +132,30 @@ function render() {
   renderChanges(); renderSteps(); renderNotes(); savePosition();
 }
 async function refresh(rebuild = false) {
+  let draft = captureDraft();
+  if (!model) { try { draft = JSON.parse(sessionStorage.getItem(draftStorageKey)); } catch { /* No saved draft. */ } }
+  retainDraft();
   selectComponent(null); $('#refresh').disabled = true;
   try {
     const response = await fetch('/dev/review/api', rebuild ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'refresh' }) } : { cache: 'no-store' });
     const next = await response.json();
     if (!response.ok) throw Error(next.error || 'Review data could not be loaded. Check the local server and try Refresh changes.');
-    if (!Array.isArray(next.changes) || !next.changes.length) throw Error('No review changes are registered.');
+    if (!Array.isArray(next.changes)) throw Error('Review data could not be loaded.');
     const previousStep = currentStep()?.id;
     model = next;
+    if (draft && typeof draft.text === 'string') {
+      const destination = model.changes.find(c => c.id === draft.changeId) || (draft.changeId === model.websiteReview?.id ? model.websiteReview : null);
+      if (destination) { changeId = destination.id; stepIndex = Math.max(0, destination.steps.findIndex(s=>s.id===draft.stepId)); pendingDraft = draft; }
+    }
+    const empty = model.changes.length === 0;
+    $('#empty-queue').hidden = !empty;
+    $('.workspace>.change-summary:not(#empty-queue)').hidden = empty;
+    $('.step-navigation').hidden = empty;
+    $('#steps').hidden = empty;
+    if (empty) {
+      changeId = model.websiteReview.id; stepIndex = 0;
+      render(); return;
+    }
     if (!changeId) {
       try { const position = JSON.parse(sessionStorage.getItem('baulingo.website-review-position')); changeId = position?.changeId || ''; stepIndex = Math.max(0, model.changes.find(c => c.id === changeId)?.steps.findIndex(s => s.id === position.stepId) ?? 0); } catch { /* Use latest change. */ }
     }
@@ -157,10 +180,11 @@ async function save(decision) {
     const data = await response.json();
     if (!response.ok) throw Error(data.error || 'Feedback could not be saved. Your draft is still here.');
     model.notes.push(data.note);
+    persistDraft(null);
     if (drafts.get(key) === text) drafts.delete(key);
     if (draftKey() === key && $('#note').value === text) $('#note').value = '';
     renderSteps(); renderNotes(); status('Saved locally. No agent work or publication was started.');
-  } catch (error) { status(error.message); }
+  } catch (error) { status(error.message); $('#status').scrollIntoView({ block: 'nearest', behavior: 'instant' }); }
   finally { saving = false; for (const button of document.querySelectorAll('.decision-actions button')) button.disabled = false; }
 }
 
@@ -178,7 +202,12 @@ for (const button of document.querySelectorAll('[data-width]')) button.addEventL
   for (const control of document.querySelectorAll('[data-width]')) control.setAttribute('aria-pressed', String(control === button));
 });
 $('#preview').addEventListener('load', () => {
+  const draft = pendingDraft; pendingDraft = null;
   selectComponent(null);
+  if (draft && currentChange()?.id === draft.changeId && currentStep()?.id === draft.stepId) {
+    selectComponent(draft.component); $('#note').value = draft.text;
+    drafts.set(draftKey(), draft.text); persistDraft(draft);
+  }
   annotations();
   if (previewScroll) window.scrollTo(previewScroll);
   const step = currentStep();

@@ -3,6 +3,25 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import './build-fixture.mjs';
 
+test('Sınavlar opens an exam overview with DTZ materials and audience guidance', async () => {
+  const home = await readFile('dist/index.html','utf8');
+  assert.match(home, /href="\/sinavlar\/">Sınavlar<\/a>/);
+  const html = await readFile('dist/sinavlar/index.html','utf8');
+  assert.match(html, /canonical" href="https:\/\/baulingo.app\/sinavlar\/"/);
+  assert.match(html, /href="\/sinavlar\/" class="active" aria-current="page">Sınavlar/);
+  assert.match(html, /id="dtz"/);
+  assert.match(html, /href="\/dtz-deneme-sinavi\/"/);
+  assert.match(html, /href="\/dtz-kelime-kalip-cumle\/"/);
+  for(const exam of ['Goethe','telc','TestDaF','DSH','DTB'])assert.ok(html.includes(exam));
+  assert.match(await readFile('dist/sitemap.xml','utf8'), /https:\/\/baulingo.app\/sinavlar\//);
+});
+
+test('review-requested printer example is removed from the study page', async () => {
+  const html=await readFile('dist/dtz-kelime-kalip-cumle/index.html','utf8');
+  assert.doesNotMatch(html,/Der neue Drucker funktioniert nicht\./);
+  assert.match(html,/Mit \{ürün\} gibt es ein Problem\./);
+});
+
 test('homepage topic links navigate to pages and app information has its own page', async () => {
   const home = await readFile('dist/index.html', 'utf8');
   assert.match(home, /href="\/uygulama\/"/);

@@ -1,5 +1,245 @@
 [
   {
+    "id": "exam-content-first-2026-11-01",
+    "title": "DTZ content first, exam information below",
+    "date": "2026-11-01",
+    "summary": "The exam page leads with the practice test and study lists. Exam explanations move into an optional section.",
+    "before": "The page introduced exam types before the learning materials.",
+    "after": "Two prominent content cards lead straight to the DTZ test and study lists. The complete exam guide remains below under Sınavlar hakkında, collapsed by default.",
+    "files": [
+      "scripts/pages.mjs",
+      "style.css"
+    ],
+    "steps": [
+      {
+        "id": "content-first",
+        "title": "Practice and study first",
+        "path": "/sinavlar/",
+        "focus": "#dtz",
+        "check": "The DTZ test and study-list buttons should be the main choices. On phones the cards stack. The general exam information is below, under Sınavlar hakkında; expand it with mouse or keyboard."
+      }
+    ]
+  },
+  {
+    "id": "exams-overview-review-fix-2026-11-01",
+    "title": "Sınavlar overview and saved-comment fix",
+    "date": "2026-11-01",
+    "summary": "Sınavlar now opens an overview with DTZ links and a brief guide to exam audiences. The requested printer example is removed.",
+    "before": "The Sınavlar navigation went directly to the DTZ player; no exam overview existed. One unwanted printer example remained under a different template.",
+    "after": "The overview groups the available DTZ test and study lists, and explains DTZ, Goethe/telc, DTB and TestDaF/DSH with official sources. Only DTZ preparation is offered.",
+    "files": [
+      "index.html",
+      "scripts/pages.mjs",
+      "scripts/public-files.mjs",
+      "src/topics.js",
+      "src/dtz-study.js",
+      "style.css"
+    ],
+    "steps": [
+      {
+        "id": "overview",
+        "title": "Sınavlar and DTZ links",
+        "path": "/sinavlar/",
+        "focus": "#main",
+        "check": "Open Sınavlar from the homepage. Inspect the DTZ links, the short audience guide and the official sources. Follow the mock-test and study links and return using Sınavlar. Check phone layout and keyboard navigation."
+      },
+      {
+        "id": "printer-comment",
+        "title": "Requested example removed",
+        "path": "/dtz-kelime-kalip-cumle/#cumle-kaliplari",
+        "focus": ".study-filters",
+        "check": "Select A2, Full liste and Alışveriş ve hizmetler. Mit {ürün} gibt es ein Problem. remains, but Der neue Drucker funktioniert nicht. is absent."
+      }
+    ]
+  },
+  {
+    "id": "dependent-study-filters-2026-11-01",
+    "title": "Study filters follow the current selection",
+    "date": "2026-11-01",
+    "summary": "Level and list size limit the situations, content types and exam sections offered in later filters.",
+    "before": "Dropdowns listed every option even when it could not match the selected level or situation.",
+    "after": "Filters follow level → list size → situation → content type → word type → exam section. Unavailable choices disappear, incompatible selections clear, and word type hides for expressions and sentence patterns.",
+    "files": [
+      "src/dtz-study-filter.js"
+    ],
+    "steps": [
+      {
+        "id": "dependent-filters",
+        "title": "Choose A1 and inspect available options",
+        "path": "/dtz-kelime-kalip-cumle/",
+        "focus": ".study-filters",
+        "check": "Choose A1: situations must only include A1 content in the current list size. Change the list size and situation, then inspect content type and exam section choices. Switch to expressions or sentence patterns: word type should disappear. Change level or reset and confirm invalid choices clear and available choices return."
+      }
+    ]
+  },
+  {
+    "id": "sentence-pattern-tables-2026-11-01",
+    "title": "Cümle kalıbı / Türkçe anlamı / Örnek",
+    "date": "2026-11-01",
+    "summary": "Sentence patterns use the same three-column format as words and expressions, with Turkish meanings and complete examples.",
+    "before": "Sentence patterns used separate blocks with bullet examples.",
+    "after": "Three columns show Cümle kalıbı, Türkçe anlamı and Örnek. Long text wraps inside its cell without shortening.",
+    "files": [
+      "scripts/study-page.mjs",
+      "scripts/sentence-meanings.mjs",
+      "style.css"
+    ],
+    "steps": [
+      {
+        "id": "tables",
+        "title": "Three-column pattern tables",
+        "path": "/dtz-kelime-kalip-cumle/#cumle-kaliplari",
+        "focus": ".study-filters",
+        "check": "Inspect a sentence pattern on desktop and phone. Its structure, Turkish meaning and full examples occupy three columns; long sentences wrap inside their cells. Filters and counts should continue to work."
+      }
+    ]
+  },
+  {
+    "id": "expression-sentence-pattern-distinction-2026-11-01",
+    "title": "İfadeler and Cümle kalıpları",
+    "date": "2026-11-01",
+    "summary": "Expressions and grammatical sentence patterns are separate; full examples are preserved.",
+    "before": "Sentence realizations were included in a general content count and some fixed expressions appeared under sentence patterns.",
+    "after": "Kelimeler, İfadeler and Cümle kalıpları are distinct. Fixed greetings and sign-offs are expressions, while sentence patterns have replaceable grammatical slots. Counters distinguish unique patterns from complete example sentences.",
+    "files": [
+      "src/dtz-study.js",
+      "scripts/study-page.mjs",
+      "src/dtz-study-filter.js",
+      "index.html",
+      "scripts/pages.mjs",
+      "style.css"
+    ],
+    "steps": [
+      {
+        "id": "expressions",
+        "title": "İfadeler",
+        "path": "/dtz-kelime-kalip-cumle/#ifadeler",
+        "focus": ".study-filters",
+        "check": "Select Full liste. Expressions and fixed formulas remain complete and have their original examples."
+      },
+      {
+        "id": "patterns",
+        "title": "Cümle kalıpları",
+        "path": "/dtz-kelime-kalip-cumle/#cumle-kaliplari",
+        "focus": ".study-filters",
+        "check": "Select Full liste. Patterns show grammatical slots with all related full examples underneath. The counter reports patterns separately from examples."
+      }
+    ]
+  },
+  {
+    "id": "expanded-source-study-lists-2026-11-01",
+    "title": "Expanded lists from the source tables",
+    "date": "2026-11-01",
+    "summary": "Larger Temel and Genişletilmiş selections, all 1,300 sentence-ladder rows and more usable vocabulary and phrases.",
+    "before": "The three list sizes shared a smaller collection of 93 words, 104 phrases and 282 sentence examples.",
+    "after": "218 words, 180 phrases and 1,388 sentence/frame examples. Temel includes up to four entries per level/situation/type; Genişletilmiş includes up to eight; Full liste includes all available entries. Sentence frames group their variants together.",
+    "files": [
+      "src/dtz-study.js",
+      "src/dtz-study-filter.js",
+      "scripts/study-page.mjs",
+      "style.css"
+    ],
+    "steps": [
+      {
+        "id": "a1",
+        "title": "Expanded A1 collection",
+        "path": "/dtz-kelime-kalip-cumle/#level-A1",
+        "focus": ".study-filters",
+        "check": "Compare all three list sizes in A1. There are 60 words, 60 phrases and 60 sentence examples in Full liste."
+      },
+      {
+        "id": "variants",
+        "title": "Full sentence ladders",
+        "path": "/dtz-kelime-kalip-cumle/#cumleler",
+        "focus": ".study-filters",
+        "check": "Choose Full liste and explore A2/B1 situations. Each sentence family groups its examples. Switch level/type and confirm filters and phrase comments work."
+      }
+    ]
+  },
+  {
+    "id": "study-list-types-2026-11-01",
+    "title": "Temel, Genişletilmiş, Full liste",
+    "date": "2026-11-01",
+    "summary": "Three cumulative list sizes within the CEFR and situation filters.",
+    "before": "Every matching study entry was shown together.",
+    "after": "Temel starts with two entries per level/situation/content type; Genişletilmiş includes up to five; Full liste shows all currently available entries.",
+    "files": [
+      "src/dtz-study.js",
+      "src/dtz-study-filter.js",
+      "scripts/study-page.mjs"
+    ],
+    "steps": [
+      {
+        "id": "lists",
+        "title": "List sizes",
+        "path": "/dtz-kelime-kalip-cumle/#level-A1",
+        "focus": ".study-filters",
+        "check": "Switch among Temel, Genişletilmiş and Full liste; then select a situation and content type. Smaller lists must remain included in larger ones."
+      }
+    ]
+  },
+  {
+    "id": "cefr-study-lists-2026-11-01",
+    "title": "A1 → A2 → B1 study lists",
+    "date": "2026-11-01",
+    "summary": "CEFR level first, then situation, then words, phrases and sentence frames.",
+    "before": "The study page grouped lists by content type; words and phrases did not have levels and there was no A1 collection.",
+    "after": "A1, A2 and B1 sections organise situations with words, phrase examples and reusable sentence frames. Level, situation, content type and exam-section filters work together. Each phrase retains its own comment target.",
+    "files": [
+      "src/dtz-study.js",
+      "scripts/pages.mjs",
+      "scripts/study-page.mjs",
+      "src/dtz-study-filter.js",
+      "style.css"
+    ],
+    "steps": [
+      {
+        "id": "a1",
+        "title": "A1 lists",
+        "path": "/dtz-kelime-kalip-cumle/#level-A1",
+        "focus": "#level-A1",
+        "check": "Choose A1, then a situation. Read the words, phrases and sentence frames with examples. Check phone and desktop layouts."
+      },
+      {
+        "id": "b1",
+        "title": "B1 lists and filters",
+        "path": "/dtz-kelime-kalip-cumle/#level-B1",
+        "focus": "#level-B1",
+        "check": "Try situation/content filters and clear them. Individual phrase + buttons should target that phrase."
+      }
+    ]
+  },
+  {
+    "id": "website-phrase-list-80-2026-11-01",
+    "title": "80 useful German phrases",
+    "date": "2026-11-01",
+    "summary": "Situation, phrase, Turkish meaning and a complete example for each of 80 phrases.",
+    "before": "The study page had 19 short time and place expressions without example sentences.",
+    "after": "Ten situation groups provide reusable phrases with examples. Each phrase has its own review comment target.",
+    "files": [
+      "src/dtz-study.js",
+      "scripts/pages.mjs",
+      "style.css",
+      "dev/review/bridge.js"
+    ],
+    "steps": [
+      {
+        "id": "phrases",
+        "title": "Phrase list",
+        "path": "/dtz-kelime-kalip-cumle/",
+        "focus": "#kaliplar",
+        "check": "Check the four columns on desktop and stacked entries on phones. Use + on any phrase to leave a comment about that entry."
+      },
+      {
+        "id": "filters",
+        "title": "Situation filters",
+        "path": "/dtz-kelime-kalip-cumle/",
+        "focus": "#kaliplar",
+        "check": "Filter by situation and exam section. Hidden phrases should not have visible comment buttons."
+      }
+    ]
+  },
+  {
     "id": "review-final-cleanup-2026-11-01",
     "title": "Final review follow-up",
     "date": "2026-11-01",

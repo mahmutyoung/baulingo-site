@@ -1,3 +1,4 @@
+import { networkInterfaces } from 'node:os';
 import { readFile, writeFile, mkdir, rename, unlink } from 'node:fs/promises';
 import path from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
@@ -17,7 +18,12 @@ const headers = {
   'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store', 'Referrer-Policy': 'same-origin',
 };
 export function isLocalReviewRequest(request) {
-  try { return ['127.0.0.1', 'localhost', '[::1]'].includes(new URL(`http://${request.headers.host}`).hostname); }
+  try {
+    const hostname = new URL(`http://${request.headers.host}`).hostname;
+    if (['127.0.0.1', 'localhost', '[::1]'].includes(hostname)) return true;
+    const isPrivate = address => /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(address);
+    return isPrivate(hostname) && Object.values(networkInterfaces()).flat().some(entry => entry?.address === hostname);
+  }
   catch { return false; }
 }
 
@@ -48,15 +54,15 @@ async function model(root, store) {
   }));
   // Component notes may target any public page, beyond the selected walkthrough.
   const componentHash = createHash('sha256');
-  const sources = [...new Set([...publicFiles, 'src/dtz-study.js', 'scripts/pages.mjs', 'scripts/english-pages.mjs', 'scripts/dtz-page.mjs', 'scripts/build.mjs', 'scripts/assets.mjs', ...catalog.flatMap(c => c.files)])].sort();
+  const sources = [...new Set([...publicFiles, 'src/dtz-study.js', 'scripts/pages.mjs', 'scripts/study-page.mjs', 'scripts/english-pages.mjs', 'scripts/dtz-page.mjs', 'scripts/build.mjs', 'scripts/assets.mjs', ...catalog.flatMap(c => c.files)])].sort();
   for (const file of sources) {
     componentHash.update(file);
     try { componentHash.update(await readFile(path.join(root, file))); }
     catch (error) { if (error.code !== 'ENOENT') throw error; componentHash.update('missing'); }
   }
-  let notes = [], storageError = '';
-  try { notes = (await loadNotes(store)).notes; } catch (error) { storageError = error.message; }
-  return { changes, notes, storageError, componentVersion: componentHash.digest('hex'), generatedAt: new Date().toISOString() };
+  let notes = [], dismissedChanges = [], storageError = '';
+  try { const saved = await loadNotes(store); notes = saved.notes; dismissedChanges = Array.isArray(saved.dismissedChanges) ? saved.dismissedChanges : []; } catch (error) { storageError = error.message; }
+  return { changes: changes.filter(change => !dismissedChanges.includes(change.id)), notes, storageError, componentVersion: componentHash.digest('hex'), generatedAt: new Date().toISOString() };
 }
 
 export async function createReviewHandler({ root, storePath = path.join(root, '.dev/website-review.json'), refreshPreview = async () => {} }) {
@@ -69,6 +75,11 @@ export async function createReviewHandler({ root, storePath = path.join(root, '.
     const current = await model(root, storePath);
     current.changes = current.changes.map(change => ({ ...change, previewStale: previewVersions.get(change.id) !== change.sourceVersion }));
     current.componentPreviewStale = current.componentVersion !== previewComponentVersion;
+    current.websiteReview = {
+      id: 'website', title: 'Review the website', date: '', summary: 'Browse the website and use + to comment on a section.',
+      before: '', after: '', files: [], sourceVersion: current.componentVersion, previewStale: current.componentPreviewStale,
+      steps: [{ id: 'browse', title: 'Browse and comment', path: '/?lang=tr', check: 'Follow links, open dialogs and use + to leave a comment on a main component.' }],
+    };
     return current;
   };
   return async (request, response) => {
@@ -119,7 +130,7 @@ export async function createReviewHandler({ root, storePath = path.join(root, '.
           send(200, { note }); return;
         }
         const current = await workspace();
-        const change = current.changes.find(c => c.id === body?.changeId);
+        const change = current.changes.find(c => c.id === body?.changeId) || (body?.changeId === current.websiteReview.id ? current.websiteReview : null);
         if (!change || !change.steps.some(step => step.id === body.stepId) || !['note', 'approved', 'changes'].includes(body.status) || typeof body.text !== 'string' || body.text.length > 4000 || (body.status === 'changes' && !body.text.trim())) {
           send(400, { error: 'Select a review stop and enter valid feedback (up to 4,000 characters).' }); return;
         }

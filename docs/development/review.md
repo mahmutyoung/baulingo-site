@@ -1,6 +1,6 @@
 # Local website review
 
-Run `npm run dev` and open `http://127.0.0.1:4173/dev/review/`. For the current local session use `http://127.0.0.1:4180/dev/review/` (`npm run dev -- --port 4180`). The sibling `german-visual-mvp` Studio supplied the interaction pattern; no app code or dependencies were imported.
+Run `npm run dev` and open `http://127.0.0.1:4173/dev/review/`. For LAN access, run `npm run dev -- --host 0.0.0.0 --port 4173` and use this computer’s private LAN address on the same port. The sibling `german-visual-mvp` Studio supplied the interaction pattern; no app code or dependencies were imported.
 
 ## Review flow
 
@@ -23,7 +23,7 @@ The preview replaces localStorage with a private in-memory store before website 
 - `dev/review/changes.json` is the maintained change catalog. Record the newest visible change first with an honest summary, Before / after wording, relevant source/media files and concrete walkthrough stops. The summaries are authored handoffs, not an automatic Git diff; historical screenshots are not archived.
 - `dev/review/index.html`, CSS and JavaScript provide the workspace and isolated preview bridge. `scripts/review-server.mjs` owns local endpoints/notes/fingerprints; `scripts/review-rebuild.mjs` and `review-build.mjs` rebuild in a fresh module context.
 - Only normal development mode enables `/dev/review/`. `npm run preview` and `--production` return 404 for review endpoints. The public static allowlist contains none of the tool, catalog or feedback files. No deployed domain or new hosting project is needed.
-- Development responses permit same-origin iframes. Public `_headers` and production-style preview retain their frame protections. Review routes accept loopback hosts only; saves/refresh require the same origin, JSON and bounded request bodies. Writes are serialized and atomic, stale approvals rejected, and unreadable saved notes preserved rather than replaced.
+- Development responses permit same-origin iframes. Public `_headers` and production-style preview retain their frame protections. Review routes accept loopback hosts and private IPv4 addresses assigned to this computer; saves/refresh require the same origin, JSON and bounded request bodies. Writes are serialized and atomic, stale approvals rejected, and unreadable saved notes preserved rather than replaced.
 - Annotated local previews, including legal pages, use the dev response CSP so the local bridge can run. Normal pages keep their original meta CSP; neither legal source HTML nor production protections are changed by annotation serving.
 - The source list is explicit. Include changed shared code and media when maintaining a catalog entry; the tool does not infer every affected page automatically. Refresh rebuilding does not prove that all relevant checks passed.
 
@@ -34,3 +34,7 @@ Automated tests check development-only routes/public exclusion, same-origin writ
 31 October component feedback verification: all 34 Node tests and the public build passed. Browser checks covered 320/390/1440 px navigation, Escape, real link navigation, no-JavaScript fallback, the shortened DTZ introduction, component note persistence/draft switching, annotation visibility controls, legal-page annotations, and an actual pointer click on a comment button inside a modal. Desktop and phone screenshots were inspected. The original three owner notes remained unchanged in number; test notes went to a separate scratch store. No deployment was performed.
 
 Saved reviews have Edit and Delete controls. Edits retain the original target and source version; deletion requires confirmation. Concurrent changes to a note are rejected instead of overwritten. Historical Needs changes decisions remain visible.
+
+When the local queue is cleared, the review page still shows the website with component comment buttons. These notes use the website review context and do not create a queued change. Previous feedback is archived locally when resetting the queue.
+
+Comment drafts and their component targets are retained through Refresh changes and browser reload using session storage where available. If the source changes, saving still requires a refreshed preview; the draft remains available to check and save afterward.
