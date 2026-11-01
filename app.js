@@ -1,10 +1,9 @@
-import { exercises, newExercise, toggleWord, checkAnswer, nextHint } from './src/exercise.js';
+import { createSentenceBuilder } from './src/sentence-builder.js';
 import { topics, searchTopics } from './src/topics.js';
 
 const $ = selector => document.querySelector(selector);
-let state = newExercise();
-let hintVisible = false;
 let modalTrigger = null;
+let currentTopic = 'coffee';
 
 function element(tag, text, className) {
   const node = document.createElement(tag);
@@ -13,85 +12,7 @@ function element(tag, text, className) {
   return node;
 }
 
-function chooseWord(wordId, fromAnswer = false) {
-  state = toggleWord(state, wordId);
-  renderExercise();
-  const target = fromAnswer ? `#word-bank [data-word="${wordId}"]` : `#answer-slots [data-word="${wordId}"]`;
-  $(target)?.focus({ preventScroll: true });
-}
-
-function renderExercise() {
-  const exercise = exercises[state.id];
-  $('#exercise-title').textContent = exercise.title;
-  $('#translation').textContent = exercise.translation;
-  const slots = $('#answer-slots');
-  slots.replaceChildren();
-  for (let index = 0; index < 3; index++) {
-    const item = element('li');
-    const wordId = state.selected[index];
-    if (wordId) {
-      const word = exercise.words.find(word => word.id === wordId);
-      const button = element('button', word.text, 'selected-word');
-      button.type = 'button';
-      button.lang = 'de';
-      button.dataset.word = word.id;
-      button.setAttribute('aria-label', `${word.text} — geri al`);
-      button.addEventListener('click', () => chooseWord(word.id, true));
-      item.append(button);
-    } else {
-      const slot = element('span', undefined, 'empty-slot');
-      slot.append(element('span', `${index + 1}. kelime boş`, 'visually-hidden'));
-      item.append(slot);
-    }
-    slots.append(item);
-  }
-  const bank = $('#word-bank');
-  bank.replaceChildren();
-  for (const word of exercise.words) {
-    const used = state.selected.includes(word.id);
-    const button = element('button', word.text, `word-tile${used ? ' used' : ''}`);
-    button.type = 'button';
-    button.dataset.word = word.id;
-    button.disabled = used;
-    button.setAttribute('aria-label', `${word.text} — cümleye ekle`);
-    button.addEventListener('click', () => chooseWord(word.id));
-    bank.append(button);
-  }
-  const messages = {
-    idle: '',
-    incomplete: 'Önce üç kelimeyi de seçerek cümleyi tamamla.',
-    incorrect: 'Henüz olmadı. “Einen” ile başla; sona “bitte” ekle. Kelimelere basarak sıralamayı değiştirebilirsin.',
-    correct: `Doğru! ${exercise.sentence} — ${exercise.translation}`,
-  };
-  $('#feedback').textContent = messages[state.status];
-  $('#feedback').dataset.status = state.status;
-  $('#check-answer').textContent = state.status === 'correct' ? 'Bir cümle daha' : 'Cümleyi kontrol et';
-  $('#reset-exercise').hidden = state.selected.length === 0;
-  $('#hint').hidden = !hintVisible;
-  $('#hint-toggle').setAttribute('aria-expanded', String(hintVisible));
-  $('#hint-toggle').textContent = hintVisible ? 'İpucunu gizle' : 'İpucu göster';
-  if (hintVisible) $('#hint').textContent = nextHint(state);
-}
-
-$('#check-answer').addEventListener('click', () => {
-  if (state.status === 'correct') {
-    state = newExercise(state.id === 'coffee' ? 'tea' : 'coffee');
-    hintVisible = false;
-    renderExercise();
-    $('#exercise-title').focus({ preventScroll: true });
-  } else {
-    state = checkAnswer(state);
-    renderExercise();
-    $('#check-answer').focus({ preventScroll: true });
-  }
-});
-$('#hint-toggle').addEventListener('click', () => { hintVisible = !hintVisible; renderExercise(); });
-$('#reset-exercise').addEventListener('click', () => {
-  state = newExercise(state.id);
-  hintVisible = false;
-  renderExercise();
-  $('#word-bank button').focus({ preventScroll: true });
-});
+const builder = createSentenceBuilder($('#practice-dialog'));
 
 function openDialog(dialog, trigger = document.activeElement) {
   modalTrigger = trigger;
@@ -100,10 +21,8 @@ function openDialog(dialog, trigger = document.activeElement) {
   document.body.classList.add('dialog-open');
 }
 
-function openPractice(trigger = $('#launch-practice')) {
-  state = newExercise();
-  hintVisible = false;
-  renderExercise();
+function openPractice(trigger = $('#launch-practice'), id = 'coffee') {
+  builder.reset(id);
   openDialog($('#practice-dialog'), trigger);
 }
 for (const dialog of document.querySelectorAll('dialog')) {
@@ -131,6 +50,7 @@ for (const button of document.querySelectorAll('[data-open]')) {
 function openTopic(topicId, trigger = document.activeElement) {
   const topic = topics.find(topic => topic.id === topicId);
   if (!topic) return;
+  currentTopic = topic.id;
   $('#topic-dialog-title').textContent = topic.title;
   $('#topic-dialog-subtitle').textContent = topic.subtitle;
   const content = $('#topic-content');
@@ -147,7 +67,7 @@ function openTopic(topicId, trigger = document.activeElement) {
     for (const text of topic.examples) list.append(element('li', text));
     content.append(list);
   }
-  $('#topic-practice').hidden = !topic.practice;
+  $('#topic-practice').hidden = !topic.practice || topic.id === 'exams';
   const returnTarget = trigger?.closest('#search-dialog') ? $('#search-query') : trigger;
   openDialog($('#topic-dialog'), returnTarget);
   $('#topic-dialog').scrollTop = 0;
@@ -160,7 +80,7 @@ for (const button of document.querySelectorAll('[data-topic]')) {
   });
 }
 $('#topic-practice').addEventListener('click', () => {
-  openPractice($('#launch-practice'));
+  openPractice($('#launch-practice'), currentTopic);
 });
 
 const phraseAudio = $('#phrase-audio');
@@ -229,5 +149,4 @@ $('#show-all-topics').addEventListener('click', () => {
   renderResults();
   $('#dialog-query').focus();
 });
-renderExercise();
-if (location.hash === '#alistirma') openPractice($('#launch-practice'));
+if (location.hash === '#alistirma') openPractice($('#launch-practice'), new URLSearchParams(location.search).get('practice') || 'coffee');

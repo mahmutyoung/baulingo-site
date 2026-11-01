@@ -115,9 +115,6 @@ function startNew() {
 }
 
 $('#dtz-start').addEventListener('click', startNew);
-$('#dtz-restart').addEventListener('click', () => {
-  if (confirm('Yeni deneme mevcut yanıtların ve yazının yerini alacak. Önce yazını indirebilirsin. Devam edilsin mi?')) startNew();
-});
 $('#dtz-resume').addEventListener('click', () => {
   if (!attempt) return;
   active = true;

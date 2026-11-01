@@ -10,7 +10,7 @@ import { rebuildReviewPreview } from '../scripts/review-rebuild.mjs';
 test('review refresh uses fresh generator modules and fresh DTZ sample answers', async () => {
   const scratch = await mkdtemp(path.join(os.tmpdir(), 'baulingo-review-build-'));
   try {
-    const files = [...publicFiles, 'src/dtz-study.js', '_headers', '_redirects', 'package.json', ...['build', 'assets', 'public-files', 'pages', 'dtz-page', 'review-build', 'review-server'].map(name => `scripts/${name}.mjs`)];
+    const files = [...publicFiles, 'src/dtz-study.js', '_headers', '_redirects', 'package.json', ...['build', 'assets', 'public-files', 'pages', 'english-pages', 'dtz-page', 'review-build', 'review-server'].map(name => `scripts/${name}.mjs`)];
     for (const file of files) { await mkdir(path.dirname(path.join(scratch, file)), { recursive: true }); await copyFile(file, path.join(scratch, file)); }
     const worker = pathToFileURL(path.join(scratch, 'scripts/review-build.mjs'));
     const before = await rebuildReviewPreview(worker);

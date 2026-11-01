@@ -15,8 +15,8 @@ Use embedded interactions to learn which needs and learning experiences matter t
 - Home: the supplied “Almancada aradığın cevap.” layout, topic search, a short phrase preview and three learning paths.
 - Grammar: articles, cases and word order, explained in Turkish.
 - Everyday German: situations such as appointments, shopping and speaking to a doctor.
-- Free resources: descriptive pages and direct downloads.
-- Exam preparation: a later section with reviewed, exam-specific content.
+- Free resources: removed from the pending website output at the owner’s request; source downloads remain in the repository.
+- Exam preparation: the DTZ simulation and study page are prepared locally; other packages remain planned.
 - About, contact and privacy: basic public information.
 - Embedded experiments: short interactions within the homepage or relevant existing content, using the same visual language and site deployment.
 
@@ -50,7 +50,7 @@ public/
 
 Keep content, answer rules and presentation separate. A page selects an exercise; it does not define its answer logic. Keep one reviewed source for content shared with the app. Use a controlled export when sharing becomes necessary. Do not copy the private application into this public repository.
 
-Keep Turkish as the first language. Use a route/content structure that can later support language folders without building language switching now. Final route names should be settled before publishing a learning library.
+Turkish remains the first audience. The owner also requested independently authored English content under `/en/`, with its own homepage and three lessons. `scripts/english-pages.mjs` generates those pages; `src/language.js` handles the initial browser preference and explicit language choices. English has no app information page.
 
 Build static output into `dist/` for the agreed Cloudflare hosting. The main site is live at `baulingo.app`; a dedicated WWW Worker redirects to the apex. Embedded experiments share the main site's build and deployment. Accounts, progress sync and server features can be added when a defined learner need requires them.
 
@@ -67,8 +67,12 @@ Local developer review uses `/dev/review/` with a maintained change catalog, the
 
 The DTZ simulation is implemented locally at `/dtz-deneme-sinavi/` as a new page within the main static build; publication is pending. `scripts/import-dtz.mjs` exports only the existing app's exam data and three media files. `src/dtz/content.js` holds that snapshot, `src/dtz/rules.js` owns pure state/scoring/deadline rules, `src/dtz/player.js` enhances the static output from `scripts/dtz-page.mjs`, and `dtz.css` extends the site's design. Normal builds do not read the app repository. The current attempt is stored only in localStorage; drafts and answers are never submitted. The core output retains its 2 MB budget, with the owner's separately approved 10 MB allowance for exact, lazy-loaded DTZ media. See [the port notes](content/dtz-web.md) for scope, provenance and verification. Other exam packages remain planned.
 
-The repository has static HTML/CSS, browser modules, generated topic/resource pages, a production-output preview, an explicit public-file build and focused tests. The sentence activity, topic dialogs, recorded audio and text downloads work on the live site. Continue from these pieces rather than rebuilding the homepage. No Astro migration or native app changes have been made. See [production notes](production.md) for deployment verification.
+The repository has static HTML/CSS, browser modules, generated topic and English pages, a production-output preview, an explicit public-file build and focused tests. The sentence activity, topic dialogs, recorded audio and text downloads work on the live site. Continue from these pieces rather than rebuilding the homepage. No Astro migration or native app changes have been made. See [production notes](production.md) for deployment verification.
 
 ## Static asset optimization
 
 The build generates content-hashed copies of explicit core assets with `scripts/assets.mjs`, rewrites HTML/CSS references and appends exact immutable-cache rules. Dynamic hashes remain constrained to allowlisted source names. Mutable URLs retain revalidation, and DTZ media is not duplicated. Responsive hero copies and local font subsets are generated offline; normal Node builds use tracked assets. See [performance notes](performance.md).
+
+## Shared sentence builder
+
+`src/sentence-builder.js` renders the word-selection exercise for both languages. `src/exercise.js` owns pure selection and checking rules; `src/english-exercises.js` supplies independently authored English tasks and hints. `app.js` opens Turkish practice, and `src/english-practice.js` handles English practice dialogs and focus return. English lessons retain readable examples without JavaScript.

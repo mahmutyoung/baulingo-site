@@ -33,7 +33,7 @@ export const topics = [
     practice: true,
   },
   {
-    id: 'doctor', title: 'Doktorda Almanca', subtitle: 'Şikâyetini anlat, randevu iste',
+    id: 'doctor', practice: true, title: 'Doktorda Almanca', subtitle: 'Şikâyetini anlat, randevu iste',
     keywords: 'doktor hastane randevu sağlık konuşma günlük hayat',
     paragraphs: [
       'Randevu isterken Ich möchte einen Termin vereinbaren. diyebilirsin. Anlamı: Bir randevu almak istiyorum.',

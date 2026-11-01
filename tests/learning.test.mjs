@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { newExercise, toggleWord, checkAnswer, nextHint } from '../src/exercise.js';
+import { exercises, newExercise, toggleWord, checkAnswer, nextHint } from '../src/exercise.js';
 import { searchTopics } from '../src/topics.js';
 
 const select = (words, id = 'coffee') => words.reduce(toggleWord, newExercise(id));
@@ -58,4 +58,20 @@ test('empty search offers all topics; arbitrary text produces a real empty state
   assert.ok(searchTopics('  ').length >= 5);
   assert.deepEqual(searchTopics('<script>alert(1)</script>'), []);
   assert.deepEqual(searchTopics('zzzzzzzz'), []);
+});
+
+test('English sentence tasks use the shared answer rules with contextual hints', () => {
+  for (const id of ['en-coffee', 'en-tea', 'en-word-order', 'en-articles', 'en-appointments']) {
+    let state = newExercise(id);
+    assert.equal(state.id, id);
+    assert.equal(checkAnswer(state).status, 'incomplete');
+    assert.ok(nextHint(state));
+    const task = exercises[id];
+    for (const word of task.answer) state = toggleWord(state, word);
+    assert.equal(checkAnswer(state).status, 'correct');
+    const wrong = task.answer.toReversed().reduce(toggleWord, newExercise(id));
+    assert.equal(checkAnswer(wrong).status, 'incorrect');
+    assert.equal(toggleWord(state, task.answer[0]).selected.length, task.answer.length - 1);
+    assert.equal(newExercise(id).selected.length, 0);
+  }
 });

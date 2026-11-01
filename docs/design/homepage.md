@@ -22,3 +22,7 @@ The built-in image generation tool reconstructed two standalone photographic ass
 These are the final asset prompts in condensed form. The original generations are retained in the local Codex generated-images folder. The approved logo and licensed fonts remain in use. Phosphor icons retain their MIT licence. The phrase audio is the existing Baulingo recording for “Einen Kaffee, bitte.”
 
 The supplied visual is the layout and copy reference. Raster texture, photograph reconstruction and icon stroke details can have small differences from the mock image. Do not add a new visual direction while extending the page.
+
+## English homepage
+
+The English homepage is independently authored for English-speaking learners. It reuses Baulingo colours, type and café artwork, with beginner grammar and everyday conversation lessons, native audio and a short sentence task. It has its own title, description and social metadata; the homepages identify each other through language links. It does not include an English app page.

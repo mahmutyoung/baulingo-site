@@ -6,6 +6,8 @@
   <meta name="google-site-verification" content="D9ERJX-krYYRtXL_Ry9ouWjNhxdd7iIdpwYAsB7Pt1E">
   <meta name="description" content="Türkçe açıklamalarla Almanca öğren. Günlük konuşmalar, der die das, cümle kurma ve hemen deneyebileceğin ücretsiz alıştırmalar.">
   <link rel="canonical" href="https://baulingo.app/">
+  <link rel="alternate" hreflang="en" href="https://baulingo.app/en/">
+  <link rel="alternate" hreflang="tr" href="https://baulingo.app/">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="tr_TR">
   <meta property="og:site_name" content="Baulingo">
@@ -22,6 +24,7 @@
   <link rel="preload" href="./assets/Newsreader-Bold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="./style.css">
   <script type="module" src="./app.js"></script>
+  <script type="module" src="./src/language.js"></script>
   <script type="module" src="./src/navigation.js"></script>
 </head>
 <body>
@@ -49,9 +52,9 @@
             <button class="search-submit" type="submit">Ara</button>
           </form>
           <div class="quick-topics" aria-label="Arayabileceğin konular">
-            <a href="/konular/cases/" data-topic="cases" aria-haspopup="dialog">Akkusativ Dativ farkı <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a>
-            <a href="/konular/exams/" data-topic="exams" aria-haspopup="dialog">B1 mektup <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a>
-            <a href="/konular/doctor/" data-topic="doctor" aria-haspopup="dialog">Doktorda Almanca <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a>
+            <a href="/konular/cases/">Akkusativ Dativ farkı <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a>
+            <a href="/dtz-deneme-sinavi/">DTZ denemesi <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a>
+            <a href="/konular/doctor/">Doktorda Almanca <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a>
           </div>
         </div>
         <div class="hero-visual">
@@ -75,9 +78,9 @@
             <div class="path-icon"><img src="./assets/icons/book-open.svg" width="34" height="34" alt=""></div>
             <div class="path-content"><h3>Grameri anla</h3><p>Temel kuralları Türkçe açıklamalarla öğren. Örneklerle pekiştir.</p>
               <ul class="path-links">
-                <li><a href="/konular/articles/" data-topic="articles" aria-haspopup="dialog">Der, die, das <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
-                <li><a href="/konular/cases/" data-topic="cases" aria-haspopup="dialog">Akkusativ ve Dativ <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
-                <li><a href="/konular/word-order/" data-topic="word-order" aria-haspopup="dialog">Almanca cümle sırası <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
+                <li><a href="/konular/articles/">Der, die, das <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
+                <li><a href="/konular/cases/">Akkusativ ve Dativ <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
+                <li><a href="/konular/word-order/">Almanca cümle sırası <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
               </ul>
             </div>
           </article>
@@ -85,9 +88,9 @@
             <div class="path-icon"><img src="./assets/icons/chat-circle.svg" width="34" height="34" alt=""></div>
             <div class="path-content"><h3>Günlük hayatta kullan</h3><p>Gerçek durumlar için pratik kelime ve kalıpları öğren.</p>
               <ul class="path-links">
-                <li><a href="/konular/doctor/" data-topic="doctor" aria-haspopup="dialog">Doktorda konuşma <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
-                <li><a href="/konular/doctor/" data-topic="doctor" aria-haspopup="dialog">Randevu alma <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
-                <li><a href="/konular/kafede-siparis/" data-open="practice-dialog" aria-haspopup="dialog">Kafede sipariş <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
+                <li><a href="/konular/doctor/">Doktorda konuşma <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
+                <li><a href="/konular/doctor/">Randevu alma <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
+                <li><a href="/konular/kafede-siparis/">Kafede sipariş <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
               </ul>
             </div>
           </article>
@@ -111,7 +114,7 @@
 
     <footer class="footer">
       <p>Baulingo <span>Günlük hayatta işe yarayan Almanca.</span></p>
-      <div><button type="button" class="text-button" data-open="about-dialog" aria-haspopup="dialog">Uygulama hakkında</button><a href="mailto:mahmutyoung@gmail.com">İletişim</a><a href="/impressum/" lang="de">Impressum</a><a href="./privacy/" lang="de">Datenschutz</a></div>
+      <div><a href="/uygulama/">Uygulama hakkında</a><a href="mailto:mahmutyoung@gmail.com">İletişim</a><a href="/impressum/" lang="de">Impressum</a><a href="./privacy/" lang="de">Datenschutz</a></div>
     </footer>
   </div>
 
@@ -150,7 +153,8 @@
   </dialog>
   <dialog class="content-dialog" id="language-dialog" aria-labelledby="language-title">
     <div class="dialog-top"><span class="dialog-brand">Baulingo</span><button class="close-button" type="button" data-close>Kapat</button></div>
-    <h2 id="language-title">İçerik dili: Türkçe</h2>
+    <h2 id="language-title">İçerik dili / Language</h2>
+    <p>Türkçe</p><p><a href="/en/" lang="en" data-language-choice="en">English</a></p>
   </dialog>
 
   <dialog class="content-dialog" id="topic-dialog" aria-labelledby="topic-dialog-title">
@@ -167,16 +171,6 @@
     <p class="search-count" id="search-count" role="status" aria-live="polite"></p>
     <ul class="search-results" id="search-results"></ul>
     <div class="empty-search" id="empty-search" hidden><h3>Bu aramada bir konu bulamadık.</h3><p>“Artikel”, “cümle” veya “doktor” yazmayı dene.</p><button class="text-button" id="show-all-topics" type="button">Tüm konuları göster</button></div>
-  </dialog>
-
-
-
-  <dialog class="content-dialog" id="about-dialog" aria-labelledby="about-title">
-    <div class="dialog-top"><span class="dialog-brand">Baulingo</span><button class="close-button" type="button" data-close>Kapat</button></div>
-    <h2 id="about-title">Almancayı bir durumun içinde öğren.</h2>
-    <p>Baulingo uygulamasında resimler, kısa konuşmalar ve pratik alıştırmalarla günlük Almanca çalışabilirsin. Cevabını seç, kelimelerle kur ve yazmayı dene.</p>
-    <p>Uygulama geliştirme ve test aşamasındadır. Android testi hakkında bilgi almak veya geri bildirim göndermek için bize yazabilirsin.</p>
-    <a class="button button-primary" href="mailto:mahmutyoung@gmail.com?subject=Baulingo%20Android%20testi">Android testi hakkında yaz</a>
   </dialog>
 </body>
 </html>

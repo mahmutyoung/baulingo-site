@@ -11,7 +11,7 @@ const read = file => readFile(path.join('dist', file), 'utf8');
 test('homepage keeps approved copy and offers real topic and resource links', async () => {
   const html = await read('index.html');
   assert.match(html, /Almancada<br>aradığın cevap\./);
-  assert.match(html, /<a [^>]*href="\/konular\/cases\/"[^>]*data-topic="cases"/);
+  assert.match(html, /<a [^>]*href="\/konular\/cases\/"/);
   assert.match(html, /action="\/konular\/"/);
   assert.doesNotMatch(html, /class="resource-banner"/);
   assert.match(html, /rel="canonical" href="https:\/\/baulingo.app\/"/);

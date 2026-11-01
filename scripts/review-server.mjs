@@ -48,7 +48,7 @@ async function model(root, store) {
   }));
   // Component notes may target any public page, beyond the selected walkthrough.
   const componentHash = createHash('sha256');
-  const sources = [...new Set([...publicFiles, 'src/dtz-study.js', 'scripts/pages.mjs', 'scripts/dtz-page.mjs', 'scripts/build.mjs', 'scripts/assets.mjs', ...catalog.flatMap(c => c.files)])].sort();
+  const sources = [...new Set([...publicFiles, 'src/dtz-study.js', 'scripts/pages.mjs', 'scripts/english-pages.mjs', 'scripts/dtz-page.mjs', 'scripts/build.mjs', 'scripts/assets.mjs', ...catalog.flatMap(c => c.files)])].sort();
   for (const file of sources) {
     componentHash.update(file);
     try { componentHash.update(await readFile(path.join(root, file))); }

@@ -1,6 +1,6 @@
 # Baulingo long-term roadmap
 
-Updated: 30 October 2026. This is the product roadmap. [Architecture](architecture.md) describes implementation, [production notes](production.md) record deployment and verification, and [handoff](handoff.md) identifies the next work.
+Updated: 1 November 2026. This is the product roadmap. [Architecture](architecture.md) describes implementation, [production notes](production.md) record deployment and verification, and [handoff](handoff.md) identifies the next work.
 
 ## Direction
 
@@ -61,3 +61,7 @@ Once relevant visitors arrive, define one embedded experiment brief before expan
 - Keep resources and downloads free and usable without an account or email capture.
 - Use the agreed free hosting plans; do not enable paid infrastructure to pursue an unvalidated idea.
 - Treat proposed features and measured outcomes separately from what is implemented and verified.
+
+## Owner-requested local content updates
+
+The owner approved an independently authored English homepage and three English lessons, with the shared interactive sentence builder and language selection. These are local features, not demand evidence. The website’s free-resource section and downloads were removed from pending output at the owner’s request. The DTZ traffic milestone and separate publication authorization still apply.

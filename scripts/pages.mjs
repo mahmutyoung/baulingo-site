@@ -1,3 +1,4 @@
+import { englishPages } from './english-pages.mjs';
 import { topics } from '../src/topics.js';
 import { dtzWords, dtzPhrases, dtzSentences } from '../src/dtz-study.js';
 import { dtzPageContent } from './dtz-page.mjs';
@@ -22,11 +23,11 @@ ${noindex ? '<meta name="robots" content="noindex">' : `<link rel="canonical" hr
 }
 
 export function generatePages(homepage) {
-  const output = new Map();
+  const output = englishPages();
   for (const topic of topics) {
     const examples = topic.examples.length ? `<ul class="topic-examples" lang="de">${topic.examples.map(text => `<li>${escape(text)}</li>`).join('')}</ul>` : '';
     output.set(`konular/${topic.id}/index.html`, page(topic.title, topic.subtitle, topicURL(topic),
-      `<p><a href="/konular/">← Tüm konular</a></p><article><h1>${escape(topic.title)}</h1><p class="dialog-subtitle">${escape(topic.subtitle)}</p>${topic.paragraphs.map(text => `<p>${escape(text)}</p>`).join('')}${examples}${(topic.links || []).map(link => `<p><a class="button button-primary" href="${escape(link.href)}">${escape(link.label)}</a></p>`).join('')}</article>${topic.practice ? '<p><a class="button button-primary" href="/#alistirma">Cümle kurmayı dene</a></p>' : ''}`));
+      `<p><a href="/konular/">← Tüm konular</a></p><article><h1>${escape(topic.title)}</h1><p class="dialog-subtitle">${escape(topic.subtitle)}</p>${topic.paragraphs.map(text => `<p>${escape(text)}</p>`).join('')}${examples}${(topic.links || []).map(link => `<p><a class="button button-primary" href="${escape(link.href)}">${escape(link.label)}</a></p>`).join('')}</article>${topic.practice && topic.id !== 'exams' ? `<p><a class="button button-primary" href="/?practice=${escape(topic.id)}#alistirma">Cümle kurmayı dene</a></p>` : ''}`));
   }
   output.set('konular/index.html', page('Almanca konuları', 'Türkçe açıklamalarla Almanca konuları.', '/konular/',
     `<h1>İhtiyacına göre başla</h1><p>Almancayı hedeflerine uygun konularla adım adım öğren.</p><ul class="topic-index">${topics.map(topic => `<li><a href="${topicURL(topic)}">${escape(topic.title)}</a><p>${escape(topic.subtitle)}</p></li>`).join('')}<li><a href="/konular/kafede-siparis/">Kafede sipariş</a></li></ul>`));
@@ -40,12 +41,13 @@ export function generatePages(homepage) {
     return `<section id="${id}" data-study-section><h2>${title}</h2><div class="study-filters" hidden>${types}<label>Sınav bölümü <select data-study-part><option value="">Tüm bölümler</option><option value="Hören">Dinleme · Hören</option><option value="Lesen">Okuma · Lesen</option><option value="Schreiben">Yazma · Schreiben</option><option value="Sprechen">Konuşma · Sprechen</option></select></label><label>Konu <select data-study-topic><option value="">Tüm konular</option>${options}</select></label></div><p class="study-empty" hidden>Bu seçimle eşleşen içerik bulunamadı.</p>${groups}</section>`;
   };
   output.set('dtz-kelime-kalip-cumle/index.html', page('DTZ kelime, kalıp ve cümleler', 'DTZ için konulara ayrılmış kelimeler, kalıplar ve örnek cümleler.', '/dtz-kelime-kalip-cumle/', `<h1>DTZ kelime, kalıp ve cümleler</h1><p>DTZ’ye hazırlanırken kelimeleri, kalıpları ve örnek cümleleri konu ve sınav bölümüne göre çalış.</p><nav aria-label="Bu sayfadaki başlıklar"><a href="#kelimeler">Kelimeler</a> · <a href="#kaliplar">Kalıplar</a> · <a href="#cumleler">Cümleler</a></nav>${studySection('kelimeler', 'DTZ’de çıkabilecek kelimeler', dtzWords, true)}${studySection('kaliplar', 'DTZ’de çıkabilecek kalıplar', dtzPhrases)}${studySection('cumleler', 'DTZ’de çıkabilecek cümleler', dtzSentences)}<p><a href="/dtz-deneme-sinavi/">Ücretsiz DTZ denemesine geç →</a></p>`).replace('</body>', '<script type="module" src="/src/dtz-study-filter.js"></script></body>'));
+  output.set('uygulama/index.html', page('Baulingo uygulaması', 'Günlük Almanca pratiği için Baulingo Android uygulaması.', '/uygulama/', '<h1>Baulingo uygulaması</h1><p>Resimler, kısa konuşmalar ve alıştırmalarla günlük Almanca çalış. Cevabını seç, kelimelerle cümle kur ve yazmayı dene.</p><p>Android uygulaması açık alfa test aşamasındadır.</p><p><a class="button button-primary" href="https://play.google.com/store/apps/details?id=com.baulingo.app">Google Play’de açık alfa testini incele</a></p>'));
   output.set('404.html', page('Sayfa bulunamadı', 'Aradığın sayfa bulunamadı.', '/404.html', '<h1>Sayfa bulunamadı</h1><p>Aradığın sayfa taşınmış veya kaldırılmış olabilir.</p><p><a class="button button-primary" href="/">Ana sayfaya dön</a></p><p><a href="/konular/">Konulara göz at</a></p>', true));
   output.set('dtz-deneme-sinavi/index.html', page('Ücretsiz DTZ deneme sınavı A2–B1', 'Türkçe yönergelerle ücretsiz DTZ denemesi: tam dinleme kaydı, 45 soru, yazma ve konuşma görevleri. Üyelik gerekmez.', '/dtz-deneme-sinavi/', dtzPageContent())
     .replace('class="reading-page"', 'class="reading-page dtz-main"')
     .replace('<script type="module" src="/src/navigation.js"></script></head>', '<link rel="stylesheet" href="/dtz.css"><script type="module" src="/src/navigation.js"></script></head>')
     .replace('</body>', '<script type="module" src="/src/dtz/player.js"></script></body>'));
-  const urls = ['/', '/konular/', ...topics.map(topicURL), '/konular/kafede-siparis/', '/dtz-kelime-kalip-cumle/', '/dtz-deneme-sinavi/'];
+  const urls = ['/', '/en/', '/en/word-order/', '/en/articles/', '/en/appointments/', '/uygulama/', '/konular/', ...topics.map(topicURL), '/konular/kafede-siparis/', '/dtz-kelime-kalip-cumle/', '/dtz-deneme-sinavi/'];
   output.set('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.map(url => `<url><loc>${origin}${url}</loc></url>`).join('')}</urlset>\n`);
   output.set('robots.txt', `User-agent: *\nAllow: /\nSitemap: ${origin}/sitemap.xml\n`);
   return output;

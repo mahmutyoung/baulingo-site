@@ -1,5 +1,186 @@
 [
   {
+    "id": "review-final-cleanup-2026-11-01",
+    "title": "Final review follow-up",
+    "date": "2026-11-01",
+    "summary": "All saved comments checked against the implementation; remaining B1 shortcut and Turkish exercise meanings corrected.",
+    "before": "The quick link still said B1 mektup; one Turkish practice meaning did not match its German sentence. Long Turkish words could overflow small-phone tiles.",
+    "after": "The shortcut opens the available DTZ simulation, practice meanings match the sentences and long exercise words fit in full-width phone tiles. Documentation records the completed comment audit.",
+    "files": [
+      "index.html",
+      "src/exercise.js",
+      "src/sentence-builder.js",
+      "style.css",
+      "docs/development/review-followup.md"
+    ],
+    "steps": [
+      {
+        "id": "home",
+        "title": "Homepage shortcut",
+        "path": "/?lang=tr",
+        "focus": ".quick-topics",
+        "check": "The former B1 letter shortcut is now DTZ denemesi and opens the simulation."
+      },
+      {
+        "id": "doctor",
+        "title": "Long exercise words",
+        "path": "/?practice=doctor#alistirma",
+        "check": "At small-phone and phone widths, Kopfschmerzen fits both the word bank and the selected answer."
+      }
+    ]
+  },
+  {
+    "id": "shared-english-builder-2026-11-01",
+    "title": "English interactive sentence builder",
+    "date": "2026-11-01",
+    "summary": "English now uses the same word-selection sentence builder as Turkish, with independent English prompts and hints.",
+    "before": "English practice revealed an example answer.",
+    "after": "The café phrase, homepage sentence task and English lessons open the shared interactive builder with selection/removal, answer checking, hints, reset and continuation where available.",
+    "files": [
+      "app.js",
+      "src/exercise.js",
+      "src/english-exercises.js",
+      "src/sentence-builder.js",
+      "src/english-practice.js",
+      "scripts/english-pages.mjs",
+      "style.css",
+      "scripts/public-files.mjs"
+    ],
+    "steps": [
+      {
+        "id": "cafe",
+        "title": "Café request",
+        "path": "/en/",
+        "check": "Open Build the sentence under the recording. Try a wrong order, remove a word, show a hint, reset, solve and continue to tea. Close with Escape and check focus returns."
+      },
+      {
+        "id": "sentence",
+        "title": "German word order",
+        "path": "/en/word-order/",
+        "check": "Build the four-word sentence. Test keyboard selection and hints at small phone, phone and desktop widths."
+      },
+      {
+        "id": "appointment",
+        "title": "Longer sentence",
+        "path": "/en/appointments/",
+        "check": "Build the five-word appointment request and check the tiles fit on a small phone."
+      },
+      {
+        "id": "turkish",
+        "title": "Turkish regression",
+        "path": "/?lang=tr",
+        "check": "Open the original café builder, solve coffee and continue to tea."
+      }
+    ]
+  },
+  {
+    "id": "english-home-seo-2026-11-01",
+    "title": "English homepage: beginner German",
+    "date": "2026-11-01",
+    "summary": "An original English homepage with everyday German, grammar lesson paths, audio and a short sentence activity.",
+    "before": "The English homepage was a short text index.",
+    "after": "The homepage uses the Baulingo café artwork and typography, links directly to the three available lessons, and includes descriptive search/share metadata and reciprocal homepage language links.",
+    "files": [
+      "scripts/english-pages.mjs",
+      "index.html",
+      "style.css"
+    ],
+    "steps": [
+      {
+        "id": "home",
+        "title": "English homepage",
+        "path": "/en/",
+        "check": "Check desktop, phone and small phone; try audio, the lesson links, the sentence answer and the getting-started questions."
+      }
+    ]
+  },
+  {
+    "id": "english-content-2026-11-01",
+    "title": "English lessons",
+    "date": "2026-11-01",
+    "summary": "Original lessons for English-speaking German learners, with a browser-language default and a manual language choice.",
+    "before": "The website offered Turkish content only.",
+    "after": "English visitors can read independently written lessons about word order, articles and appointments. English is selected initially for English browser settings; visitors can switch to Turkish. The DTZ simulation remains in Turkish.",
+    "addresses": [
+      "a929a217-7f90-4beb-97d5-45716b4028be",
+      "b7f4ec6d-c0e1-48ff-a4e8-a3ddbfa1cb95"
+    ],
+    "files": [
+      "scripts/english-pages.mjs",
+      "src/language.js",
+      "src/language-choice.js",
+      "index.html",
+      "scripts/pages.mjs",
+      "scripts/public-files.mjs"
+    ],
+    "steps": [
+      {
+        "id": "english-home",
+        "title": "English home",
+        "path": "/en/",
+        "check": "Check the English lesson priorities and the Turkish language link at desktop, phone and small-phone widths."
+      },
+      {
+        "id": "lesson",
+        "title": "English lesson",
+        "path": "/en/word-order/",
+        "check": "Read the independently written explanation and open the practice answer."
+      },
+      {
+        "id": "language",
+        "title": "Language choice",
+        "path": "/",
+        "focus": ".language",
+        "check": "Open the language selector and choose English; use Türkçe to return."
+      }
+    ]
+  },
+  {
+    "id": "review-followup-2026-11-01",
+    "title": "Konu sayfaları, alıştırmalar ve uygulama",
+    "date": "2026-11-01",
+    "summary": "Konu bağlantıları sayfalara gider, konuya uygun cümle alıştırmaları ve uygulama sayfası eklendi; DTZ sonucundaki yeni deneme düğmesi kaldırıldı. İngilizce henüz uygulanmadı.",
+    "before": "Konu bağlantıları açılır pencereleri kullanıyordu ve alıştırma hep kafe cümlesiydi.",
+    "after": "Gramer ve günlük hayat bağlantıları sayfalara gider; ilgili konularda alıştırma açılır. Uygulama sayfası açık alfa bağlantısını içerir.",
+    "addresses": [
+      "41cb8933-b11e-490a-8228-87fd74f0299e",
+      "bdfb324d-c845-484c-9958-a516025fe485",
+      "cb22bc7f-873f-4a46-8a6a-672e755bb743"
+    ],
+    "files": [
+      "index.html",
+      "app.js",
+      "src/exercise.js",
+      "src/topics.js",
+      "scripts/pages.mjs",
+      "scripts/public-files.mjs",
+      "scripts/dtz-page.mjs",
+      "src/dtz/player.js"
+    ],
+    "steps": [
+      {
+        "id": "topics",
+        "title": "Konu sayfaları ve alıştırma",
+        "path": "/",
+        "focus": "#konular",
+        "check": "Gramer ve günlük hayat bağlantılarını aç; konu sayfasından alıştırmayı dene."
+      },
+      {
+        "id": "app",
+        "title": "Uygulama hakkında",
+        "path": "/uygulama/",
+        "check": "Açık alfa açıklamasını ve Google Play bağlantısını kontrol et."
+      },
+      {
+        "id": "result",
+        "title": "DTZ sonucu",
+        "path": "/dtz-deneme-sinavi/",
+        "stage": "result",
+        "check": "Sonuçta yeni deneme düğmesi yok; yazıyı indirme seçeneği durur."
+      }
+    ]
+  },
+  {
     "id": "dtz-curated-lists-2026-11-01",
     "title": "DTZ listeleri ve filtreler",
     "date": "2026-11-01",
