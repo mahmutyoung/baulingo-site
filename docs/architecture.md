@@ -50,7 +50,7 @@ public/
 
 Keep content, answer rules and presentation separate. A page selects an exercise; it does not define its answer logic. Keep one reviewed source for content shared with the app. Use a controlled export when sharing becomes necessary. Do not copy the private application into this public repository.
 
-Turkish remains the first audience. The owner also requested independently authored English content under `/en/`, with its own homepage and three lessons. `scripts/english-pages.mjs` generates those pages; `src/language.js` handles the initial browser preference and explicit language choices. English has no app information page.
+Turkish remains the first audience. The owner also requested independently authored English content under `/en/`, with its own homepage and three lessons. `scripts/english-pages.mjs` generates those pages; `src/language.js` handles the initial browser preference and explicit language choices. The English header uses the same language chooser style as the Turkish homepage, showing the current language and a down arrow. English has no app information page.
 
 Build static output into `dist/` for the agreed Cloudflare hosting. The main site is live at `baulingo.app`; a dedicated WWW Worker redirects to the apex. Embedded experiments share the main site's build and deployment. Accounts, progress sync and server features can be added when a defined learner need requires them.
 
@@ -76,3 +76,5 @@ The build generates content-hashed copies of explicit core assets with `scripts/
 ## Shared sentence builder
 
 `src/sentence-builder.js` renders the word-selection exercise for both languages. `src/exercise.js` owns pure selection and checking rules; `src/english-exercises.js` supplies independently authored English tasks and hints. `app.js` opens Turkish practice, and `src/english-practice.js` handles English practice dialogs and focus return. English lessons retain readable examples without JavaScript.
+
+Study content on mobile defaults to horizontally scrollable tables, with a Liste / Tablo switch above the results. The switch preserves the active filters; static content remains readable without JavaScript.

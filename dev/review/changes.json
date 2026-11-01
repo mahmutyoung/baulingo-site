@@ -1,5 +1,48 @@
 [
   {
+    "id": "mobile-table-view-2026-11-01",
+    "title": "Mobile table and list views",
+    "date": "2026-11-01",
+    "summary": "Mobile study content opens as horizontally scrollable tables with a Liste / Tablo switch above the results on the right.",
+    "before": "Mobile tables always stacked into lists.",
+    "after": "Table is the default. Switch to Liste for stacked entries; filtering keeps the selected view.",
+    "files": [
+      "scripts/study-page.mjs",
+      "src/dtz-study-filter.js",
+      "style.css"
+    ],
+    "steps": [
+      {
+        "id": "mobile-views",
+        "title": "Table and list on mobile",
+        "path": "/dtz-kelime-kalip-cumle/",
+        "focus": ".study-views",
+        "check": "At phone width, swipe a table horizontally. Switch between Liste and Tablo with touch and keyboard. Change level/content filters and verify counts and visible entries remain correct. Desktop tables remain unchanged. Without JavaScript, static lists remain readable."
+      }
+    ]
+  },
+  {
+    "id": "uniform-language-selector-2026-11-01",
+    "title": "Matching language selectors",
+    "date": "2026-11-01",
+    "summary": "English pages use the same language chooser style as the Turkish homepage.",
+    "before": "English headers linked directly to Turkish without a chooser or arrow.",
+    "after": "English headers show English and a down arrow, opening the shared-style language dialog with a Turkish link.",
+    "files": [
+      "scripts/english-pages.mjs",
+      "src/language.js"
+    ],
+    "steps": [
+      {
+        "id": "language-chooser",
+        "title": "Switch languages",
+        "path": "/en/",
+        "focus": ".language",
+        "check": "Open English in the header. Check Close, Escape, backdrop dismissal and focus return. Choose Türkçe, then use the Turkish header chooser to switch back. Repeat on a phone and an English lesson."
+      }
+    ]
+  },
+  {
     "id": "exam-content-first-2026-11-01",
     "title": "DTZ content first, exam information below",
     "date": "2026-11-01",
