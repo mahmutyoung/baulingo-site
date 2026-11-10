@@ -18,11 +18,12 @@
   <meta property="og:image:alt" content="Baulingo ile kafede Almanca.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#FAF7F0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://static.cloudflareinsights.com/beacon.min.js https://static.cloudflareinsights.com/beacon.min.js/; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; media-src 'self'; base-uri 'none'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://static.cloudflareinsights.com/beacon.min.js https://static.cloudflareinsights.com/beacon.min.js/ https://www.googletagmanager.com; connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com; style-src 'self'; img-src 'self' https://www.google-analytics.com https://region1.google-analytics.com; font-src 'self'; media-src 'self'; base-uri 'none'; form-action 'self'">
   <title>Baulingo — Almancada aradığın cevap.</title>
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="./assets/Newsreader-Bold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./src/analytics.js"></script>
   <script type="module" src="./app.js"></script>
   <script type="module" src="./src/language.js"></script>
   <script type="module" src="./src/navigation.js"></script>
