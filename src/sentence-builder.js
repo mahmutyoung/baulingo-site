@@ -1,4 +1,5 @@
 import { exercises, newExercise, toggleWord, checkAnswer, nextHint } from './exercise.js';
+import { trackLearningEvent } from './analytics.js';
 
 function element(tag, text, className) {
   const node = document.createElement(tag);
@@ -13,6 +14,7 @@ export function createSentenceBuilder(root, { language = 'tr', initialId = 'coff
   const english = language === 'en';
   let state = newExercise(initialId);
   let hintVisible = false;
+  const eventContext = () => ({ activity_id: state.id, activity_type: 'sentence', content_language: language });
   function chooseWord(wordId, fromAnswer = false) {
     state = toggleWord(state, wordId);
     renderExercise();
@@ -81,11 +83,16 @@ export function createSentenceBuilder(root, { language = 'tr', initialId = 'coff
   $('#check-answer').addEventListener('click', () => {
     if (state.status === 'correct') {
       state = newExercise(exercises[state.id].next || (state.id === 'coffee' ? 'tea' : state.id === 'tea' ? 'coffee' : state.id));
+      trackLearningEvent('learning_started', eventContext());
       hintVisible = false;
       renderExercise();
       $('#exercise-title').focus({ preventScroll: true });
     } else {
       state = checkAnswer(state);
+      if (state.status === 'correct' || state.status === 'incorrect') {
+        trackLearningEvent('exercise_answered', { ...eventContext(), outcome: state.status });
+        if (state.status === 'correct') trackLearningEvent('learning_completed', eventContext());
+      }
       renderExercise();
       $('#check-answer').focus({ preventScroll: true });
     }
@@ -100,5 +107,5 @@ export function createSentenceBuilder(root, { language = 'tr', initialId = 'coff
 
 
   renderExercise();
-  return { reset(id = initialId) { state = newExercise(id); hintVisible = false; renderExercise(); } };
+  return { reset(id = initialId) { state = newExercise(id); hintVisible = false; renderExercise(); trackLearningEvent('learning_started', eventContext()); } };
 }
