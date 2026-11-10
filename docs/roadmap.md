@@ -45,7 +45,7 @@ For each embedded experiment, record:
 
 Possible signals include topic or situation choices, activity starts and completions, requests for help and explicit usefulness feedback. An unfinished activity alone does not establish disinterest; the interaction may be confusing or the learner may need an explanation. Page views alone do not establish learning value.
 
-Cloudflare Web Analytics now measures aggregate website traffic and browser performance; see [analytics operations](analytics.md). No experiment event pipeline is implemented. The existing search and practice run in the browser; do not describe them as collected demand data. Specify any data collection, storage and relevant privacy updates as part of the selected experiment. Native app telemetry and first-install behaviour are outside this website roadmap task.
+Cloudflare Web Analytics now measures aggregate website traffic and browser performance; see [analytics operations](analytics.md). An opt-in GA4 event pipeline is implemented for sentence practice and DTZ starts/completions, pending deployment verification. It captures no search terms or learner answers; results require actual consenting visitors. The existing browser search is not collected demand data. Specify any data collection, storage and relevant privacy updates as part of the selected experiment. Native app telemetry and first-install behaviour are outside this website roadmap task.
 
 ## Immediate next milestone
 

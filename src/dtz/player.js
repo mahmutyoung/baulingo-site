@@ -1,10 +1,15 @@
 import { examData } from './content.js';
+import { trackLearningEvent } from '../analytics.js';
 import { createAttempt, selectAnswer, finishListening, nextSection, syncClock, remainingSeconds, scoreAttempt, validateAttempt } from './rules.js';
 
 const root = document.querySelector('#dtz-app');
 const $ = selector => root.querySelector(selector);
 const $$ = selector => [...root.querySelectorAll(selector)];
 const storageKey = 'baulingo.dtz.mock-01.v1';
+const dtzEvent = () => ({ activity_id: 'dtz-mock-01', activity_type: 'dtz', content_language: 'tr' });
+function trackResultTransition(phase) {
+  if (phase !== 'result' && attempt?.phase === 'result') trackLearningEvent('learning_completed', dtzEvent());
+}
 const labels = { listening: '01 · Dinleme', reading: '02 · Okuma', writing: '03 · Yazma', speaking: '04 · Konuşma', result: 'Sonuç' };
 const audio = $('#dtz-audio');
 let attempt = null, active = false, audioStarted = false, audioLoading = false, invalidSaved = false;
@@ -96,9 +101,10 @@ function renderTimer() {
 
 function tick() {
   if (!attempt) return;
+  const previousPhase = attempt.phase;
   const updated = syncClock(attempt, Date.now());
   if (updated !== attempt) {
-    attempt = updated; save(); render();
+    attempt = updated; trackResultTransition(previousPhase); save(); render();
     status(`Süre doldu. ${labels[attempt.phase]} bölümüne geçildi.`);
     if (active) focusSection();
   } else renderTimer();
@@ -112,6 +118,7 @@ function startNew() {
   attempt = createAttempt(Date.now()); active = true; invalidSaved = false;
   status(''); $('#dtz-audio-status').textContent = ''; $('#dtz-audio-progress').value = 0;
   save(); render(); focusSection();
+  trackLearningEvent('learning_started', dtzEvent());
 }
 
 $('#dtz-start').addEventListener('click', startNew);
@@ -209,6 +216,7 @@ for (const button of $$('[data-next]')) button.addEventListener('click', () => {
   tick();
   if (attempt.phase !== previous) return;
   attempt = nextSection(attempt, Date.now());
+  trackResultTransition(previous);
   if (attempt.phase !== previous) stopAudio();
   save(); status(''); render(); focusSection();
 });

@@ -10,7 +10,7 @@ export const dtzMediaFiles = [
 // Explicit publication boundary: adding a file under assets/ never publishes it by accident.
 export const publicFiles = [
   'index.html', 'style.css', 'app.js', '.nojekyll', 'privacy/index.html', 'impressum/index.html',
-  'src/exercise.js', 'src/english-exercises.js', 'src/sentence-builder.js', 'src/english-practice.js', 'src/topics.js', 'src/language.js', 'src/language-choice.js', 'src/navigation.js', 'src/dtz-study-filter.js',
+  'src/analytics.js', 'src/exercise.js', 'src/english-exercises.js', 'src/sentence-builder.js', 'src/english-practice.js', 'src/topics.js', 'src/language.js', 'src/language-choice.js', 'src/navigation.js', 'src/dtz-study-filter.js',
   'dtz.css', 'src/dtz/content.js', 'src/dtz/rules.js', 'src/dtz/player.js', ...dtzMediaFiles,
   'assets/logo.svg', 'assets/favicon.svg', 'assets/cafe-hero.webp',
   ...[480, 800, 1200].map(width => `assets/cafe-hero-${width}.webp`),

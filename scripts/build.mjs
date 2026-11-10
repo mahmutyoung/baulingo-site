@@ -26,7 +26,14 @@ export async function build() {
   const homepage = await readFile(path.join(root, 'index.html'), 'utf8');
   for (const [file, html] of generatePages(homepage)) {
     await mkdir(path.dirname(path.join(output, file)), { recursive: true });
-    await writeFile(path.join(output, file), html);
+    // Remove optional quotes only from safe, unambiguous attributes in the two
+    // largest generated pages. Preserve ids, URLs, text, and quoted task selectors.
+    const compact = file === 'dtz-kelime-kalip-cumle/index.html'
+      ? html.replace(/(\s(?:class|lang|scope|type|data-[a-z-]+))="([A-Za-z0-9_-]+)"/g, '$1=$2')
+      : file === 'dtz-deneme-sinavi/index.html'
+        ? html.replace(/(\s(?:class|lang|scope|type))="([A-Za-z0-9_-]+)"/g, '$1=$2')
+        : html;
+    await writeFile(path.join(output, file), compact);
   }
   const mapping = await fingerprintAssets(output);
   for (const file of [...publicFiles, ...generatedFiles].filter(name => /\.(?:html|css)$/.test(name))) {

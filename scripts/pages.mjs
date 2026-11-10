@@ -15,7 +15,7 @@ function page(title, description, pathname, content, noindex = false) {
 ${noindex ? '<meta name="robots" content="noindex">' : `<link rel="canonical" href="${origin}${pathname}">`}
 <meta name="theme-color" content="#FAF7F0"><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="website"><meta property="og:title" content="${escape(title)} · Baulingo"><meta property="og:description" content="${escape(description)}"><meta property="og:locale" content="tr_TR">
-<link rel="stylesheet" href="/style.css"><script type="module" src="/src/navigation.js"></script></head><body>
+<link rel="stylesheet" href="/style.css"><script type="module" src="/src/analytics.js"></script><script type="module" src="/src/navigation.js"></script></head><body>
 <a class="skip" href="#main">İçeriğe geç</a><div class="page">
 <header class="header"><a class="brand" href="/" aria-label="Baulingo ana sayfa"><img src="/assets/logo.svg" alt="Baulingo" width="240" height="64"></a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-navigation" hidden>Menü <span aria-hidden="true">☰</span></button><nav id="main-navigation" class="navigation" aria-label="Ana menü"><a href="/konular/">Konular</a><a href="/#gunluk">Günlük Almanca</a><a href="/sinavlar/"${['/sinavlar/','/dtz-deneme-sinavi/','/dtz-kelime-kalip-cumle/','/konular/exams/'].includes(pathname) ? ' class="active" aria-current="page"' : ''}>Sınavlar</a></nav></header>
 <main id="main" class="reading-page">${content}</main>
