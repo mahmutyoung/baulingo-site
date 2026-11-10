@@ -106,5 +106,7 @@ function initialize() {
   if (choice === 'granted') enable();
 }
 
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initialize, { once: true });
-else initialize();
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initialize, { once: true });
+  else initialize();
+}
