@@ -8,7 +8,7 @@ These instructions apply to this repository. Follow the user's latest instructio
 - Preserve the approved homepage layout, brand and Turkish copy in [the design brief](docs/design/homepage.md) and [reference image](docs/design/homepage-reference.png). Make design or copy changes when the user requests them.
 - Embed product experiments in the homepage or relevant existing website content. They share the main site's build and deployment. Do not revive a separate experiment page, lab project or subdomain.
 - Use the roadmap's question → experience → evidence → decision cycle. The next milestone is one embedded demand/preference experiment with a defined measurement method.
-- Keep implemented features, proposed work and measured results distinct. No website measurement pipeline currently exists; browser search and practice are not collected demand data.
+- Keep implemented features, proposed work and measured results distinct. Cloudflare Web Analytics covers aggregate traffic. The opt-in GA4 website module can measure sentence and DTZ starts/completions after consent and deployment; raw browser searches and answers are not collected as custom events. No real visitor outcomes are established by implementation alone.
 - Resources and downloads remain free and accessible without signup or email capture. Exam packages are planned; do not present unfinished preparation content as available.
 - Use free hosting plans. Do not enable paid plans, billing upgrades or paid services.
 
