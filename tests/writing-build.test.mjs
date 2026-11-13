@@ -78,6 +78,7 @@ test('writing studio exposes a phrase toolbox while retaining the complete stati
   assert.match(guided, /data-phrase-toolbox/);
   assert.match(guided, /href="\/dtz-mektup-yazma\/cumle-kaliplari\/"/);
   assert.ok(resolvePublicFile(process.cwd(), '/src/writing/studio.js'));
+  for (const file of ['src/writing/letter-rules.js','src/writing/letter-builder.js','assets/writing-icons.svg','assets/Tabler-LICENSE.txt']) assert.ok(resolvePublicFile(process.cwd(), '/'+file));
   const reference = await readFile('dist/dtz-mektup-yazma/cumle-kaliplari/index.html', 'utf8');
   for (const section of phraseSections) for (const row of section.rows) {
     assert.ok(reference.includes(row.de), row.de);

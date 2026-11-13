@@ -1,5 +1,55 @@
 [
   {
+    "id": "guided-letter-builder-2026-11-13",
+    "title": "Birlikte yazalım: adım adım mektup",
+    "date": "2026-11-13",
+    "summary": "The agreed simple guided format: one field per step, a sectioned letter preview, relevant phrases and labelled icons. Original educational content is unchanged.",
+    "before": "Guided letter tasks opened as a full-letter editor with optional planning and a separate phrase rail.",
+    "after": "Greeting, introduction, four original task points, closing, name and editable review. Section answers build the letter; independently edited and older drafts remain intact. Three relevant patterns stay beside the field, with the complete toolbox available in writing and review. Simulations retain full-letter editing.",
+    "files": [
+      "src/writing/letter-builder.js",
+      "src/writing/letter-rules.js",
+      "src/writing/rules.js",
+      "src/writing/player.js",
+      "src/writing/studio.js",
+      "scripts/writing-page.mjs",
+      "scripts/public-files.mjs",
+      "writing.css",
+      "assets/writing-icons.svg",
+      "assets/Tabler-LICENSE.txt"
+    ],
+    "steps": [
+      {
+        "id": "guided",
+        "title": "Tek görev, tek alan",
+        "path": "/dtz-mektup-yazma/rehberli-yazma/#task-c11-t1",
+        "focus": "[data-letter-builder]",
+        "check": "Start with Kime yazıyorsun? Write each section and use Devam et. At the course-days point, check calendar icon, exact original label and relevant patterns. At the end, edit the full letter. Nothing is automatically scored or completed."
+      },
+      {
+        "id": "letter",
+        "title": "Mektup görünümü ve telefon",
+        "path": "/dtz-mektup-yazma/rehberli-yazma/#task-c11-t1",
+        "focus": "[data-letter-sheet]",
+        "check": "On desktop the letter sections stay beside the field; choose a section to revise it. On phone, open Mektubumu gör and select a section to return to writing. Check 320/390 px navigation and focus."
+      },
+      {
+        "id": "phrases",
+        "title": "Kalıplar ve kayıt",
+        "path": "/dtz-mektup-yazma/rehberli-yazma/#task-c11-t1",
+        "focus": ".letter-suggestions",
+        "check": "Insert a relevant phrase at the cursor. Open Tüm kalıplar, search all 64 existing entries and inspect examples/translations. The full toolbox also works while editing the final letter. Switch tasks and reload. Existing full drafts open unchanged in review; transferring new sections preserves the previous full letter."
+      },
+      {
+        "id": "original",
+        "title": "Özgün içerik ve denemeler",
+        "path": "/dtz-mektup-yazma/deneme-1/#secim",
+        "focus": ".writing-choice-overview",
+        "check": "Verify original A/B selection, full-letter fields and optional clock. Original lessons/tasks/models remain available without JavaScript. Teaching paragraphs now use list items with their original wording. Export includes section work and the previous full letter."
+      }
+    ]
+  },
+  {
     "id": "compact-writing-studio-2026-11-13",
     "title": "Kompakt mektup stüdyosu",
     "date": "2026-11-13",

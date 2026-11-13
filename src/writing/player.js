@@ -69,6 +69,9 @@ function startWriting(root) {
     const resume=root.querySelector('[data-resume]');
     if(resume){
       const target=resumeTarget(progress,lessons), next=lessons.find(lesson=>lesson.id===target.lessonId);
+      if(resume.hasAttribute('data-guided-start')&&!target.taskId&&!count){
+        resume.href='/dtz-mektup-yazma/rehberli-yazma/#task-c11-t1';resume.textContent='Birlikte yazalım';return;
+      }
       if(next){
         resume.href=`/dtz-mektup-yazma/${next.id}/${target.taskId?'#task-'+target.taskId:''}`;
         resume.textContent=target.taskId?`Yarım çalışmana dön: ${next.title}`:count?`Devam et: ${next.title}`:'İlk derse başla';
@@ -82,13 +85,18 @@ function startWriting(root) {
     const id=section.dataset.task;
     const task=savedLesson().tasks[id]||={draft:'',revised:'',plan:[],checks:[],responses:[]};
     if(task.guidanceVersion!==2){task.legacyChecks=task.checks||[];task.checks=[];task.guidanceVersion=2;}
-    const changed=field=>{task.updatedAt=Date.now();task.reviewed=false;savedLesson().lastTask=id;savedLesson().complete=false;updateReview();save(section,['lastTask','complete'],[field,'reviewed','updatedAt']);updateProgress();};
+    const changed=field=>{task.updatedAt=Date.now();task.reviewed=false;savedLesson().lastTask=id;savedLesson().complete=false;updateReview();save(section,['lastTask','complete'],[...(Array.isArray(field)?field:[field]),'reviewed','updatedAt']);updateProgress();};
     const review=section.querySelector('[data-task-reviewed]');
     const updateReview=()=>{
       review.setAttribute('aria-pressed',String(task.reviewed===true));
       review.textContent=task.reviewed?'Gözden geçirildi ✓ · İşareti kaldır':'Bu çalışmayı gözden geçirdim';
     };
     updateReview();review.addEventListener('click',()=>{task.reviewed=!task.reviewed;updateReview();save(section,[],['reviewed']);});
+    section.addEventListener('writing-letter-change',event=>{
+      const fields=Object.keys(event.detail.patch).filter(field=>['draft','letterParts','letterStep','letterPrevious'].includes(field));
+      for(const field of fields)task[field]=event.detail.patch[field];
+      if(event.detail.edited)changed(fields);else save(section,[],fields);
+    });
     const draft=section.querySelector('[data-draft]')||section.querySelector('[data-legacy-draft]');
     if(draft){
       draft.value=task.draft||'';
@@ -178,8 +186,10 @@ function startWriting(root) {
       const saved=progress.lessons[lesson.id];if(!saved)continue;
       lines.push(lesson.title,saved.complete?'Gözden geçirildi/tamamlandı olarak işaretlendi':'Çalışılıyor');
       for(const [id,task] of Object.entries(saved.tasks||{})){
-        if(!task.draft&&!task.revised&&!task.plan?.some(Boolean)&&!task.responses?.some(Boolean))continue;
+        if(!task.draft&&!task.revised&&!task.plan?.some(Boolean)&&!task.responses?.some(Boolean)&&!task.letterParts?.some(Boolean)&&!task.letterPrevious)continue;
         lines.push(`Çalışma: ${id}`,'Plan:',...(task.plan||[]),'Kısa yanıtlar:',...(task.responses||[]),'Mektubum / önceki serbest yanıtım:',task.draft||'','Geliştirdiğim cümle:',task.revised||'','');
+        if(task.letterParts?.some(Boolean))lines.push('Bölüm bölüm çalışmam:',...task.letterParts,'');
+        if(task.letterPrevious)lines.push('Önceki tam mektubum:',task.letterPrevious,'');
         if(task.legacyChecks?.some(Boolean))lines.push('Önceki genel kontrol işaretleri:',task.legacyChecks.map((checked,i)=>`${i+1}: ${checked?'işaretli':'işaretsiz'}`).join(', '));
       }
       if(saved.note)lines.push('Öğrenme notum:',saved.note,'');
@@ -193,5 +203,5 @@ function startWriting(root) {
     location.reload();
   });
   if(current)save();
-  activateWritingStudio(root, savedLesson()?.lastTask);
+  activateWritingStudio(root, savedLesson()?.lastTask, savedLesson()?.tasks || {});
 }
