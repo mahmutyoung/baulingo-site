@@ -14,6 +14,7 @@ export const publicFiles = [
   'src/exercise.js', 'src/english-exercises.js', 'src/sentence-builder.js', 'src/english-practice.js', 'src/topics.js', 'src/language.js', 'src/language-choice.js', 'src/navigation.js', 'src/dtz-study-filter.js',
   'dtz.css', 'src/dtz/content.js', 'src/dtz/rules.js', 'src/dtz/player.js', ...dtzMediaFiles,
   'writing.css', 'src/writing/rules.js', 'src/writing/player.js', 'src/writing/activities.js', 'src/writing/studio.js',
+  'src/writing/letter-rules.js', 'src/writing/letter-builder.js', 'assets/writing-icons.svg', 'assets/Tabler-LICENSE.txt',
   'assets/logo.svg', 'assets/favicon.svg', 'assets/cafe-hero.webp',
   ...[480, 800, 1200].map(width => `assets/cafe-hero-${width}.webp`),
   'assets/audio/einen-kaffee-bitte.mp3',

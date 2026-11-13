@@ -171,13 +171,84 @@
   .writing-task-points{display:block}
 }
 .writing-contents>p{font-size:13px;color:var(--muted);margin:8px 0}
+.writing-guided .writing-workspace{grid-template-columns:205px minmax(0,1fr);grid-template-areas:"lessons work"}
+.writing-guided .writing-workspace>.writing-toolbox{display:none}
+.writing-guided .writing-step-links{display:none}
+.writing-guided .writing-intro{margin-bottom:12px}
+.writing-guided .writing-intro h1{font-size:22px}
+.writing-guided .writing-category{display:none}
+.writing-guided .writing-task-pagination{margin-top:18px}
+.writing-task-nav button{width:auto;height:auto;min-height:44px;border-radius:7px;font-size:13px;padding:9px 12px;text-align:left;flex:1}
+.writing-guided [data-has-builder]>summary{font:600 16px/1.4 BaulingoSans,Arial,sans-serif;padding:4px 0 12px!important;color:var(--muted)}
+.letter-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:28px;align-items:start}
+.letter-builder{min-width:0}
+.letter-progress{font-size:13px;color:var(--muted);margin:0 0 10px!important}
+.letter-icon{flex:none;vertical-align:middle}
+.letter-question{display:flex;align-items:flex-start;gap:12px;font-size:34px!important;line-height:1.15!important;margin:0 0 12px!important}
+.letter-question .letter-icon{width:32px;height:32px;margin-top:2px;color:var(--sage)}
+.letter-instruction{font-size:17px;margin:0 0 20px}
+.letter-input-label{display:block;font-size:16px;font-weight:600;margin-bottom:8px}
+.writing-body .letter-input{min-height:110px;height:120px;font-size:19px;padding:14px;line-height:1.5}
+.letter-field [data-editor-save]{margin-top:8px}
+.letter-suggestions{margin:20px 0!important}
+.letter-suggestions h3{display:flex;align-items:center;gap:8px;font:600 16px/1.4 BaulingoSans,Arial,sans-serif;margin:0 0 8px}
+.letter-pattern{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 12px;border-top:1px solid var(--line);padding:10px 0;font-size:14px}
+.letter-pattern p{margin:0!important;line-height:1.4!important}
+.letter-pattern p[lang]{color:var(--forest);font-weight:600}
+.letter-pattern p:nth-child(2){grid-column:1;color:var(--muted);font-size:13px}
+.letter-pattern button{grid-column:2;grid-row:1 / span 2;align-self:center;margin:0;min-height:42px}
+.letter-all-patterns{font:inherit;font-size:14px;border:0;background:none;color:var(--forest);padding:10px 0;text-decoration:underline;cursor:pointer;min-height:44px}
+.letter-all-content{border:1px solid var(--line);border-radius:8px;margin:8px 0}
+.letter-all-content>[data-phrase-toolbox]>summary{display:none}
+.letter-controls{display:flex;justify-content:space-between;gap:14px;border-top:1px solid var(--line);padding:18px 0 0;margin-top:20px}
+.letter-controls .button{font-size:16px;min-height:48px;padding:12px 24px}
+.letter-controls button:disabled{opacity:.4;cursor:default}
+.letter-sheet{margin:0!important;border:1px solid var(--line);border-radius:10px;overflow:hidden;position:sticky;top:24px;background:#FFFDF9}
+.letter-sheet>summary{display:flex;align-items:center;gap:10px;font:700 23px/1.2 Newsreader,Georgia,serif;background:var(--soft);padding:18px!important;min-height:60px!important;cursor:pointer}
+.letter-paper{padding:12px;max-height:70dvh;overflow:auto;scrollbar-width:thin}
+.letter-section{display:block;width:100%;border:0;border-left:3px solid transparent;background:transparent;padding:12px;text-align:left;color:var(--forest);font:inherit;cursor:pointer;border-radius:4px}
+.letter-section+.letter-section{border-top:1px solid var(--line)}
+.letter-section-label{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);line-height:1.3}
+.letter-section-label .letter-icon{width:18px;height:18px}
+.letter-section-text{display:block;white-space:pre-wrap;overflow-wrap:anywhere;font-size:15px;margin-top:6px;line-height:1.5}
+.letter-section-empty .letter-section-text{font-size:13px;color:var(--muted)}
+.letter-section-current{background:var(--soft);border-left-color:var(--sage)}
+.letter-final-preview,.letter-previous p{white-space:pre-wrap;overflow-wrap:anywhere;font-size:16px;line-height:1.7}
+.letter-final-preview{padding:6px 10px}
+.letter-previous{font-size:14px;margin:14px 0}
+.letter-full .writing-label{margin-top:8px}
+.letter-full [data-draft]{min-height:320px}
+.letter-support{margin-top:18px;border-top:1px solid var(--line);font-size:14px}
+.letter-support>summary{font-size:14px;color:var(--muted)}
+.letter-support .letter-instructions{padding-left:22px;margin:10px 0}
+.letter-support .writing-task-points{display:block}
+.letter-support .writing-task-brief{font-size:15px}
+.writing-guided:has([data-task]:not([hidden])[data-letter-step]:not([data-letter-step="8"])) .writing-task-pagination,.writing-guided:has([data-task]:not([hidden])[data-letter-step]:not([data-letter-step="8"])) .writing-completion{display:none}
+.writing-learn-list{padding-left:22px!important;line-height:1.6}
+.writing-learn-list li{margin:12px 0}
+@media(max-width:1150px){.letter-layout{grid-template-columns:minmax(0,1fr) 240px;gap:20px}.writing-guided .writing-workspace{grid-template-columns:170px minmax(0,1fr);gap:22px}.letter-question{font-size:29px!important}}
+@media(max-width:800px){
+  .writing-guided .writing-workspace{grid-template-columns:minmax(0,1fr);grid-template-areas:"lessons" "work";gap:14px}
+  .writing-guided .writing-breadcrumb{margin-bottom:14px}
+  .writing-guided .writing-intro h1{font-size:20px}
+  .writing-guided .writing-intro .writing-outcome-details{display:none}
+  .letter-layout{grid-template-columns:minmax(0,1fr);gap:16px}
+  .letter-sheet{grid-row:1;position:static}
+  .letter-sheet>summary{font-size:20px;min-height:46px!important;padding:12px 14px!important}
+  .letter-paper{max-height:55dvh}
+  .letter-question{font-size:29px!important}
+  .letter-instruction{font-size:16px;margin-bottom:14px}
+  .letter-controls .button{min-height:46px;font-size:16px;padding:11px 20px}
+  .letter-suggestions{margin:16px 0!important}
+  .letter-suggestions h3{font-size:15px}
+}
 .writing-task-context>summary{font-size:14px;color:var(--muted)}
 @media(min-width:801px){
   .writing-task-context>summary{display:none}
   .writing-task-context{display:contents}
 }
 @media(max-width:800px){
-  .writing-sidebar{position:relative;padding-bottom:4px}
+  .writing-sidebar{position:relative;top:auto;padding-bottom:4px}
   .writing-sidebar>[data-progress]{position:absolute;right:0;top:10px;margin:0;font-size:12px;pointer-events:none}
   .writing-sidebar .writing-contents>summary{font-size:14px;padding-right:120px}
   .writing-task-context{margin:8px 0 12px;border-bottom:1px solid var(--line)}

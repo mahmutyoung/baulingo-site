@@ -26,6 +26,9 @@ export function restoreProgress(raw, lessons) {
           checks: Array.isArray(entry.checks) ? entry.checks.slice(0, 8).map(check => check === true) : [],
           plan: Array.isArray(entry.plan) ? entry.plan.slice(0, 4).map(text) : [], deadline: deadline(entry.deadline),
           responses: Array.isArray(entry.responses) ? entry.responses.slice(0, 12).map(text) : [],
+          letterParts: Array.isArray(entry.letterParts) ? entry.letterParts.slice(0,8).map(value=>typeof value==='string'&&value.length<=2000?value:'') : [],
+          letterStep: Number.isInteger(entry.letterStep)&&entry.letterStep>=0&&entry.letterStep<=8?entry.letterStep:0,
+          letterPrevious: text(entry.letterPrevious),
           legacyChecks: Array.isArray(entry.legacyChecks) ? entry.legacyChecks.slice(0,8).map(check=>check===true) : [],
           guidanceVersion: entry.guidanceVersion===2?2:1,
           reviewed: entry.reviewed === true, updatedAt: deadline(entry.updatedAt) || 0 };
@@ -47,7 +50,7 @@ export function resumeTarget(progress, lessons) {
     if (!saved || saved.complete) continue;
     for (const task of lesson.tasks || []) {
       const work = saved.tasks?.[task.id];
-      if (!work || work.reviewed || !(work.draft?.trim() || work.revised?.trim() || work.plan?.some(value=>value.trim()) || work.responses?.some(value=>value.trim()))) continue;
+      if (!work || work.reviewed || !(work.draft?.trim() || work.letterParts?.some(value=>value.trim()) || work.revised?.trim() || work.plan?.some(value=>value.trim()) || work.responses?.some(value=>value.trim()))) continue;
       candidates.push({lessonId:lesson.id, taskId:task.id, time:work.updatedAt || 0,
         preferred:progress.last===lesson.id && saved.lastTask===task.id});
     }

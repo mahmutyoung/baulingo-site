@@ -1,5 +1,7 @@
+import { activateLetterBuilder } from './letter-builder.js';
+
 // Presentation only: existing player input handlers own answers and persistence.
-export function activateWritingStudio(root, lastTask) {
+export function activateWritingStudio(root, lastTask, savedTasks = {}) {
   const body = root.querySelector('.writing-body');
   const phone = matchMedia('(max-width: 800px)');
   const contents = root.querySelector('.writing-contents');
@@ -38,7 +40,7 @@ export function activateWritingStudio(root, lastTask) {
   // Keep all checks, models and revision fields, with one compact disclosure.
   for (const task of tasks) {
     task.querySelector('.writing-planner')?.removeAttribute('open');
-    if (task.dataset.taskKind === 'letter') {
+    if (task.dataset.taskKind === 'letter' && task.hasAttribute('data-choice')) {
       const brief = task.querySelector('[data-stimulus]');
       const details = document.createElement('details');
       details.className = 'writing-brief-details';
@@ -66,13 +68,16 @@ export function activateWritingStudio(root, lastTask) {
       review.append(node);
       node = next;
     }
+    if (task.dataset.taskKind === 'letter' && !task.hasAttribute('data-choice')) activateLetterBuilder(task, savedTasks[task.dataset.task] || {}, root);
   }
 
   const taskButtons = [];
   let previous, next, counter;
   const showTask = (task, focus = false) => {
     selectedTask = task;
+    root.classList.toggle('writing-guided', task?.hasAttribute('data-has-builder') && stage === 'yaz');
     ordinary.forEach(section => { section.hidden = section !== task; section.open = section === task; });
+    root.dispatchEvent(new Event('writing-context-change'));
     taskButtons.forEach((button, index) => {
       if (ordinary[index] === task) button.setAttribute('aria-current', 'step');
       else button.removeAttribute('aria-current');
@@ -96,7 +101,7 @@ export function activateWritingStudio(root, lastTask) {
     ordinary.forEach((task, index) => {
       const button = document.createElement('button');
       button.type = 'button';
-      button.textContent = index + 1;
+      button.textContent = task.dataset.taskTitle;
       button.setAttribute('aria-label', `${index + 1}. ${task.dataset.taskTitle}`);
       button.title = task.dataset.taskTitle;
       button.addEventListener('click', () => showTask(task, true));
@@ -120,6 +125,8 @@ export function activateWritingStudio(root, lastTask) {
   const selectStage = name => {
     stage = groups[name]?.some(Boolean) ? name : 'ogren';
     root.dataset.studioStage = stage;
+    root.classList.toggle('writing-guided', selectedTask?.hasAttribute('data-has-builder') && stage === 'yaz');
+    root.dispatchEvent(new Event('writing-context-change'));
     for (const [key, sections] of Object.entries(groups)) for (const section of sections) if (section) section.hidden = stage !== key;
     stageNav?.querySelectorAll('a').forEach(link => {
       const key = link.hash === '#secim' ? 'yaz' : link.hash.slice(1);
@@ -167,7 +174,7 @@ export function activateWritingStudio(root, lastTask) {
   addEventListener('hashchange', revealHash);
   addEventListener('popstate', () => { if (!revealHash() && stageNav) selectStage('ogren'); });
   root.addEventListener('focusin', event => {
-    if (event.target.matches('textarea[data-draft], textarea[data-response], textarea[data-revised], input[data-plan]')) lastEditor = event.target;
+    if (event.target.matches('textarea[data-draft], textarea[data-response], textarea[data-revised], input[data-plan], [data-letter-input]')) lastEditor = event.target;
   });
   root.addEventListener('input', updatePreview);
   root.addEventListener('change', updatePreview);
@@ -181,7 +188,7 @@ export function activateWritingStudio(root, lastTask) {
   const container = toolbox.querySelector('[data-phrase-content]');
   let loading = false, loaded = false;
   const loadPhrases = async () => {
-    if (loading || loaded || !toolbox.open) return;
+    if (loading || loaded || (!toolbox.open && !root.querySelector('[data-has-builder]'))) return;
     loading = true;
     try {
       // Reuse the complete authored reference; never maintain a second phrase list.
@@ -204,7 +211,7 @@ export function activateWritingStudio(root, lastTask) {
           button.type = 'button'; button.className = 'writing-phrase-insert'; button.textContent = 'Ekle';
           button.setAttribute('aria-label', `${phrase} kalıbını ekle`);
           button.addEventListener('click', () => {
-            const editor = visible(lastEditor) ? lastEditor : tasks.find(visible)?.querySelector('textarea[data-draft], textarea[data-response]');
+            const editor = visible(lastEditor) ? lastEditor : [...tasks.find(visible)?.querySelectorAll('[data-letter-input], textarea[data-draft], textarea[data-response]') || []].find(visible);
             if (!visible(editor)) { status.textContent = 'Önce bir yazma alanı seç.'; return; }
             const start = editor.selectionStart, end = editor.selectionEnd;
             const prefix = start > 0 && !/\s$/.test(editor.value.slice(0, start)) ? ' ' : '';
@@ -240,7 +247,7 @@ export function activateWritingStudio(root, lastTask) {
         }
         status.textContent = query ? `${count} kalıp` : '';
       });
-      loaded = true; status.textContent = '';
+      loaded = true; status.textContent = ''; root.dispatchEvent(new Event('writing-phrases-ready'));
     } catch {
       status.textContent = 'Kalıplar yüklenemedi. Tüm kalıplar ve örnekler bağlantısını kullanabilirsin.';
     } finally { loading = false; }
