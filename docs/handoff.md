@@ -1,5 +1,15 @@
 # Website implementation handoff
 
+## Writing audit fixed — 3 November 2026
+
+The owner requested all Product Design audit fixes and will perform the final review. The course now has 22 learning lessons plus two reference pages, 47 tasks in six appropriate formats, visible required choices, point-linked letter plans/checks/annotated models and 64 translated phrase entries. Resume targets unfinished work; save status is beside editors. Prior text/plan data remains accessible; old generic checks are kept separately. Multi-tab saves merge changed fields and failed-storage export includes later memory edits. See [the final review checklist](content/dtz-writing-review.md). No deployment or push is authorized by this request. The LAN preview remains on port 4173.
+
+## DTZ letter-writing update — 2 November 2026
+
+The owner chose the Turkish short-lesson adaptation of their `dtz-writing-book-web`. It is prepared locally at `/dtz-mektup-yazma/`: 24 lessons, 11 letter types and all 47 original answer/model activities, plus short interactive checks. Drafts, plans, self-checks, revisions, notes, explicit completion and optional clocks remain in this browser. Export and scoped reset are available. See [content and boundaries](content/dtz-writing.md). Review is the newest entry at `/dev/review/`. Publication remains pending authorization.
+
+The requested LAN preview uses the last active port: `http://192.168.178.22:4173/` (bound to `0.0.0.0:4173`; the computer's LAN address may change).
+
 Updated: 1 November 2026. [Production preparation](production.md) is the current verification and release checklist.
 
 Live status: the owner deployed the static site at `https://baulingo.app`. The authorized WWW-only redirect Worker is also deployed and verified for HTTP/HTTPS 301 redirects retaining paths and queries. See [its operational notes](../cloudflare/www-redirect/README.md). Cloudflare login is available through local Wrangler; no credentials are in Git. Deployment verification is recorded in production.md.
@@ -62,6 +72,10 @@ The initial review follow-up applied three saved comments: a collapsible phone m
 The owner requested removal of the free resources section. The local website no longer publishes its page or downloads; the original source files remain in the repository. This does not change the independent Android app. This change is not deployed.
 
 ## Local review follow-up
+
+13 November studio update: applied the owner's [compact writing reference](design/dtz-writing-studio.md). The newest review entry is **Kompakt mektup stüdyosu**: grouped lesson navigation, learning/writing stages, one task at a time, collapsible instructions/checks, a visible searchable phrase toolbox with cursor insertion, and live draft preview. Phones use an expandable toolbox. All 24 destinations, 47 tasks, 64 phrases and authored learning content are unchanged; existing drafts and progress use the same storage. Local verification covers 75 passing Node tests, public build/budget checks and browser flows at 320/390/800/1024/1487 px. Publication remains pending.
+
+13 November: the three saved owner comments were applied locally. Writing navigation now says “Mektup Yazmaya Giriş” and the course start section says “Nereden Başlamak İstersin?”. The mobile Liste / Tablo switch sits inside the first visible study level section, below its introduction, and follows level filtering. The newest review entry links all three original notes; the notes and approval states are preserved. Publication is pending.
 
 The local homepage now links grammar and daily-life topics directly to their static pages; topic practice uses topic-specific sentences. The app information page links to the owner-provided Google Play open-alpha listing. The DTZ result no longer offers a new-attempt button. These changes await publication. A locally prepared English section now offers independently written lessons on appointments, word order and articles, with English browser-language detection and a manual switch. The English app page was removed at the owner’s request. DTZ instructions and other Turkish pages have not been translated; the English section is limited to its published lessons.
 

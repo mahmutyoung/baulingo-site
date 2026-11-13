@@ -2,7 +2,7 @@ import http from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { resolvePublicFile, isFingerprintedAsset } from './public-files.mjs';
+import { resolvePublicFile, isFingerprintedAsset, fingerprintOnlyAssets } from './public-files.mjs';
 import { createReviewHandler, injectReviewBridge, isLocalReviewRequest, rewriteReviewLinks } from './review-server.mjs';
 import { rebuildReviewPreview } from './review-rebuild.mjs';
 
@@ -38,12 +38,18 @@ export async function createPreviewServer({ review = false, reviewStore } = {}) 
       const pathname = decodeURIComponent(url.pathname);
       const directory = pathname === '/index.html' ? '/' : pathname.endsWith('/index.html') ? pathname.slice(0, -10) : !path.extname(pathname) && !pathname.endsWith('/') ? `${pathname}/` : null;
       if (directory && resolvePublicFile(root, directory)) return send(pathname === '/index.html' ? 301 : 307, '', { Location: `${directory}${url.search}` });
-      const absolute = resolvePublicFile(root, pathname);
+      let absolute = resolvePublicFile(root, pathname);
       if (!absolute) return send(404, notFound);
+      // Only exact allowlisted large-asset aliases; never proxy arbitrary paths.
+      if (fingerprintOnlyAssets.includes(pathname.slice(1))) {
+        const redirects = await readFile(path.join(root, '_redirects'), 'utf8');
+        const alias = redirects.split(/\r?\n/).map(line=>line.trim().split(/\s+/)).find(([source,target,status])=>source===pathname && status==='200' && isFingerprintedAsset(target?.slice(1) || ''));
+        if (alias) absolute = resolvePublicFile(root, alias[1]);
+      }
       const info = await stat(absolute);
       if (!info.isFile()) return send(404, notFound);
       const headers = { 'Content-Type': types[path.extname(absolute)] || 'application/octet-stream' };
-      if (isFingerprintedAsset(path.relative(root, absolute).split(path.sep).join('/'))) headers['Cache-Control'] = 'public, max-age=31536000, immutable';
+      if (isFingerprintedAsset(pathname.slice(1))) headers['Cache-Control'] = 'public, max-age=31536000, immutable';
       if (pathname.startsWith('/downloads/')) headers['Content-Disposition'] = 'attachment';
       if (path.extname(absolute) === '.mp3') {
         headers['Accept-Ranges'] = 'bytes';

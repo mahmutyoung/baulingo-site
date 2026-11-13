@@ -27,7 +27,6 @@ for (const root of globalThis.document?.querySelectorAll('[data-study-root]') ||
   views.setAttribute('role', 'group');
   views.setAttribute('aria-label', 'Görünüm');
   views.innerHTML = '<button type="button" data-study-view="list" aria-pressed="false">Liste</button><button type="button" data-study-view="table" aria-pressed="true">Tablo</button>';
-  root.querySelector('[data-study-count]').before(views);
   views.addEventListener('click', event => {
     const button = event.target.closest('[data-study-view]');
     if (!button) return;
@@ -76,6 +75,8 @@ for (const root of globalThis.document?.querySelectorAll('[data-study-root]') ||
       }
     }
     for (const group of root.querySelectorAll('[data-frame-family],[data-expression-group],div[data-kind],.study-topic,[data-study-level-section]')) group.hidden = !group.querySelector('[data-study-item]:not([hidden])');
+    const firstLevel = root.querySelector('[data-study-level-section]:not([hidden])');
+    if (firstLevel) firstLevel.querySelector('.study-topic').before(views);
     const count = items.filter(item=>!item.hidden).length;
     root.querySelector('.study-empty').hidden = count > 0;
     const name = controls.list.selectedOptions[0].textContent;

@@ -14,6 +14,26 @@ The local Wrangler login is stored by Wrangler outside the repository. No creden
 
 ## Build and verify
 
+### Writing-course audit fixes — local, 3 November 2026
+
+The owner asked to fix the entire Product Design audit and will perform the final review. The local course now distinguishes 22 lessons and two reference pages, 47 tasks in six formats, 21 point-linked full-letter workspaces and 64 translated phrase entries. See [the owner checklist](content/dtz-writing-review.md). No deployment, push or commit was performed for this request.
+
+The full Node suite passes 74/74 tests; the static build and public 2 MB budget pass (core output approximately 1.94 MB). Tests cover task formats, visible stimuli, real planning points, annotated excerpts existing in their models, phrase meanings/examples, preserved legacy text, bounded structured answers, unfinished-task resume, reference exclusion and merging only changed fields into stored state. A read-only technical review found short-task revision binding and whole-lesson overwrite risks; failing regressions were added and both were corrected. Its two smaller findings (visible `weil` instruction and ordering announcements) were also corrected. A quota-failure browser regression exposed stale later memory edits in export; it failed before the memory-merge fix and passed afterward.
+
+Fresh Chrome checks cover all 24 pages, match/choice/cloze/order/short/letter controls, per-item feedback, Enter-key checking and order undo, reload persistence including short revisions and old drafts/plans/check migration, point-linked plans/models, reference meanings, unfinished-task anchors, reference completion excluding the lesson count, reopening a lesson after a text edit, A/B choice with preserved drafts, reload deadlines/expiry, actual exported Blob text, sequential two-tab edits after shared storage propagation, subsequent in-memory edits after quota failure, denied-storage warnings beside editors, no-JavaScript choices and 320/390/768/1440 px overflow checks. No runtime exceptions were observed. Screenshots were inspected for the key phone and desktop states; artifacts remain ignored in `.dev/writing-fixes-2026-11-03/`.
+
+These are local technical checks. No human learner pilot, actual screen-reader speech, physical phone keyboard test or educational certification is claimed. Fundamental DTZ writing structure and capitalization/register guidance were cross-checked against the primary sources linked in the owner checklist. The owner's final editorial/educational review remains pending.
+
+### DTZ letter-writing course — local, 2 November 2026
+
+The requested Turkish adaptation is prepared at `/dtz-mektup-yazma/`, linked from the homepage, exam overview and topic/search. See [content and privacy boundaries](content/dtz-writing.md). No deployment or push was performed.
+
+`npm test` passes 66/66 checks; `npm run build` and `git diff --check` pass. Chrome checks cover choice/cloze/order feedback, Enter-key checking, saved drafts/plans/revisions/self-checks, deliberate completion and resume, 320/390/768/1440 px layouts, independent A/B drafts, unchanged deadlines after reload, editable writing after expiry, actual exported text, saved learning notes, quota failure, denied/corrupt storage, reset retaining an unrelated storage key and static reading without JavaScript. No runtime exceptions occurred. Screenshots were inspected on desktop and phone. A reproduced mobile-to-desktop closed-navigation bug was fixed and its browser regression passes. A separate read-only code reviewer found two accessibility issues (Turkish answer language and live countdown announcements); both were fixed with a failing-then-passing markup check. Actual screen-reader speech was not tested.
+
+Large asset deduplication keeps the core output around 1.81 MB under its existing 2 MB test budget; the separate DTZ media budget is unchanged. Tests verify exact rewrite targets, original asset bytes, revalidation on alias URLs and immutable caching on hashed URLs. Cloudflare's documented static `200` rewrites were checked against official documentation; live edge behavior has not been verified for this unpublished change.
+
+The user requested the last active port on LAN. Development preview is running on `0.0.0.0:4173`; loopback and this computer's `http://192.168.178.22:4173/` return HTTP 200. This is a same-computer LAN-interface check, not confirmation from another device. The LAN address can change.
+
 ### DTZ simulation — local implementation, not deployed
 
 The owner requested the app's original full DTZ simulation on the website and approved a separate 10 MB lazy-media allowance, retaining the 2 MB core limit. `/dtz-deneme-sinavi/`, its homepage/topic/resource entries, local-only attempt storage and the corresponding website privacy disclosure are implemented locally. These DTZ changes have not been published; the analytics version recorded above remains the live release. The independent app and legacy GitHub Pages policy are unchanged. See [content/provenance and verification notes](content/dtz-web.md). The port is a technical adaptation, not an assertion of official certification or completed human editorial/audio review.

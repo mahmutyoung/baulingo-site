@@ -43,17 +43,18 @@ export const topics = [
     examples: ['Ich möchte einen Termin vereinbaren.', 'Ich habe Kopfschmerzen.', 'Können Sie das bitte wiederholen?'],
   },
   {
-    id: 'exams', title: 'DTZ denemesi ve sınava hazırlık', subtitle: 'DTZ denemesi hazır; diğer içerikler planlanıyor',
+    id: 'exams', title: 'DTZ denemesi ve sınava hazırlık', subtitle: 'DTZ denemesi ve Türkçe açıklamalı mektup dersleri',
     keywords: 'a1 b1 aile birleşimi mektup yazma schreiben sprechen goethe telc dtz sınav',
     planned: true,
     paragraphs: [
       'Ücretsiz DTZ A2–B1 denemesinde tam dinleme kaydı, 20 dinleme ve 25 okuma sorusu, yazma ve konuşma görevleri bulunur. Otomatik sonuç yalnızca dinleme ve okumayı kapsar; resmî sınav sonucu değildir.',
+      'DTZ Mektup Yazma bölümünde Türkçe açıklamalar, kısa alıştırmalar ve 11 mektup türüyle kendi hızında çalışabilirsin. Taslaklar yalnızca tarayıcında saklanır; serbest yazılar otomatik puanlanmaz.',
       'A1 aile birleşimi hazırlığı ve diğer B1 yazma paketleri planlanıyor; henüz tamamlanmış paketler olarak sunulmuyor.',
       'Goethe, telc ve DTZ aynı sınav değildir. Hazırlık içeriği, ilgili sınavın görevleri ve değerlendirme ölçütleri incelendikten sonra yayımlanacak.',
       'Bu sırada günlük istek kurma, artikeller ve cümle sırası gibi temel konularla çalışabilirsin. Bu alıştırmalar resmî sınav soruları değildir.',
     ],
     examples: [],
-    links: [{ href: '/sinavlar/', label: 'Sınavları tanı' }, { href: '/dtz-deneme-sinavi/', label: 'Ücretsiz DTZ denemesine başla' }, { href: '/dtz-kelime-kalip-cumle/', label: 'DTZ kelime, kalıp ve cümleler' }],
+    links: [{ href: '/sinavlar/', label: 'Sınavları tanı' }, { href: '/dtz-deneme-sinavi/', label: 'Ücretsiz DTZ denemesine başla' }, { href: '/dtz-kelime-kalip-cumle/', label: 'DTZ kelime, kalıp ve cümleler' }, { href: '/dtz-mektup-yazma/', label: 'DTZ mektup yazmayı öğren' }],
     practice: true,
   },
 ];

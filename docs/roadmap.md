@@ -64,4 +64,8 @@ Once relevant visitors arrive, define one embedded experiment brief before expan
 
 ## Owner-requested local content updates
 
+On 3 November the owner requested all Product Design writing-course audit fixes and reserved final review. The local update focuses on appropriate task controls, visible prompts, actual letter-point scaffolding, explained models and Turkish reference support. It remains an owner-directed content improvement, with no collected learner outcomes or demand experiment implied. The [owner checklist](content/dtz-writing-review.md) is prepared; publication remains separate.
+
+On 2 November the owner requested integrating their existing DTZ writing book and chose Turkish guided lessons. The local course has 24 lessons, original German tasks/models, short checks, local-only self-paced writing and optional clocks. This is an explicit owner request, not a demand-experiment result. No exercise-event pipeline or measured learning result is implied. See [writing-course notes](content/dtz-writing.md); publication remains pending.
+
 The owner approved an independently authored English homepage and three English lessons, with the shared interactive sentence builder and language selection. These are local features, not demand evidence. The website’s free-resource section and downloads were removed from pending output at the owner’s request. The DTZ traffic milestone and separate publication authorization still apply.

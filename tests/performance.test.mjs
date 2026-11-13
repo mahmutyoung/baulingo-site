@@ -34,6 +34,25 @@ test('fonts are bounded and fingerprinted assets match their content hashes', as
   for (const url of ['/assets/cache/.env.0123456789ab', '/assets/cache/unknown.0123456789ab.webp', '/assets/cache/cafe-hero.not-a-hash.webp', '/assets/cache/../private.0123456789ab.webp']) assert.equal(resolvePublicFile(path.resolve('dist'), url), null);
 });
 
+test('large fingerprinted assets publish once while original addresses remain usable', async () => {
+  const { fingerprintOnlyAssets } = await import('../scripts/public-files.mjs');
+  const redirects = await readFile('dist/_redirects', 'utf8');
+  const server = await createPreviewServer(); await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  const base = `http://127.0.0.1:${server.address().port}`;
+  try {
+    for (const source of fingerprintOnlyAssets) {
+      await assert.rejects(stat(`dist/${source}`), { code: 'ENOENT' });
+      const rule = redirects.split('\n').find(line => line.startsWith(`/${source} `));
+      assert.ok(rule, source);
+      assert.match(rule, / 200$/);
+      const response = await fetch(`${base}/${source}`);
+      assert.equal(response.status, 200);
+      assert.deepEqual(Buffer.from(await response.arrayBuffer()), await readFile(source));
+      assert.doesNotMatch(response.headers.get('cache-control'), /immutable/);
+    }
+  } finally { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); }
+});
+
 test('immutable caching applies only to fingerprinted assets', async () => {
   const server = await createPreviewServer(); await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   const origin = `http://127.0.0.1:${server.address().port}`;

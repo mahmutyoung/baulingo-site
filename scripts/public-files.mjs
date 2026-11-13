@@ -1,5 +1,6 @@
 import path from 'node:path';
 import { topics } from '../src/topics.js';
+import { writingLessons } from './writing-content.mjs';
 
 // Approved separately from the 2 MB core site: loaded only by the DTZ experience.
 export const dtzMediaFiles = [
@@ -12,6 +13,7 @@ export const publicFiles = [
   'index.html', 'style.css', 'app.js', '.nojekyll', 'privacy/index.html', 'impressum/index.html',
   'src/exercise.js', 'src/english-exercises.js', 'src/sentence-builder.js', 'src/english-practice.js', 'src/topics.js', 'src/language.js', 'src/language-choice.js', 'src/navigation.js', 'src/dtz-study-filter.js',
   'dtz.css', 'src/dtz/content.js', 'src/dtz/rules.js', 'src/dtz/player.js', ...dtzMediaFiles,
+  'writing.css', 'src/writing/rules.js', 'src/writing/player.js', 'src/writing/activities.js', 'src/writing/studio.js',
   'assets/logo.svg', 'assets/favicon.svg', 'assets/cafe-hero.webp',
   ...[480, 800, 1200].map(width => `assets/cafe-hero-${width}.webp`),
   'assets/audio/einen-kaffee-bitte.mp3',
@@ -26,9 +28,12 @@ export const generatedFiles = [
   ...topics.map(topic => `konular/${topic.id}/index.html`),
   'konular/kafede-siparis/index.html',
   'dtz-deneme-sinavi/index.html', 'dtz-kelime-kalip-cumle/index.html',
+  'dtz-mektup-yazma/index.html', ...writingLessons.map(lesson => `dtz-mektup-yazma/${lesson.id}/index.html`),
 ];
 
 export const cacheableAssets = publicFiles.filter(file => file.startsWith('assets/') && /\.(?:woff2|webp|svg|mp3)$/.test(file) && !dtzMediaFiles.includes(file));
+// Large assets are emitted once, with exact 200 rewrites retaining mutable URLs.
+export const fingerprintOnlyAssets = cacheableAssets.filter(file => /\.(?:woff2|webp)$/.test(file));
 export function cachedAssetPath(source, hash) {
   const extension = path.posix.extname(source);
   return `assets/cache/${source.slice('assets/'.length, -extension.length)}.${hash}${extension}`;

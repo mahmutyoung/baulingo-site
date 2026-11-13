@@ -1,5 +1,19 @@
 # Homepage performance — 31 October 2026
 
+## Cloudflare report investigation — 4 November 2026
+
+The owner supplied `.dev/performance/cloudflare-performance-report.pdf`, covering 2–3 November. Its `/en/` chart shows two LCP samples, one good and one poor; P75 is 6,712 ms. The affected element is the already fingerprinted 1200px café hero. Reported subparts are TTFB 1,491 ms, discovery delay 463 ms, transfer 0 ms and render delay 4,759 ms. CLS is good for the displayed samples; INP has no data. Two observations cannot establish a sitewide user distribution.
+
+Fresh isolated foreground Chrome checks on the live English homepage observed cold desktop LCP 224–748 ms, ordinary emulated-phone LCP 304–332 ms, and warm repeats 144–180 ms. Matching the exact 1200px image produced 272–404 ms. A separate controlled 4xCPU / 1.6Mbps phone run produced 2,280 ms. These local-browser observations are not a new PageSpeed score or a replacement for field data. The 6.7s delay was not reproduced.
+
+Live HTML/CSS responses report Cloudflare HIT and revalidation; the hero is high-priority/eager with responsive candidates, WebP and immutable hashed caching. Warm browser resource timing confirms reuse. Optimized fonts are also live. Therefore the historical “locally prepared, not deployed” note below no longer describes these particular live assets; the full release/version was not audited here. No production code or Cloudflare settings were changed for this investigation.
+
+The next useful evidence is the slow element's Browser/OS/Country breakdown and a longer sample window, followed by a performance trace on an affected device if it recurs. Investigate render delay/TTFB before changing image compression. Full evidence and captures are kept locally in `.dev/performance/diagnosis-2026-11-04.md`. Metric interpretation follows [Cloudflare's subpart documentation](https://developers.cloudflare.com/web-analytics/data-metrics/core-web-vitals/) and [Google's LCP guidance](https://web.dev/articles/optimize-lcp/).
+
+## Historical preparation
+
+Update, 2 November: adding static writing lessons required avoiding duplicate large assets to preserve the 2 MB core budget. WebP/WOFF2 files now publish their fingerprinted copy once; exact `200` rewrites retain original URLs with revalidation. The local preview mirrors these allowlisted aliases. Source files and the homepage's visual assets are unchanged. See [writing-course build notes](content/dtz-writing.md).
+
 Status: implemented locally, not deployed. No new live PageSpeed score has been measured.
 
 ## Baseline

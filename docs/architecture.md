@@ -63,6 +63,8 @@ Build static output into `dist/` for the agreed Cloudflare hosting. The main sit
 
 ## Current implementation
 
+The local DTZ writing course now uses a compact studio presentation matching the [owner's reference](design/dtz-writing-studio.md). `scripts/writing-page.mjs` renders grouped lesson navigation and the phrase-toolbox shell; `src/writing/studio.js` enhances stages, single-task navigation, disclosures, phrase search/insertion and live draft preview. It loads the existing static phrase reference rather than maintaining or publishing a duplicate phrase dataset. `src/writing/player.js` and the existing rules continue to own persistence and answers. All educational content remains unchanged and readable statically. This presentation update awaits publication.
+
 Local developer review uses `/dev/review/` with a maintained change catalog, the real website in a sandboxed same-origin preview, DTZ sample-state shortcuts and local feedback. Refresh rebuilds generated output in a fresh Node worker; approvals are bound to current source and matching preview versions. Review assets/middleware and feedback are excluded from the public static build. Normal production-style preview keeps review routes disabled and frame protections intact. See [review instructions](development/review.md).
 
 The DTZ simulation is implemented locally at `/dtz-deneme-sinavi/` as a new page within the main static build; publication is pending. `scripts/import-dtz.mjs` exports only the existing app's exam data and three media files. `src/dtz/content.js` holds that snapshot, `src/dtz/rules.js` owns pure state/scoring/deadline rules, `src/dtz/player.js` enhances the static output from `scripts/dtz-page.mjs`, and `dtz.css` extends the site's design. Normal builds do not read the app repository. The current attempt is stored only in localStorage; drafts and answers are never submitted. The core output retains its 2 MB budget, with the owner's separately approved 10 MB allowance for exact, lazy-loaded DTZ media. See [the port notes](content/dtz-web.md) for scope, provenance and verification. Other exam packages remain planned.
@@ -72,6 +74,12 @@ The repository has static HTML/CSS, browser modules, generated topic and English
 ## Static asset optimization
 
 The build generates content-hashed copies of explicit core assets with `scripts/assets.mjs`, rewrites HTML/CSS references and appends exact immutable-cache rules. Dynamic hashes remain constrained to allowlisted source names. Mutable URLs retain revalidation, and DTZ media is not duplicated. Responsive hero copies and local font subsets are generated offline; normal Node builds use tracked assets. See [performance notes](performance.md).
+
+## DTZ letter-writing course
+
+The 3 November audit fixes distinguish 22 learning lessons and two reference tools. `scripts/writing-guidance.mjs` defines the real task types/points/outcomes; `scripts/writing-phrases.mjs` holds Turkish reference meanings and examples. `scripts/writing-format.mjs` handles escaped source markdown; `scripts/writing-task-page.mjs` renders task-specific controls and annotated models; `src/writing/activities.js` checks finite answers separately from the course storage/DOM controller. Local v1 state retains old drafts and adds bounded responses, task review, meaningful resume and field-level storage merges. See [owner review notes](content/dtz-writing-review.md).
+
+The owner-requested Turkish writing course is prepared locally at `/dtz-mektup-yazma/`, with 24 static pages (22 lessons and two reference tools), 47 source task/model alternatives and 11 letter types. Build-only source data feeds Turkish adaptation and static generation; pure browser rules and a DOM controller add checks, local drafts, explicit completion, export and optional clocks. No server storage or exercise-event measurement is added. Large image/font output is deduplicated behind exact static rewrites to retain the 2 MB core budget. See [writing implementation notes](content/dtz-writing.md). Publication is pending.
 
 ## Shared sentence builder
 

@@ -1,7 +1,7 @@
 import { copyFile, mkdir, rm, lstat, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { publicFiles, generatedFiles } from './public-files.mjs';
+import { publicFiles, generatedFiles, fingerprintOnlyAssets } from './public-files.mjs';
 import { generatePages } from './pages.mjs';
 import { fingerprintAssets, rewriteAssetURLs } from './assets.mjs';
 
@@ -33,6 +33,10 @@ export async function build() {
     const target = path.join(output, file);
     await writeFile(target, rewriteAssetURLs(await readFile(target, 'utf8'), mapping));
   }
+  // Cloudflare exact internal rewrites preserve old URLs without duplicate files.
+  const aliases = fingerprintOnlyAssets.map(source => `/${source} /${mapping.get(source)} 200`).join('\n');
+  await writeFile(path.join(output, '_redirects'), `${await readFile(path.join(root, '_redirects'), 'utf8')}\n${aliases}\n`);
+  for (const source of fingerprintOnlyAssets) await rm(path.join(output, source));
   // Cloudflare's default revalidation remains on mutable URLs. Exact paths avoid
   // conflicting Cache-Control rules and never give missing hashes a year-long TTL.
   const headerPath = path.join(output, '_headers');

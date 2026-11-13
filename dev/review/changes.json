@@ -1,5 +1,187 @@
 [
   {
+    "id": "compact-writing-studio-2026-11-13",
+    "title": "Kompakt mektup stüdyosu",
+    "date": "2026-11-13",
+    "summary": "Reference-inspired compact studio: grouped lessons, learning/writing stages, one task at a time and a visible sentence-pattern toolbox. Educational content is unchanged.",
+    "before": "Lessons, exercises and multiple task editors formed a long page. Sentence patterns required navigating to the separate reference.",
+    "after": "Grouped course navigation, a focused task workspace, collapsible instructions/checks and a searchable phrase rail with insertion and a live draft preview. Phones use an expandable toolbox. All 24 destinations, 47 tasks and 64 phrases retain their content and saved data.",
+    "files": [
+      "scripts/writing-page.mjs",
+      "src/writing/studio.js",
+      "src/writing/player.js",
+      "writing.css",
+      "scripts/public-files.mjs"
+    ],
+    "steps": [
+      {
+        "id": "studio",
+        "title": "Mektup stüdyosu",
+        "path": "/dtz-mektup-yazma/rehberli-yazma/#task-c11-t1",
+        "focus": ".writing-workspace",
+        "check": "Switch Öğren / Dene / Yaz. Open the original task and plan. Write a draft, search sentence patterns, add at the cursor and inspect Mektubun. Switch tasks and reload; both drafts must remain. Open Kontrol et ve geliştir for original checks/models/revision."
+      },
+      {
+        "id": "phone",
+        "title": "Telefonda çalışma ve kalıp araç kutusu",
+        "path": "/dtz-mektup-yazma/rehberli-yazma/#task-c11-t1",
+        "focus": "[data-phrase-toolbox]",
+        "check": "At 320 and 390 px, expand Cümle kalıpları, search in German/Turkish, inspect translations/examples and insert into a writing field. The toolbox closes after insertion and returns focus to the field. Expand Dersler ve kaynaklar to navigate lessons."
+      },
+      {
+        "id": "short",
+        "title": "Kısa çalışmalar",
+        "path": "/dtz-mektup-yazma/kime-yaziyorum/#task-c1-t1",
+        "focus": "#yaz",
+        "check": "Use numbered task buttons and Geri / Sonraki çalışma. Matching, choices, ordering and short writing keep their original checking and storage. No JavaScript: lessons, all tasks, models and the phrase reference link remain readable."
+      },
+      {
+        "id": "simulation",
+        "title": "A/B seçimi ve kaynaklar",
+        "path": "/dtz-mektup-yazma/deneme-1/#secim",
+        "focus": ".writing-choice-overview",
+        "check": "Read both briefs before choosing A or B. Write both drafts, switch back and use the optional clock. Check the full Cümle kalıpları reference and original course content."
+      }
+    ]
+  },
+  {
+    "id": "review-comments-2026-11-13",
+    "title": "Yorumlar: mektup başlıkları ve görünüm seçimi",
+    "date": "2026-11-13",
+    "summary": "Applied the three saved review comments: two writing headings and the study view switch position.",
+    "before": "The writing group and start section used the previous headings. Liste / Tablo appeared above the level results.",
+    "after": "The headings read Mektup Yazmaya Giriş and Nereden Başlamak İstersin? The mobile view switch is inside the first visible level section, below its introduction, and follows the selected level.",
+    "addresses": [
+      "fec15890-00b2-4924-b2e2-b82aa3704029",
+      "8b35b6bd-f4ee-4324-a7d1-a1e46e796f4d",
+      "742ee0cb-8c67-4e8a-8e96-2642fc7718e3"
+    ],
+    "files": [
+      "scripts/writing-content.mjs",
+      "scripts/writing-page.mjs",
+      "src/dtz-study-filter.js"
+    ],
+    "steps": [
+      {
+        "id": "writing-headings",
+        "title": "Mektup başlıkları",
+        "path": "/dtz-mektup-yazma/",
+        "focus": ".writing-body",
+        "check": "Check Nereden Başlamak İstersin? and Mektup Yazmaya Giriş in the course navigation. Open a lesson and check the same group name."
+      },
+      {
+        "id": "level-view-switch",
+        "title": "Düzey bölümünde Liste / Tablo",
+        "path": "/dtz-kelime-kalip-cumle/",
+        "focus": "#level-A1",
+        "check": "At 320 and 390 px, find Liste / Tablo inside A1 below the introduction. Toggle with keyboard, filter to A2 or B1 and confirm the switch follows the visible section and retains the view. Desktop tables and static no-JavaScript content remain readable."
+      }
+    ]
+  },
+  {
+    "id": "dtz-writing-audit-fixes-2026-11-03",
+    "title": "Mektup dersleri: denetim düzeltmeleri",
+    "date": "2026-11-03",
+    "summary": "Visible prompts, task-specific short exercises and letter guidance, annotated models, translated reference and unfinished-task resume.",
+    "before": "All47 tasks used a generic letter editor; some required options were hidden; planning/checks were generic.",
+    "after": "22 lessons and2 reference pages, 47 tasks in six formats, actual task-point plans/checks, explained models and64 translated phrase entries. Previous drafts remain available. Owner performs final content review.",
+    "files": [
+      "scripts/writing-content.mjs",
+      "scripts/writing-guidance.mjs",
+      "scripts/writing-phrases.mjs",
+      "scripts/writing-format.mjs",
+      "scripts/writing-task-page.mjs",
+      "scripts/writing-page.mjs",
+      "src/writing/rules.js",
+      "src/writing/player.js",
+      "src/writing/activities.js",
+      "writing.css",
+      "scripts/public-files.mjs"
+    ],
+    "steps": [
+      {
+        "id": "short",
+        "title": "Kısa sorular ve görünür seçenekler",
+        "path": "/dtz-mektup-yazma/kime-yaziyorum/",
+        "focus": "[data-task=\"c1-t2\"]",
+        "check": "Match the recipients and choose the Frau Roth sentence. Options are visible without opening German source text. Check per-item feedback, reload and retained answers. First two tasks have no letter editor."
+      },
+      {
+        "id": "sequence",
+        "title": "Boşluk ve sıralama",
+        "path": "/dtz-mektup-yazma/baslangic-ve-kapanis/",
+        "focus": "[data-task=\"c2-t1\"]",
+        "check": "Complete the four forms, check with Enter, then order the message. Undo the last piece with keyboard and reload. Aylin uses three short fields. Revised short sentences must save."
+      },
+      {
+        "id": "letter",
+        "title": "Gerçek görev planı ve örnek açıklaması",
+        "path": "/dtz-mektup-yazma/rehberli-yazma/",
+        "focus": "[data-task=\"c11-t1\"]",
+        "check": "Plan and write using the four real task points. Find them in the model annotations and inspect Turkish structure help. Check inline save state, revise a sentence, reload and return from the course index to unfinished work."
+      },
+      {
+        "id": "exam",
+        "title": "A/B konularını seçmeden önce karşılaştır",
+        "path": "/dtz-mektup-yazma/deneme-1/",
+        "focus": ".writing-choice-overview",
+        "check": "Read both briefs, choose one editor, switch without losing drafts, optionally use the clock. Inspect the explicit acceptance reason in model A. Writing stays editable after expiry."
+      },
+      {
+        "id": "reference",
+        "title": "Kalıpların Türkçe anlamları",
+        "path": "/dtz-mektup-yazma/cumle-kaliplari/",
+        "focus": ".writing-phrases",
+        "check": "Open phrase groups and inspect meanings and contextual examples. Mark this reference reviewed; it must not increase the22-lesson progress count. Final language/editorial checklist: docs/content/dtz-writing-review.md."
+      }
+    ]
+  },
+  {
+    "id": "dtz-writing-2026-11-02",
+    "title": "DTZ mektup yazma: Türkçe ve kendi hızında",
+    "date": "2026-11-02",
+    "summary": "Owner writing book adapted into 24 Turkish-guided lessons, preserving 47 original tasks/models and all 11 letter types.",
+    "before": "The writing book was a separate German-only site.",
+    "after": "Integrated lessons offer quick checks, local drafts, self-checks, revision, explicit completion, export and three optional timed A/B practices.",
+    "files": [
+      "scripts/writing-content.mjs",
+      "scripts/writing-page.mjs",
+      "scripts/data/dtz-writing-book.json",
+      "src/writing/rules.js",
+      "src/writing/player.js",
+      "writing.css",
+      "scripts/pages.mjs",
+      "scripts/public-files.mjs",
+      "index.html",
+      "src/topics.js",
+      "scripts/build.mjs",
+      "scripts/server.mjs"
+    ],
+    "steps": [
+      {
+        "id": "course",
+        "title": "Dersler ve devam et",
+        "path": "/dtz-mektup-yazma/",
+        "focus": ".writing-body",
+        "check": "Open a lesson on desktop and phone. Try wrong/correct answers, save a draft, mark completion, then return to the course and resume. Saving alone must not complete a lesson."
+      },
+      {
+        "id": "writing",
+        "title": "Planla, yaz, kontrol et",
+        "path": "/dtz-mektup-yazma/cumleleri-bagla/",
+        "focus": ".writing-activity",
+        "check": "Order the chunks with keyboard. Try planning, writing, checklist, model and revision. Reload, download answers and inspect the file. Without JavaScript the tasks and models stay readable."
+      },
+      {
+        "id": "simulation",
+        "title": "A/B yazma denemesi",
+        "path": "/dtz-mektup-yazma/deneme-1/",
+        "focus": ".writing-timer",
+        "check": "Start the optional clock before reading, switch A/B and keep both drafts. Reload without restarting time; expiry keeps the writing field editable. Reset affects only writing-course data."
+      }
+    ]
+  },
+  {
     "id": "mobile-table-view-2026-11-01",
     "title": "Mobile table and list views",
     "date": "2026-11-01",
