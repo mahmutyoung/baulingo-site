@@ -17,13 +17,13 @@ function startWriting(root) {
   const failure='Tarayıcıda kayıt kullanılamıyor. Yazın bu açık sayfada kalır; sayfa değişince veya yenilenince kaybolur. Çıkmadan önce yanıtlarını indir.';
   let persistent=true, raw='';
   const unavailable=()=>{
-    persistent=false;storageMessage.textContent=failure;storageMessage.classList.add('writing-warning');
+    persistent=false;storageMessage.textContent=failure;storageMessage.hidden=false;storageMessage.classList.add('writing-warning');
     root.querySelectorAll('[data-editor-warning]').forEach(element=>{element.textContent=failure;element.hidden=false;});
     root.querySelectorAll('[data-editor-save]').forEach(element=>{element.textContent='Kalıcı olarak kaydedilmedi.';});
   };
   try{raw=localStorage.getItem(key)||'';}catch{unavailable();}
   let progress=restoreProgress(raw,lessons);
-  if(raw&&!progress.last&&!Object.keys(progress.lessons).length)storageMessage.textContent='Önceki mektup kaydı okunamadı. Boş kayıtla devam ediyorsun; diğer çalışmaların etkilenmedi.';
+  if(raw&&!progress.last&&!Object.keys(progress.lessons).length){storageMessage.hidden=false;storageMessage.textContent='Önceki mektup kaydı okunamadı. Boş kayıtla devam ediyorsun; diğer çalışmaların etkilenmedi.';}
   const localLesson=current?(progress.lessons[current]||={complete:false,tasks:{}}):null;
   const savedLesson=()=>localLesson;
   const save=(section=null,lessonFields=[],taskFields=[])=>{
@@ -37,7 +37,7 @@ function startWriting(root) {
       progress=fresh;localStorage.setItem(key,JSON.stringify(progress));
     }catch{unavailable();}
     if(!persistent&&current)progress.lessons[current]=mergeLesson(progress.lessons[current],savedLesson(),{taskId:section?.dataset.task,taskFields,lessonFields});
-    const message=persistent?'Bu tarayıcıya kaydedildi.':'Kalıcı olarak kaydedilmedi; çıkmadan önce yanıtlarını indir.';
+    const message=persistent?'Kaydedildi.':'Kalıcı olarak kaydedilmedi; çıkmadan önce yanıtlarını indir.';
     if(section) section.querySelectorAll('[data-editor-save]').forEach(element=>{element.textContent=message;});
     saveStatus.textContent=message;
   };
@@ -114,7 +114,7 @@ function startWriting(root) {
     }
     if(task.legacyChecks?.some(Boolean)){
       const legacy=section.querySelector('[data-legacy]');
-      const note=document.createElement('p');note.textContent=`Önceki genel kontrol listesindeki ${task.legacyChecks.filter(Boolean).length} işaret korundu. Aşağıdaki yeni, göreve özel maddeler ayrıca kontrol edilir.`;
+      const note=document.createElement('p');note.textContent=`Önceki kontrol işaretlerin korundu. Bu görevin listesini yeniden gözden geçir.`;
       if(legacy)legacy.append(note);else section.querySelector('.writing-selfcheck')?.before(note);
     }
     const revised=section.querySelector('[data-revised]');
@@ -199,7 +199,7 @@ function startWriting(root) {
   });
   root.querySelector('[data-reset]').addEventListener('click',()=>{
     if(!confirm('Yalnızca bu tarayıcıdaki mektup çalışmaları ve ilerleme işaretleri silinsin mi? Önce yanıtlarını indirebilirsin.'))return;
-    try{localStorage.removeItem(key);}catch{storageMessage.textContent='Tarayıcıdaki kayıt silinemedi. Site verilerini tarayıcı ayarlarından yönetebilirsin.';return;}
+    try{localStorage.removeItem(key);}catch{storageMessage.hidden=false;storageMessage.textContent='Tarayıcıdaki kayıt silinemedi. Site verilerini tarayıcı ayarlarından yönetebilirsin.';return;}
     location.reload();
   });
   if(current)save();

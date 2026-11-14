@@ -1,6 +1,7 @@
 import { studyPageContent } from './study-page.mjs';
 import { englishPages } from './english-pages.mjs';
 import { topics } from '../src/topics.js';
+import { germanHTML, exampleHTML } from '../src/learning-text.js';
 import { dtzWords, dtzPhrases, dtzSentences } from '../src/dtz-study.js';
 import { dtzPageContent } from './dtz-page.mjs';
 import { writingLessons, writingBase } from './writing-content.mjs';
@@ -28,14 +29,14 @@ ${noindex ? '<meta name="robots" content="noindex">' : `<link rel="canonical" hr
 export function generatePages(homepage) {
   const output = englishPages();
   for (const topic of topics) {
-    const examples = topic.examples.length ? `<ul class="topic-examples" lang="de">${topic.examples.map(text => `<li>${escape(text)}</li>`).join('')}</ul>` : '';
+    const examples = topic.examples.length ? `<ul class="topic-examples">${topic.learningExamples.map(item => `<li>${exampleHTML(item.de,item.translation,{word:item.word})}</li>`).join('')}</ul>` : '';
     output.set(`konular/${topic.id}/index.html`, page(topic.title, topic.subtitle, topicURL(topic),
-      `<p><a href="/konular/">← Tüm konular</a></p><article><h1>${escape(topic.title)}</h1><p class="dialog-subtitle">${escape(topic.subtitle)}</p>${topic.paragraphs.map(text => `<p>${escape(text)}</p>`).join('')}${examples}${(topic.links || []).map(link => `<p><a class="button button-primary" href="${escape(link.href)}">${escape(link.label)}</a></p>`).join('')}</article>${topic.practice && topic.id !== 'exams' ? `<p><a class="button button-primary" href="/?practice=${escape(topic.id)}#alistirma">Cümle kurmayı dene</a></p>` : ''}`));
+      `<p><a href="/konular/">← Tüm konular</a></p><article><h1>${escape(topic.title)}</h1><p class="dialog-subtitle">${escape(topic.subtitle)}</p>${topic.paragraphs.map(text => `<p>${germanHTML(text,topic.germanMentions)}</p>`).join('')}${examples}${(topic.links || []).map(link => `<p><a class="button button-primary" href="${escape(link.href)}">${escape(link.label)}</a></p>`).join('')}</article>${topic.practice && topic.id !== 'exams' ? `<p><a class="button button-primary" href="/?practice=${escape(topic.id)}#alistirma">Cümle kurmayı dene</a></p>` : ''}`));
   }
   output.set('konular/index.html', page('Almanca konuları', 'Türkçe açıklamalarla Almanca konuları.', '/konular/',
     `<h1>İhtiyacına göre başla</h1><p>Almancayı hedeflerine uygun konularla adım adım öğren.</p><ul class="topic-index">${topics.map(topic => `<li><a href="${topicURL(topic)}">${escape(topic.title)}</a><p>${escape(topic.subtitle)}</p></li>`).join('')}<li><a href="/konular/kafede-siparis/">Kafede sipariş</a></li></ul>`));
   output.set('konular/kafede-siparis/index.html', page('Kafede sipariş', 'Bir kahve, lütfen. Kafede kullanabileceğin Almanca bir istek.', '/konular/kafede-siparis/',
-    '<h1>Kafede sipariş</h1><p>Bu cümleyi Almanca söyle:</p><p class="topic-examples" lang="de">Einen Kaffee, bitte.</p><p>Anlamı: Bir kahve, lütfen.</p><audio controls preload="none" src="/assets/audio/einen-kaffee-bitte.mp3" aria-label="Einen Kaffee, bitte. Dinle"></audio><p><a class="button button-primary" href="/#alistirma">Cümleyi kur</a></p><p>Kelime seçme alıştırması JavaScript ile çalışır.</p>'));
+    '<h1>Kafede sipariş</h1><p>Bu cümleyi Almanca söyle:</p><p class="topic-examples" lang="de">Einen Kaffee, bitte.</p><p>Anlamı: Bir kahve, lütfen.</p><audio controls preload="none" src="/assets/audio/einen-kaffee-bitte.mp3" aria-label="Einen Kaffee, bitte. Dinle"></audio><p><a class="button button-primary" href="/#alistirma">Cümleyi kur</a></p>'));
   output.set('sinavlar/index.html', page('DTZ denemesi ve Almanca çalışma içerikleri', 'Ücretsiz DTZ A2–B1 denemesini çöz. Kelimeler, ifadeler ve cümle kalıplarını Türkçe anlamlar ve Almanca örneklerle çalış.', '/sinavlar/', `
 <h1>DTZ’ye hazırlan</h1><p>Denemeyle kendini dene veya kelimeler, ifadeler ve cümle kalıplarıyla çalış. Baulingo içeriklerine ücretsiz, üye olmadan ulaş.</p>
 <section id="dtz" class="exam-section"><h2>DTZ çalışma içerikleri</h2><div class="exam-materials"><article><h3>DTZ A2–B1 deneme sınavı</h3><p>Tam dinleme kaydı, 20 dinleme ve 25 okuma sorusu, yazma ve konuşma görevleriyle sınavı dene.</p><a class="button button-primary" href="/dtz-deneme-sinavi/">Denemeye başla →</a></article><article><h3>Kelimeler, ifadeler ve cümle kalıpları</h3><p>A1, A2 ve B1 düzeylerinde; günlük durumlara göre Türkçe anlamlar ve Almanca örneklerle çalış.</p><a class="button button-primary" href="/dtz-kelime-kalip-cumle/">Çalışma listelerini aç →</a></article><article><h3>DTZ Mektup Yazma</h3><p>Türkçe açıklamalar, kısa alıştırmalar ve 11 mektup türüyle kendi hızında yazmayı öğren. Metnini kontrol et ve geliştir.</p><a class="button button-primary" href="/dtz-mektup-yazma/">Mektup yazmayı çalış →</a></article></div></section>

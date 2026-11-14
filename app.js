@@ -1,5 +1,6 @@
 import { createSentenceBuilder } from './src/sentence-builder.js';
 import { topics, searchTopics } from './src/topics.js';
+import { appendGermanText } from './src/learning-text.js';
 
 const $ = selector => document.querySelector(selector);
 let modalTrigger = null;
@@ -55,7 +56,9 @@ function openTopic(topicId, trigger = document.activeElement) {
   $('#topic-dialog-subtitle').textContent = topic.subtitle;
   const content = $('#topic-content');
   content.replaceChildren();
-  for (const text of topic.paragraphs) content.append(element('p', text));
+  for (const text of topic.paragraphs) {
+    const paragraph=element('p');appendGermanText(paragraph,text,topic.germanMentions);content.append(paragraph);
+  }
   for (const link of topic.links || []) {
     const anchor = element('a', link.label, 'button button-primary');
     anchor.href = link.href;
@@ -63,8 +66,11 @@ function openTopic(topicId, trigger = document.activeElement) {
   }
   if (topic.examples.length) {
     const list = element('ul', undefined, 'topic-examples');
-    list.lang = 'de';
-    for (const text of topic.examples) list.append(element('li', text));
+    for (const example of topic.learningExamples) {
+      const item=element('li');
+      const phrase=element(example.word?'strong':'span',example.de,`german-example${example.word?' german-target':''}`);phrase.lang='de';
+      item.append(phrase,element('span',example.translation,'example-translation'));list.append(item);
+    }
     content.append(list);
   }
   $('#topic-practice').hidden = !topic.practice || topic.id === 'exams';

@@ -22,16 +22,52 @@ export function studyFilterState(items, selected) {
 
 for (const root of globalThis.document?.querySelectorAll('[data-study-root]') || []) {
   const filters = root.querySelector('.study-filters');
-  const views = document.createElement('div');
-  views.className = 'study-views';
-  views.setAttribute('role', 'group');
-  views.setAttribute('aria-label', 'Görünüm');
-  views.innerHTML = '<button type="button" data-study-view="list" aria-pressed="false">Liste</button><button type="button" data-study-view="table" aria-pressed="true">Tablo</button>';
-  views.addEventListener('click', event => {
+  const levels = [...root.querySelectorAll('[data-study-level-section]')];
+  for (const level of levels) {
+    const views = document.createElement('div');
+    views.className = 'study-views';
+    views.setAttribute('role', 'group');
+    views.setAttribute('aria-label', `${level.dataset.level} görünümü`);
+    views.innerHTML = '<button type="button" data-study-view="list" aria-pressed="false">Liste</button><button type="button" data-study-view="table" aria-pressed="true">Tablo</button>';
+    level.querySelector('.study-level-heading').append(views);
+  }
+  let pendingContext = false;
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const updateContext = () => {
+    pendingContext = false;
+    for (const level of levels) {
+      const label = level.querySelector('[data-current-topic]');
+      const heading = level.querySelector('.study-level-heading');
+      if (level.hidden) { label.textContent = ''; heading.classList.remove('is-stuck'); continue; }
+      const rect = heading.getBoundingClientRect();
+      heading.classList.toggle('is-stuck', level.getBoundingClientRect().top < -1);
+      const edge = rect.bottom;
+      const topic = [...level.querySelectorAll('.study-topic:not([hidden])')].find(topic => {
+        const rect = topic.getBoundingClientRect();
+        return rect.top <= edge && rect.bottom > edge;
+      });
+      const name = topic?.dataset.topic || '';
+      if (label.textContent !== name) {
+        label.getAnimations().forEach(animation => animation.cancel());
+        label.textContent = name;
+        if (name && !reducedMotion.matches) label.animate(
+          [{ opacity: 0, transform: 'translateY(5px)' }, { opacity: 1, transform: 'translateY(0)' }],
+          { duration: 220, easing: 'ease-out' }
+        );
+      }
+      label.title = label.textContent;
+    }
+  };
+  const queueContext = () => { if (!pendingContext) { pendingContext = true; requestAnimationFrame(updateContext); } };
+  window.addEventListener('scroll', queueContext, { passive: true });
+  window.addEventListener('resize', queueContext);
+  root.addEventListener('toggle', queueContext, true);
+  root.addEventListener('click', event => {
     const button = event.target.closest('[data-study-view]');
     if (!button) return;
     root.classList.toggle('study-list', button.dataset.studyView === 'list');
-    for (const choice of views.children) choice.setAttribute('aria-pressed', String(choice === button));
+    for (const choice of root.querySelectorAll('[data-study-view]')) choice.setAttribute('aria-pressed', String(choice.dataset.studyView === button.dataset.studyView));
+    queueContext();
   });
   for (const table of root.querySelectorAll('table')) {
     const scroll = document.createElement('div');
@@ -75,8 +111,9 @@ for (const root of globalThis.document?.querySelectorAll('[data-study-root]') ||
       }
     }
     for (const group of root.querySelectorAll('[data-frame-family],[data-expression-group],div[data-kind],.study-topic,[data-study-level-section]')) group.hidden = !group.querySelector('[data-study-item]:not([hidden])');
-    const firstLevel = root.querySelector('[data-study-level-section]:not([hidden])');
-    if (firstLevel) firstLevel.querySelector('.study-topic').before(views);
+    const advancedCount = ['list','topic','type','part'].filter(key => chosen[key] && !(key === 'list' && chosen[key] === 'temel')).length;
+    root.querySelector('[data-study-advanced-count]').textContent = advancedCount ? ` (${advancedCount})` : '';
+    queueContext();
     const count = items.filter(item=>!item.hidden).length;
     root.querySelector('.study-empty').hidden = count > 0;
     const name = controls.list.selectedOptions[0].textContent;

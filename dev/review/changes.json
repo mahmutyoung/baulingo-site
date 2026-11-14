@@ -1,5 +1,241 @@
 [
   {
+    "id": "interface-copy-cleanup-2026-11-14",
+    "title": "Daha az açıklama, doğrudan çalışma",
+    "date": "2026-11-14",
+    "summary": "Applied the 30 approved editorial decisions: remove technical/layout narration, shorten useful messages and consolidate repeated guidance. Counters, save/export, timers and accessible answer regions are retained.",
+    "before": "The café page explained JavaScript, homepage fallback promised removed downloads, and course pages repeated progress/scoring/storage explanations. Some scripts depended on paragraphs containing that copy.",
+    "after": "Learning and actions take priority. Helpful save/error/timer/fallback messages remain. The writing sidebar no longer expects its removed tagline. Guided writing locates its word counter explicitly. Word-order answers keep their live region with an empty initial value. One concise browser-only storage note appears near each writing export area. Length-vs-content advice now appears once in the visible planning lesson.",
+    "addresses": [
+      "ca8aee87-acef-4f4a-9fe2-7ac432ded34d"
+    ],
+    "files": [
+      "index.html",
+      "scripts/pages.mjs",
+      "scripts/study-page.mjs",
+      "scripts/writing-page.mjs",
+      "scripts/writing-task-page.mjs",
+      "scripts/writing-content.mjs",
+      "scripts/dtz-page.mjs",
+      "src/topics.js",
+      "src/writing/studio.js",
+      "src/writing/letter-builder.js",
+      "src/writing/activities.js",
+      "src/writing/player.js",
+      "docs/content/interface-copy-audit.md"
+    ],
+    "steps": [
+      {
+        "id": "cafe",
+        "title": "Almanca cümle ve doğrudan alıştırma",
+        "path": "/konular/kafede-siparis/",
+        "focus": "#main",
+        "check": "The technical JavaScript sentence is gone. German phrase, Turkish meaning, native audio control and Cümleyi kur action remain."
+      },
+      {
+        "id": "course",
+        "title": "Dersler ve çalışma alanı",
+        "path": "/dtz-mektup-yazma/baslangic-ve-kapanis/#task-c2-t2",
+        "focus": ".writing-body",
+        "check": "No sidebar tagline or repeated completion disclaimer. Word-order answer starts blank; choose words, undo, reset and check. Completion can be toggled and survives reload. No literal null text appears in navigation."
+      },
+      {
+        "id": "guided",
+        "title": "Sayaç ve kaydedilen mektup",
+        "path": "/dtz-mektup-yazma/rehberli-yazma/#task-c11-t1",
+        "focus": "[data-letter-builder]",
+        "check": "Write, insert a phrase, advance and reload. Word counter and full review editor stay functional. Export retains the text; a short storage scope note is near export. Actual storage errors remain actionable."
+      },
+      {
+        "id": "planning",
+        "title": "Öğretici tavsiye bir kez",
+        "path": "/dtz-mektup-yazma/dort-maddeyi-planla/",
+        "focus": ".writing-learn",
+        "check": "Length-vs-required-information advice appears in the visible lesson explanation rather than being repeated beneath every letter counter."
+      },
+      {
+        "id": "exam",
+        "title": "Deneme yönergeleri ve sonuç",
+        "path": "/dtz-deneme-sinavi/",
+        "focus": "#dtz-app",
+        "check": "Entry copy is shorter. Timer and replay consequences, independent-practice/result scope and genuine error recovery remain. Writing counter and download remain; scope note appears once by writing. No-JavaScript view keeps static tasks, audio and an explicit no-saving/no-timer notice."
+      }
+    ]
+  },
+  {
+    "id": "german-language-presentation-2026-11-14",
+    "title": "Almanca ifadeler ve anlamları daha belirgin",
+    "date": "2026-11-14",
+    "summary": "Consistent German mentions, target-only sage highlighting and examples with translations on their own line across Turkish/English learning content.",
+    "before": "Mixed prose lacked language boundaries, example lists labelled translations as German, and German/translation feedback shared a single line.",
+    "after": "Authored German mentions are italic and have a pale sage background. Vocabulary targets retain their articles and use bold upright type. Full examples and learner input remain upright. Translations follow examples in the page language. Writing inline references and phrase suggestions follow the same hierarchy. Educational text and existing draft storage are preserved.",
+    "files": [
+      "src/learning-text.js",
+      "src/topics.js",
+      "app.js",
+      "scripts/pages.mjs",
+      "scripts/english-pages.mjs",
+      "scripts/writing-page.mjs",
+      "scripts/writing-task-page.mjs",
+      "src/writing/letter-builder.js",
+      "src/sentence-builder.js",
+      "scripts/study-page.mjs",
+      "scripts/public-files.mjs",
+      "style.css",
+      "writing.css"
+    ],
+    "steps": [
+      {
+        "id": "turkish",
+        "title": "Türkçe açıklamada Almanca",
+        "path": "/konular/articles/",
+        "focus": "article",
+        "check": "German mentions have a subtle sage background. The three noun examples retain articles and bold upright type; Turkish meanings appear directly below. Narrow-screen text wraps without page overflow."
+      },
+      {
+        "id": "english",
+        "title": "English explanations and German examples",
+        "path": "/en/appointments/",
+        "focus": "article",
+        "check": "German mentions are italic. Full examples are upright; English translations sit below and are outside lang=de. Try sentence practice and check German success feedback and English translation."
+      },
+      {
+        "id": "writing",
+        "title": "Mektup dersindeki ifadeler",
+        "path": "/dtz-mektup-yazma/kime-yaziyorum/",
+        "focus": ".writing-learn",
+        "check": "German expressions in Turkish explanations have language annotations and the same treatment. Full German teaching examples remain upright and Turkish captions stay readable."
+      },
+      {
+        "id": "phrases",
+        "title": "Kalıpları yazına ekle",
+        "path": "/dtz-mektup-yazma/rehberli-yazma/#task-c11-t1",
+        "focus": "[data-letter-builder]",
+        "check": "The three target phrases use a soft sage background. Insert a phrase, advance and reload; writing and preview remain upright and existing storage works."
+      }
+    ]
+  },
+  {
+    "id": "scene-first-motion-2026-11-14",
+    "title": "Önce içerik: açık sahneler ve yumuşak geçişler",
+    "date": "2026-11-14",
+    "summary": "Scene-first hierarchy with visible required content, plain lesson navigation, smooth sticky headings and restrained interaction motion. Saved comments reviewed and retained.",
+    "before": "Primary goals, task context, review tools and lesson groups used expandable headings. Phones hid the letter preview. Duplicate level chips repeated the level filter.",
+    "after": "Required goals, situations and points stay visible. Selected tasks and reference groups use ordinary headings; mobile uses one Ders seç control. Guided context precedes the editor and the letter preview follows it on phones. Plans, model answers and original sources remain optional. Level chips are removed; sticky headings grow smoothly and update topic context. Scene/dialog/interaction animations respect reduced motion.",
+    "addresses": [
+      "fec15890-00b2-4924-b2e2-b82aa3704029",
+      "8b35b6bd-f4ee-4324-a7d1-a1e46e796f4d",
+      "742ee0cb-8c67-4e8a-8e96-2642fc7718e3",
+      "e8260128-79ba-4143-8d2e-f7c358a5a6b8",
+      "d2ca94d2-191b-49d8-aac2-46b0b3694615",
+      "f1819550-7c18-4f86-91f5-1fc894ce8a7e",
+      "3cf42447-ca23-4ba4-8724-565e8c46e814",
+      "01fcc9cf-5446-4dcb-88b1-24463ed99b41"
+    ],
+    "files": [
+      "scripts/study-page.mjs",
+      "scripts/writing-page.mjs",
+      "scripts/writing-task-page.mjs",
+      "src/dtz-study-filter.js",
+      "src/writing/studio.js",
+      "src/writing/letter-builder.js",
+      "style.css",
+      "writing.css",
+      "docs/design/dtz-writing-studio.md"
+    ],
+    "steps": [
+      {
+        "id": "scene",
+        "title": "Görev ve yazma alanı açık",
+        "path": "/dtz-mektup-yazma/rehberli-yazma/#task-c11-t1",
+        "focus": ".writing-body",
+        "check": "Read the task and four required points directly. Write a step, insert a related phrase, advance and reload. The draft persists. Preview stays visible beside the editor on desktop and below it on phones. Optional plan and original task text follow the workspace."
+      },
+      {
+        "id": "lesson",
+        "title": "Ders hedefi ve çalışma başlıkları",
+        "path": "/dtz-mektup-yazma/kime-yaziyorum/",
+        "focus": ".writing-body",
+        "check": "Goal is visible. Use Öğren / Dene / Yaz and task navigation. Current task has a plain heading; keyboard focus follows task changes. Desktop lesson groups are plain links; mobile uses a single Ders seç disclosure."
+      },
+      {
+        "id": "sticky",
+        "title": "Büyüyen sabit başlık",
+        "path": "/dtz-kelime-kalip-cumle/",
+        "focus": "[data-study-root]",
+        "check": "No duplicate level chips. Level/content filters remain visible and other filters remain advanced. Scroll: level heading becomes larger smoothly, topic text changes with a short transition, Liste / Tablo remains in the heading. Study situations use ordinary visible headings."
+      },
+      {
+        "id": "motion",
+        "title": "Hareket ve erişilebilirlik",
+        "path": "/",
+        "focus": ".hero",
+        "check": "Homepage copy enters once; Cümleyi kur opens with a brief dialog transition and returns focus after closing. Check reduced-motion preference: no scene, heading or dialog animation. Approved homepage layout/copy are retained."
+      },
+      {
+        "id": "simulation",
+        "title": "Bağımsız deneme",
+        "path": "/dtz-mektup-yazma/deneme-1/",
+        "focus": ".writing-body",
+        "check": "Seç ve yaz navigation remains visible. Choose A or B: selected instructions, four points and full editor are visible. No guided builder replaces independent simulation."
+      }
+    ]
+  },
+  {
+    "id": "filters-writing-review-followup-2026-11-13",
+    "title": "Sade filtreler, sabit başlık ve temiz yazma alanı",
+    "date": "2026-11-13",
+    "summary": "Applied four outstanding comments: basic/advanced filters, sticky level/topic/view heading, removal of repeated privacy notices and the standalone phrase sidebar.",
+    "before": "All six filters were visible. View buttons sat below the level introduction, and no level/topic context stayed visible while scrolling. Writing pages showed a separate phrase rail and repeated browser-only notices.",
+    "after": "Level and content are visible by default. Gelişmiş filtreler contains list type, situation, word type and exam section. Each sticky level row includes Liste / Tablo and the current topic while scrolling. Writing retains inline help and its letter preview, with save failures shown only when relevant.",
+    "addresses": [
+      "e8260128-79ba-4143-8d2e-f7c358a5a6b8",
+      "d2ca94d2-191b-49d8-aac2-46b0b3694615",
+      "f1819550-7c18-4f86-91f5-1fc894ce8a7e",
+      "3cf42447-ca23-4ba4-8724-565e8c46e814"
+    ],
+    "files": [
+      "scripts/study-page.mjs",
+      "src/dtz-study-filter.js",
+      "style.css",
+      "scripts/writing-page.mjs",
+      "scripts/writing-task-page.mjs",
+      "src/writing/player.js",
+      "src/writing/studio.js",
+      "writing.css"
+    ],
+    "steps": [
+      {
+        "id": "filters",
+        "title": "İki temel filtre, diğerleri gelişmiş",
+        "path": "/dtz-kelime-kalip-cumle/",
+        "focus": ".study-filters",
+        "check": "Only CEFR düzeyi and İçerik appear initially. Open Gelişmiş filtreler with keyboard and inspect all four other controls. Set advanced choices, close the disclosure and check the active count. Reset restores Temel and clears selections."
+      },
+      {
+        "id": "sticky",
+        "title": "Düzey, durum ve Liste / Tablo",
+        "path": "/dtz-kelime-kalip-cumle/#level-A1",
+        "focus": "#level-A1 .study-level-heading",
+        "check": "Liste / Tablo sits in the A1 row at desktop and phone sizes. Scroll through Alışveriş ve hizmetler and Ev ve aile: the sticky row shows the current topic. Select A2/B1 and check their headings, views and unchanged result counts."
+      },
+      {
+        "id": "writing",
+        "title": "Yazma sayfasında daha az açıklama",
+        "path": "/dtz-mektup-yazma/dort-maddeyi-planla/",
+        "focus": ".writing-body",
+        "check": "The separate phrase sidebar and initial browser-only notices are absent. Lesson content, export and reset remain. Save confirmation is concise; actual storage failure/corruption/reset errors remain visible when they occur."
+      },
+      {
+        "id": "inline",
+        "title": "Mektup ve satır içi kalıplar korunur",
+        "path": "/dtz-mektup-yazma/rehberli-yazma/#task-c11-t1",
+        "focus": "[data-letter-builder]",
+        "check": "The actual letter preview remains. Use related patterns or Tüm kalıplar during guided writing and final editing, insert at the cursor, switch tasks and reload. The complete phrase reference remains accessible without JavaScript."
+      }
+    ]
+  },
+  {
     "id": "guided-letter-builder-2026-11-13",
     "title": "Birlikte yazalım: adım adım mektup",
     "date": "2026-11-13",

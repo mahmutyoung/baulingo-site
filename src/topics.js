@@ -50,14 +50,33 @@ export const topics = [
       'Ücretsiz DTZ A2–B1 denemesinde tam dinleme kaydı, 20 dinleme ve 25 okuma sorusu, yazma ve konuşma görevleri bulunur. Otomatik sonuç yalnızca dinleme ve okumayı kapsar; resmî sınav sonucu değildir.',
       'DTZ Mektup Yazma bölümünde Türkçe açıklamalar, kısa alıştırmalar ve 11 mektup türüyle kendi hızında çalışabilirsin. Taslaklar yalnızca tarayıcında saklanır; serbest yazılar otomatik puanlanmaz.',
       'A1 aile birleşimi hazırlığı ve diğer B1 yazma paketleri planlanıyor; henüz tamamlanmış paketler olarak sunulmuyor.',
-      'Goethe, telc ve DTZ aynı sınav değildir. Hazırlık içeriği, ilgili sınavın görevleri ve değerlendirme ölçütleri incelendikten sonra yayımlanacak.',
-      'Bu sırada günlük istek kurma, artikeller ve cümle sırası gibi temel konularla çalışabilirsin. Bu alıştırmalar resmî sınav soruları değildir.',
+      'Goethe, telc ve DTZ aynı sınav değildir.',
     ],
     examples: [],
     links: [{ href: '/sinavlar/', label: 'Sınavları tanı' }, { href: '/dtz-deneme-sinavi/', label: 'Ücretsiz DTZ denemesine başla' }, { href: '/dtz-kelime-kalip-cumle/', label: 'DTZ kelime, kalıp ve cümleler' }, { href: '/dtz-mektup-yazma/', label: 'DTZ mektup yazmayı öğren' }],
     practice: true,
   },
 ];
+
+// Explicit language annotations keep the authored prose and search data intact.
+const topicGerman = {
+  articles: ['der Kaffee','die Rechnung','das Wasser','ein Kaffee','eine Rechnung','ein Wasser','der','die','das','ein','eine'],
+  cases: ['Akkusativ','Dativ','Ich bestelle einen Kaffee.','Ich gebe dem Mann einen Kaffee.','dem Mann','einen Kaffee','mit dem Bus','mit'],
+  'word-order': ['Ich trinke einen Kaffee.','Heute trinke ich einen Kaffee.','Trinkst du einen Kaffee?','Einen Kaffee, bitte.'],
+  doctor: ['Ich möchte einen Termin vereinbaren.','Ich habe Kopfschmerzen.','Seit gestern.','Können Sie das bitte wiederholen?'],
+};
+const topicTranslations = {
+  articles: ['kahve','hesap','su'],
+  cases: ['Artikelin cümledeki değişimi','Bir kahve sipariş ediyorum.','Otobüsle gidiyorum.'],
+  'word-order': ['Bir kahve içiyorum.','Bugün bir kahve içiyorum.','Bir kahve içer misin?'],
+  doctor: ['Bir randevu almak istiyorum.','Başım ağrıyor.','Bunu tekrar eder misiniz?'],
+};
+for (const topic of topics) {
+  topic.germanMentions = topicGerman[topic.id] || [];
+  topic.learningExamples = topic.examples.map((text,index) => ({
+    de: text.split(' — ')[0], translation: topicTranslations[topic.id]?.[index] || '', word: topic.id === 'articles',
+  }));
+}
 
 function normalize(value) {
   return String(value).toLocaleLowerCase('tr-TR').replaceAll('ı', 'i')

@@ -1,4 +1,5 @@
 import { assembleLetter, editLetterPart, transferLetterParts, letterStartStep, emptyLetterParts } from './letter-rules.js';
+import { appendGermanText, writingGermanMentions } from '../learning-text.js';
 
 // Tabler outline icons, distributed with their MIT license in assets/.
 export const letterIcon = name => `<svg class="letter-icon" aria-hidden="true" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="/assets/writing-icons.svg#${name}"></use></svg>`;
@@ -22,20 +23,24 @@ export function activateLetterBuilder(task, initial, root) {
     task.dispatchEvent(new CustomEvent('writing-letter-change',{bubbles:true,detail:{patch,edited}}));
   };
 
-  const support=make('details','letter-support');
-  support.append(make('summary','','Görevin tamamı ve planım'));
+  const support=make('section','letter-support');
+  support.append(make('h3','','Görevin tamamı'));
   const lessonLink=make('a','','Ders açıklamasını oku');lessonLink.href='#ogren';support.append(lessonLink);
-  for(const selector of ['[data-stimulus]','.writing-task-points','.writing-planner','.writing-source'])support.append(task.querySelector(selector));
+  for(const selector of ['[data-stimulus]','.writing-task-points'])support.append(task.querySelector(selector));
+  const planner=task.querySelector('.writing-planner');planner.open=false;
+  const source=task.querySelector('.writing-source');
   // Retain the original prompt, plan fields and source; present long prose as lists.
   const brief=support.querySelector('[data-stimulus]');
   const list=make('ul','letter-instructions');
-  for(const sentence of brief.textContent.split(/(?<=[.!?])\s+/u))list.append(make('li','',sentence));
+  for(const sentence of brief.textContent.split(/(?<=[.!?])\s+/u)){
+    const item=make('li','');appendGermanText(item,sentence,writingGermanMentions);list.append(item);
+  }
   brief.replaceChildren(list);
 
   const full=make('div','letter-full');full.dataset.letterFull='';
   const label=content.querySelector(`label[for="${draft.id}"]`);
   const status=task.querySelector('[data-editor-save]'), warning=task.querySelector('[data-editor-warning]');
-  const caption=draft.nextElementSibling;
+  const caption=task.querySelector('[data-word-count]').closest('p');
   full.append(label,status,warning,draft,caption);
   const review=task.querySelector('.writing-review-tools');
   const reviewed=task.querySelector('[data-task-reviewed]');
@@ -75,23 +80,22 @@ export function activateLetterBuilder(task, initial, root) {
   controls.append(back,forward);
   builder.append(progress,title,instruction,field,suggestions,full,transfer,restart,previousDraft,controls);
 
-  const sheet=make('details','letter-sheet');sheet.dataset.letterSheet='';
-  const sheetSummary=make('summary','');sheetSummary.innerHTML=letterIcon('file-text');sheetSummary.append(document.createTextNode('Mektubumu gör'));
+  const sheet=make('section','letter-sheet');sheet.dataset.letterSheet='';
+  const sheetSummary=make('h3','');sheetSummary.innerHTML=letterIcon('file-text');sheetSummary.append(document.createTextNode('Mektubum'));
   const paper=make('div','letter-paper');
   const blocks=sections.map((section,index)=>{
     const block=button('','letter-section');block.dataset.letterSection=index;
     const heading=make('span','letter-section-label');heading.innerHTML=letterIcon(icons[index]);heading.append(document.createTextNode(section));
     const text=make('span','letter-section-text');text.lang='de';
     block.append(heading,text);
-    block.addEventListener('click',()=>{showStep(index,true);if(matchMedia('(max-width:800px)').matches)sheet.open=false;});
+    block.addEventListener('click',()=>{showStep(index,true);});
     paper.append(block);return block;
   });
   const finalPreview=make('p','letter-final-preview');finalPreview.lang='de';paper.append(finalPreview);
   sheet.append(sheetSummary,paper);
-  const media=matchMedia('(max-width:800px)');sheet.open=!media.matches;
-  media.addEventListener('change',event=>{sheet.open=!event.matches;});
+  const media=matchMedia('(max-width:800px)');
   const layout=make('div','letter-layout');layout.append(builder,sheet);
-  content.prepend(layout);content.append(support);
+  content.prepend(support,layout);content.append(planner,source);
 
   const renderPreview=()=>{
     const composed=assembleLetter(state.letterParts);
@@ -119,7 +123,7 @@ export function activateLetterBuilder(task, initial, root) {
     const point=labels[step].toLocaleLowerCase('tr');
     const groupName=step===0||step===6?'Hitap ve kapanış':step===1?'Yazma nedeni':/neden|hedef|etki/.test(point)?'Neden ve bağlaçlar':/rica|iste|tamir/.test(point)?'Nazik rica':'Bilgi isteme';
     const score=entry=>{
-      const text=entry.textContent.toLocaleLowerCase('tr');let rank=entry.closest('details').querySelector('summary').textContent===groupName?30:0;
+      const text=entry.textContent.toLocaleLowerCase('tr');let rank=entry.closest('.writing-toolbox-group').querySelector('h3').textContent===groupName?30:0;
       if(step===0&&/sehr geehrt|liebe/.test(text))rank+=10;
       if(step===0&&task.dataset.taskTitle.includes('Herr ')&&/sehr geehrter herr/.test(text))rank+=20;
       if(step===0&&task.dataset.taskTitle.includes('Frau ')&&/sehr geehrte frau/.test(text))rank+=20;
@@ -133,11 +137,12 @@ export function activateLetterBuilder(task, initial, root) {
       const row=make('div','letter-pattern');
       row.append(make('p','',entry.querySelector('dt').textContent),make('p','',entry.querySelector('dd > p').textContent));
       row.firstElementChild.lang='de';
+      row.firstElementChild.className='german-target';
       const add=button('Ekle','writing-phrase-insert');add.setAttribute('aria-label',entry.querySelector('dt').textContent+' kalıbını ekle');
       add.addEventListener('click',()=>{input.focus();entry.querySelector('.writing-phrase-insert').click();});
       row.append(add);related.append(row);
     }
-    if(!entries.length)related.append(make('p','','Kalıplar yükleniyor. Tüm kalıplar bağlantısını da kullanabilirsin.'));
+    if(!entries.length)related.append(make('p','','Kalıplar yükleniyor.'));
   };
   function showStep(index, focus=false) {
     step=index;task.dataset.letterStep=step;commit({letterStep:step});
@@ -150,8 +155,12 @@ export function activateLetterBuilder(task, initial, root) {
     restart.hidden=step!==8;restart.textContent=state.letterParts.some(Boolean)?'Bölümleri düzenle':'Bölüm bölüm yaz';
     inputLabel.textContent=step===7?'Adın':'Almanca cümlen';input.value=state.letterParts[step]||'';
     back.disabled=step===0;forward.hidden=step===8;
-    forward.textContent=step===7?'Mektubumu gör':'Devam et';
+    forward.textContent=step===7?'Mektubum':'Devam et';
     refreshPhrases();renderPreview();
+    if(focus && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+      title.getAnimations().forEach(animation=>animation.cancel());
+      title.animate([{opacity:0,transform:'translateY(6px)'},{opacity:1,transform:'translateY(0)'}],{duration:220,easing:'ease-out'});
+    }
     if(focus){title.focus();title.scrollIntoView({block:'start',behavior:'instant'});}
   }
   input.addEventListener('input',()=>{

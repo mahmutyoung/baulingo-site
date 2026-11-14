@@ -5,9 +5,8 @@ export function activateWritingStudio(root, lastTask, savedTasks = {}) {
   const body = root.querySelector('.writing-body');
   const phone = matchMedia('(max-width: 800px)');
   const contents = root.querySelector('.writing-contents');
-  const sidebarNote = root.querySelector('.writing-sidebar > p:not([data-progress])');
   const progressBar = root.querySelector('[data-progress-bar]');
-  contents.querySelector('.writing-course-nav').before(sidebarNote, progressBar);
+  contents.querySelector('.writing-course-nav').before(progressBar);
   const tasks = [...root.querySelectorAll('[data-task]')];
   const ordinary = tasks.filter(task => !task.hasAttribute('data-choice'));
   const stageNav = root.querySelector('.writing-step-links');
@@ -29,36 +28,13 @@ export function activateWritingStudio(root, lastTask, savedTasks = {}) {
     if (draftPreview) draftPreview.closest('details').hidden = !task;
   };
 
-  const outcome = root.querySelector('[data-outcome]');
-  if (outcome) {
-    const details = document.createElement('details');
-    details.className = 'writing-outcome-details';
-    const summary = document.createElement('summary'); summary.textContent = 'Ders hedefi';
-    outcome.before(details); details.append(summary, outcome);
-  }
-
-  // Keep all checks, models and revision fields, with one compact disclosure.
+  // Required context and learning goals stay visible; only optional answers collapse.
   for (const task of tasks) {
-    task.querySelector('.writing-planner')?.removeAttribute('open');
-    if (task.dataset.taskKind === 'letter' && task.hasAttribute('data-choice')) {
-      const brief = task.querySelector('[data-stimulus]');
-      const details = document.createElement('details');
-      details.className = 'writing-brief-details';
-      const summary = document.createElement('summary'); summary.textContent = 'Görev metni';
-      brief.before(details); details.append(summary, brief);
-      const context = document.createElement('details');
-      context.className = 'writing-task-context';
-      const contextSummary = document.createElement('summary'); contextSummary.textContent = 'Görev ve plan';
-      details.before(context);
-      context.append(contextSummary, details, task.querySelector('.writing-task-points'), task.querySelector('.writing-planner'));
-      context.open = !phone.matches;
-      phone.addEventListener('change', event => { context.open = !event.matches; });
-    }
     const start = task.querySelector('.writing-selfcheck') || task.querySelector('.writing-model');
     if (!start) continue;
-    const review = document.createElement('details');
+    const review = document.createElement('section');
     review.className = 'writing-review-tools';
-    const summary = document.createElement('summary');
+    const summary = document.createElement('h3');
     summary.textContent = 'Kontrol et ve geliştir';
     review.append(summary);
     start.before(review);
@@ -75,7 +51,7 @@ export function activateWritingStudio(root, lastTask, savedTasks = {}) {
   let previous, next, counter;
   const showTask = (task, focus = false) => {
     selectedTask = task;
-    root.classList.toggle('writing-guided', task?.hasAttribute('data-has-builder') && stage === 'yaz');
+    root.classList.toggle('writing-guided', Boolean(task?.hasAttribute('data-has-builder') && stage === 'yaz'));
     ordinary.forEach(section => { section.hidden = section !== task; section.open = section === task; });
     root.dispatchEvent(new Event('writing-context-change'));
     taskButtons.forEach((button, index) => {
@@ -88,7 +64,7 @@ export function activateWritingStudio(root, lastTask, savedTasks = {}) {
     if (counter) counter.textContent = `${index + 1} / ${ordinary.length} çalışma`;
     updatePreview();
     if (focus) {
-      const summary = task.querySelector(':scope > summary');
+      const summary = task.querySelector(':scope > .writing-task-title');
       summary.focus();
       summary.scrollIntoView({ block: 'nearest', behavior: 'instant' });
       history.replaceState(null, '', `#${task.id}`);
@@ -125,7 +101,7 @@ export function activateWritingStudio(root, lastTask, savedTasks = {}) {
   const selectStage = name => {
     stage = groups[name]?.some(Boolean) ? name : 'ogren';
     root.dataset.studioStage = stage;
-    root.classList.toggle('writing-guided', selectedTask?.hasAttribute('data-has-builder') && stage === 'yaz');
+    root.classList.toggle('writing-guided', Boolean(selectedTask?.hasAttribute('data-has-builder') && stage === 'yaz'));
     root.dispatchEvent(new Event('writing-context-change'));
     for (const [key, sections] of Object.entries(groups)) for (const section of sections) if (section) section.hidden = stage !== key;
     stageNav?.querySelectorAll('a').forEach(link => {
@@ -181,7 +157,7 @@ export function activateWritingStudio(root, lastTask, savedTasks = {}) {
   root.dataset.studioEnhanced = '';
 
   const toolbox = root.querySelector('[data-phrase-toolbox]');
-  if (!toolbox) return;
+  if (!toolbox || !root.querySelector('[data-has-builder]')) return;
   toolbox.open = !phone.matches;
   phone.addEventListener('change', event => { toolbox.open = !event.matches; });
   const status = toolbox.querySelector('[data-phrase-status]');
@@ -202,7 +178,7 @@ export function activateWritingStudio(root, lastTask, savedTasks = {}) {
       const search = document.createElement('input'); search.type = 'search'; search.placeholder = 'Almanca veya Türkçe';
       searchLabel.append(search); container.append(searchLabel);
       const entries = [];
-      for (const sourceGroup of source.querySelectorAll(':scope > details')) {
+      for (const sourceGroup of source.querySelectorAll(':scope > .writing-phrase-group')) {
         const group = sourceGroup.cloneNode(true);
         group.className = 'writing-toolbox-group';
         for (const entry of group.querySelectorAll('dl > div')) {
@@ -222,7 +198,6 @@ export function activateWritingStudio(root, lastTask, savedTasks = {}) {
             }
             editor.setRangeText(insertion, start, end, 'end');
             editor.dispatchEvent(new Event('input', { bubbles: true }));
-            if (phone.matches) toolbox.open = false;
             editor.focus(); status.textContent = 'Kalıp eklendi.';
           });
           // Examples and translations remain available without filling the rail.
@@ -236,7 +211,6 @@ export function activateWritingStudio(root, lastTask, savedTasks = {}) {
         }
         container.append(group);
       }
-      container.querySelector('details').open = true;
       search.addEventListener('input', () => {
         const query = search.value.trim().toLocaleLowerCase('tr');
         let count = 0;

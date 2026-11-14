@@ -21,7 +21,7 @@ test('every topic is readable without JavaScript and has its own canonical URL',
   for (const topic of topics) {
     const html = await read(`konular/${topic.id}/index.html`);
     assert.ok(html.includes(topic.title));
-    for (const text of topic.paragraphs) assert.ok(html.includes(text));
+    for (const text of topic.paragraphs) assert.ok(html.replace(/<[^>]*>/g, '').includes(text));
     assert.ok(html.includes(`https://baulingo.app/konular/${topic.id}/`));
   }
   assert.doesNotMatch(await read('sitemap.xml'), /\/kaynaklar\//);

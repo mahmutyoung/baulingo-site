@@ -23,7 +23,7 @@ const definitions = [
     cloze('Boşluğu tamamla: Sehr ___ Herr Aksoy,', 'geehrter', 'Herr ile geehrter; Frau ile geehrte kullanılır.')],
   ['dort-maddeyi-planla', 'Dört maddeyi planla', 'basics', 3, [0,1,2],
     'Yazmadan önce her madde için bir anahtar sözcük seç.',
-    ['İlk cümlen neden yazdığını söylesin. Ardından görevde istenen dört maddeyi tek tek ele al. Uzun bir plan yerine her madde için kısa bir not yeter.', 'Bir cümleyi iki ayrı maddenin cevabı saymadan önce ikisini de gerçekten açıklayıp açıklamadığına bak. Tarih, saat ve istediğin sonraki adım somut olsun.'],
+    ['İlk cümlen neden yazdığını söylesin. Ardından görevde istenen dört maddeyi tek tek ele al. Uzun bir plan yerine her madde için kısa bir not yeter. Uzunluktan önce istenen bilgileri karşılamaya odaklan.', 'Bir cümleyi iki ayrı maddenin cevabı saymadan önce ikisini de gerçekten açıklayıp açıklamadığına bak. Tarih, saat ve istediğin sonraki adım somut olsun.'],
     [example('Ich interessiere mich für Ihren Abendkurs.', 'Akşam kursunuzla ilgileniyorum.'), example('Sie erreichen mich werktags ab 16 Uhr.', 'Bana hafta içi saat 16’dan itibaren ulaşabilirsiniz.')],
     choice('Sipariş, sorun ve çözüm yazıldı. İletişim bilgisi için hangi cümle eksik?', ['Ich bin sehr unzufrieden.', 'Sie erreichen mich werktags ab 16 Uhr.', 'Der Wasserkocher ist weiß.'], 1, 'Eksik madde ulaşılabilirliktir. Bu cümle ne zaman ulaşılabileceğini söyler.')],
   ['cumleleri-bagla', 'Cümleleri birbirine bağla', 'basics', 4, [0,1,2,3],

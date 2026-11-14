@@ -2,10 +2,10 @@
 .writing-workspace{display:grid;grid-template-columns:244px minmax(0,1fr);gap:56px;align-items:start}.writing-sidebar{border-right:1px solid var(--line);padding-right:24px}.writing-course-title{font:700 25px/1.2 Newsreader,Georgia,serif;text-decoration:none}.writing-sidebar>p{font-size:15px;margin:8px 0}.writing-sidebar progress{width:100%;height:7px;accent-color:var(--forest);margin:8px 0 18px}.writing-contents>summary{font-weight:700;padding:10px 0;cursor:pointer}.writing-course-nav section{margin:18px 0 24px}.writing-course-nav h2{font-family:BaulingoSans,Arial,sans-serif;font-size:14px;letter-spacing:0;color:var(--muted);margin-bottom:8px}.writing-course-nav ol{list-style:none;padding:0;margin:0}.writing-course-nav li{margin:0}.writing-course-nav a{display:flex;justify-content:space-between;gap:10px;font-size:15px;line-height:1.3;padding:10px 8px;text-decoration:none;border-radius:5px}.writing-course-nav a:hover{background:var(--soft)}.writing-course-nav a[aria-current]{background:var(--forest);color:var(--ivory)}.writing-lesson-status{flex:none}
 .writing-body{max-width:820px;min-width:0}.writing-intro{margin-bottom:32px}.writing-category{font-size:15px;color:var(--muted);margin:0 0 12px}.writing-intro h1{font-size:clamp(38px,4vw,60px);line-height:1.04;margin-bottom:20px}.writing-intro>p:not(.writing-category):not(.writing-caption){font-size:21px;line-height:1.5;max-width:640px}.writing-intro .button{margin-top:10px}.writing-caption{font-size:14px!important;color:var(--muted);margin:9px 0 18px}.writing-body h2{font-size:30px;line-height:1.2;margin:0 0 18px}.writing-body h4{font-size:21px;margin:16px 0 8px}.writing-body p{overflow-wrap:anywhere}.writing-body>section{margin:32px 0 40px}.writing-body ol,.writing-body ul{padding-left:24px}.writing-body li{margin:8px 0}.writing-route li{margin:16px 0}.writing-starts{display:grid;grid-template-columns:1fr;gap:0}.writing-starts a{display:block;padding:20px 0;border-top:1px solid var(--line);text-decoration:none}.writing-starts a:hover strong{text-decoration:underline}.writing-starts strong{display:block;font-size:21px}.writing-starts span{display:block;font-size:16px;color:var(--muted);margin-top:4px}.writing-note{padding:20px 24px;background:var(--soft);border-left:3px solid var(--sage);font-size:16px}
 .writing-step-links{display:flex;gap:12px 24px;flex-wrap:wrap;font-size:15px;border-bottom:1px solid var(--line);padding:14px 0}.writing-learn figure{margin:22px 0;background:var(--soft);padding:20px 24px;border-radius:8px}.writing-learn blockquote{margin:0;font-size:21px;color:var(--forest)}.writing-learn figcaption{font-size:16px;color:var(--muted);margin-top:8px}.writing-activity{background:#FFFDF9;border:1px solid var(--line);border-radius:12px;padding:28px}.writing-body fieldset{border:0;padding:0;min-width:0;margin:18px 0}.writing-body legend{font-weight:700;margin-bottom:12px}.writing-option,.writing-selfcheck label{display:flex;gap:12px;align-items:flex-start;padding:12px 0}.writing-option{border-bottom:1px solid var(--line);cursor:pointer}.writing-body input[type=radio],.writing-body input[type=checkbox]{width:20px;height:20px;flex:none;margin:4px 0 0;accent-color:var(--forest)}.writing-activity .button{margin-top:18px}.writing-body input[type=text],.writing-body textarea{display:block;width:100%;border:1px solid #A5ACA0;border-radius:7px;background:#FFFDF9;padding:12px;color:var(--ink);font:inherit;line-height:1.6}.writing-body textarea{resize:vertical;min-height:120px}.writing-body [data-draft]{min-height:240px}.writing-body #quick-answer{max-width:330px;margin-top:8px}.writing-feedback{font-size:16px;border-left:3px solid var(--sage);padding-left:14px}.writing-feedback:empty{display:none}.writing-feedback[data-correct=false]{border-color:var(--error)}.writing-feedback[data-correct=true]{border-color:var(--forest)}.writing-body details>summary{cursor:pointer;min-height:44px;padding:10px 0}.writing-answer{margin-top:16px}.writing-word-bank{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}.writing-word-bank button{padding:10px 14px;background:var(--soft);border:1px solid #A5ACA0;border-radius:6px;min-height:44px}.writing-word-bank button:disabled{opacity:.45}.writing-order-answer{background:var(--soft);min-height:64px;padding:16px;border-radius:5px}.writing-small-button,.writing-tools button{background:none;border:0;text-decoration:underline;text-underline-offset:4px;padding:10px 0;min-height:44px;font:inherit;color:var(--forest)}
-.writing-task{border:1px solid var(--line);border-radius:10px;background:#FFFDF9;margin:18px 0;overflow:hidden}.writing-task>summary{padding:18px 24px!important;font-weight:700;color:var(--forest);background:var(--soft)}.writing-task-content{padding:4px 24px 26px}.writing-task-brief{font-size:19px}.writing-source{margin-bottom:20px;border-bottom:1px solid var(--line);font-size:16px}.writing-source>div{padding:0 0 12px}.writing-planner{margin:20px 0;font-size:16px}.writing-plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.writing-plan-grid label{font-size:14px}.writing-label{display:block;font-weight:700;font-size:18px;margin:24px 0 10px}.writing-selfcheck{font-size:16px!important;margin:24px 0!important}.writing-selfcheck label{padding:8px 0}.writing-model{border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:24px 0;font-size:16px}.writing-model>summary{font-weight:600}.writing-model blockquote{border-left:3px solid var(--sage);padding-left:20px;margin:20px 0;line-height:1.7;color:var(--forest);font-size:18px}.writing-table{overflow-x:auto;max-width:100%;margin:20px 0}.writing-table table{border-collapse:collapse;font-size:15px;min-width:400px}.writing-table th,.writing-table td{border-bottom:1px solid var(--line);text-align:left;padding:9px;vertical-align:top}.writing-phrases>details{border-bottom:1px solid var(--line);padding:6px 0}.writing-phrases>details>summary{font-weight:600}.writing-phrases code{white-space:normal}.writing-timer{padding:24px;background:var(--soft);border-radius:8px}.writing-timer>div{display:flex;align-items:center;gap:20px;flex-wrap:wrap}.writing-timer output{font-size:36px;font-variant-numeric:tabular-nums;color:var(--forest)}.writing-timer p,.writing-task-choice p{font-size:15px}.writing-task-choice label{display:inline-flex;align-items:center;gap:10px;margin-right:25px;min-height:44px}.writing-completion{border-top:1px solid var(--line);padding-top:24px}.writing-completion [aria-pressed=true]{background:var(--soft)}.writing-pagination{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:20px 0;border-top:1px solid var(--line);font-size:16px}.writing-storage{font-size:14px;color:var(--muted);margin:28px 0 8px}.writing-tools{display:flex;flex-wrap:wrap;gap:8px 24px;font-size:14px}.writing-save-status{font-size:14px;color:var(--forest);min-height:22px;margin:6px 0}.writing-warning{color:var(--error);border-left:3px solid var(--error);padding-left:12px}
+.writing-task{border:1px solid var(--line);border-radius:10px;background:#FFFDF9;margin:18px 0;overflow:hidden}.writing-task-content{padding:4px 24px 26px}.writing-task-brief{font-size:19px}.writing-source{margin-bottom:20px;border-bottom:1px solid var(--line);font-size:16px}.writing-source>div{padding:0 0 12px}.writing-planner{margin:20px 0;font-size:16px}.writing-plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.writing-plan-grid label{font-size:14px}.writing-label{display:block;font-weight:700;font-size:18px;margin:24px 0 10px}.writing-selfcheck{font-size:16px!important;margin:24px 0!important}.writing-selfcheck label{padding:8px 0}.writing-model{border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:24px 0;font-size:16px}.writing-model>summary{font-weight:600}.writing-model blockquote{border-left:3px solid var(--sage);padding-left:20px;margin:20px 0;line-height:1.7;color:var(--forest);font-size:18px}.writing-table{overflow-x:auto;max-width:100%;margin:20px 0}.writing-table table{border-collapse:collapse;font-size:15px;min-width:400px}.writing-table th,.writing-table td{border-bottom:1px solid var(--line);text-align:left;padding:9px;vertical-align:top}.writing-phrases>details{border-bottom:1px solid var(--line);padding:6px 0}.writing-phrases>details>summary{font-weight:600}.writing-phrases code{white-space:normal}.writing-timer{padding:24px;background:var(--soft);border-radius:8px}.writing-timer>div{display:flex;align-items:center;gap:20px;flex-wrap:wrap}.writing-timer output{font-size:36px;font-variant-numeric:tabular-nums;color:var(--forest)}.writing-timer p,.writing-task-choice p{font-size:15px}.writing-task-choice label{display:inline-flex;align-items:center;gap:10px;margin-right:25px;min-height:44px}.writing-completion{border-top:1px solid var(--line);padding-top:24px}.writing-completion [aria-pressed=true]{background:var(--soft)}.writing-pagination{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:20px 0;border-top:1px solid var(--line);font-size:16px}.writing-storage{font-size:14px;color:var(--muted);margin:28px 0 8px}.writing-tools{display:flex;flex-wrap:wrap;gap:8px 24px;font-size:14px}.writing-save-status{font-size:14px;color:var(--forest);min-height:22px;margin:6px 0}.writing-warning{color:var(--error);border-left:3px solid var(--error);padding-left:12px}
 @media(min-width:801px){.writing-contents>summary{display:none}.writing-contents:not([open])>.writing-course-nav{display:block}}
 @media(max-width:1050px){.reading-page.writing-main{padding:28px}.writing-workspace{grid-template-columns:210px minmax(0,1fr);gap:28px}.writing-sidebar{padding-right:16px}}
-@media(max-width:800px){.reading-page.writing-main{padding:22px 20px}.writing-breadcrumb{font-size:13px;margin-bottom:20px}.writing-workspace{display:block}.writing-sidebar{border-right:0;border-bottom:1px solid var(--line);padding:0 0 10px;margin-bottom:26px}.writing-course-title{font-size:23px}.writing-sidebar>p{display:inline-block;margin-right:10px;font-size:13px}.writing-sidebar progress{display:block;width:100%;margin:4px 0 8px}.writing-course-nav{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}.writing-intro h1{font-size:42px}.writing-intro>p:not(.writing-category):not(.writing-caption){font-size:19px}.writing-body h2{font-size:28px}.writing-activity{padding:20px}.writing-task-content{padding:4px 18px 22px}.writing-task>summary{padding:16px 18px!important}.writing-learn figure{padding:18px}.writing-learn blockquote{font-size:19px}}
+@media(max-width:800px){.reading-page.writing-main{padding:22px 20px}.writing-breadcrumb{font-size:13px;margin-bottom:20px}.writing-workspace{display:block}.writing-sidebar{border-right:0;border-bottom:1px solid var(--line);padding:0 0 10px;margin-bottom:26px}.writing-course-title{font-size:23px}.writing-sidebar>p{display:inline-block;margin-right:10px;font-size:13px}.writing-sidebar progress{display:block;width:100%;margin:4px 0 8px}.writing-course-nav{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}.writing-intro h1{font-size:42px}.writing-intro>p:not(.writing-category):not(.writing-caption){font-size:19px}.writing-body h2{font-size:28px}.writing-activity{padding:20px}.writing-task-content{padding:4px 18px 22px}.writing-learn figure{padding:18px}.writing-learn blockquote{font-size:19px}}
 @media(max-width:420px){.reading-page.writing-main{padding:20px 16px}.writing-course-nav{grid-template-columns:1fr}.writing-intro h1{font-size:37px}.writing-plan-grid{grid-template-columns:1fr}.writing-activity{padding:18px}.writing-task-content{padding:4px 14px 20px}.writing-body .button{max-width:100%;white-space:normal;font-size:16px;padding:12px 18px}.writing-pagination a{max-width:100%}}
 
 /* Task-specific teaching: compact short answers and a focused letter workspace. */
@@ -16,12 +16,11 @@
 /* Compact letter studio. The static document remains fully readable. */
 .reading-page.writing-main{max-width:1512px;padding:26px 32px 40px}
 .writing-breadcrumb{margin-bottom:26px;font-size:14px}
-.writing-workspace{grid-template-columns:205px minmax(0,1fr) 280px;grid-template-areas:"lessons work tools";gap:30px}
+.writing-workspace{grid-template-columns:205px minmax(0,1fr);grid-template-areas:"lessons work";gap:30px}
 .writing-sidebar{grid-area:lessons;position:sticky;top:24px;max-height:calc(100dvh - 48px);overflow:auto;padding-right:20px;scrollbar-width:thin}
 .writing-body{grid-area:work;max-width:none;font-size:17px}
 .writing-course-title{font-size:25px}
 .writing-course-nav .writing-course-group{margin:6px 0;border-bottom:1px solid var(--line)}
-.writing-course-group>summary{font-size:14px;line-height:1.4;color:var(--muted);padding:12px 0;cursor:pointer}
 .writing-course-nav a{font-size:14px;padding:9px 10px;border-radius:8px}
 .writing-course-nav a[aria-current]{background:var(--soft);color:var(--forest);font-weight:700}
 .writing-course-nav ol{padding-bottom:12px}
@@ -50,8 +49,6 @@
 .writing-lesson-goals{display:grid;grid-template-columns:1fr 1fr;gap:0 22px}
 .writing-lesson-goals li{margin:0;padding:12px 0;font-size:15px}
 .writing-lesson-goals p{font-size:14px}
-.writing-toolbox{grid-area:tools;position:sticky;top:24px;align-self:start;border:1px solid var(--line);border-radius:12px;background:#fffdf966;overflow:hidden;min-width:0;font-size:14px}
-.writing-toolbox>details>summary{font:700 24px/1.3 Newsreader,Georgia,serif;background:var(--soft);padding:18px;min-height:60px;cursor:pointer;color:var(--forest)}
 .writing-toolbox-content{padding:0 16px 8px}
 .writing-reference-link{display:block;font-size:13px;padding:14px 0}
 [data-phrase-content]{max-height:calc(100dvh - 380px);min-height:140px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
@@ -66,11 +63,8 @@
 .writing-toolbox-group p{margin:4px 0;line-height:1.5}
 .writing-toolbox-example{font-size:13px}
 .writing-toolbox-example>summary{cursor:pointer;min-height:36px;padding:8px 0;color:var(--muted)}
-.writing-toolbox .writing-caption{font-size:12px;margin:6px 0}
+.writing-toolbox-content .writing-caption{font-size:12px;margin:6px 0}
 .writing-phrase-insert{font:600 13px BaulingoSans,Arial,sans-serif;color:var(--forest);background:var(--soft);border:1px solid var(--sage);border-radius:6px;min-height:36px;padding:6px 15px;cursor:pointer;margin-top:4px}
-.writing-draft-preview{border-top:1px solid var(--line)}
-.writing-draft-preview>summary{font-size:22px!important;background:transparent!important;padding:14px 18px!important;min-height:48px!important}
-[data-draft-preview]{white-space:pre-wrap;overflow-wrap:anywhere;font-size:15px;line-height:1.65;padding:0 18px 16px;margin:0;max-height:190px;overflow:auto}
 .writing-task-nav{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
 .writing-task-nav button{font:600 15px BaulingoSans,Arial,sans-serif;border:1px solid var(--sage);border-radius:50%;background:transparent;color:var(--forest);width:42px;height:42px;cursor:pointer}
 .writing-task-nav button[aria-current]{background:var(--gold);border-color:var(--gold)}
@@ -82,7 +76,6 @@
 .writing-stage-next .button{font-size:16px;padding:12px 22px}
 [data-studio-enhanced] #yaz>h2{font-size:16px;font-family:BaulingoSans,Arial,sans-serif;color:var(--muted);font-weight:400}
 [data-studio-enhanced] .writing-task{background:transparent;border:0;border-radius:0;margin:12px 0 20px;overflow:visible}
-[data-studio-enhanced] .writing-task>summary{font:700 27px/1.2 Newsreader,Georgia,serif;padding:8px 0 14px!important;background:transparent}
 [data-studio-enhanced] .writing-task-content{padding:0}
 .writing-task-brief{font-size:17px;margin:6px 0 16px}
 .writing-task-points{font-size:14px;padding:12px 14px 12px 32px!important;margin:12px 0}
@@ -110,7 +103,7 @@
 .writing-timer h2{font-size:23px}
 @media(max-width:1150px) and (min-width:801px){
   .reading-page.writing-main{padding:24px}
-  .writing-workspace{grid-template-columns:170px minmax(0,1fr) 230px;gap:22px}
+  .writing-workspace{grid-template-columns:170px minmax(0,1fr);gap:22px}
   .writing-sidebar{padding-right:14px}
   .writing-course-title{font-size:23px}
   .writing-intro h1{font-size:36px}
@@ -121,16 +114,13 @@
 }
 @media(max-width:800px){
   .reading-page.writing-main{padding:20px}
-  .writing-workspace{display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"lessons" "tools" "work";gap:16px}
+  .writing-workspace{display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"lessons" "work";gap:16px}
   .writing-sidebar{position:static;max-height:none;margin:0;padding:0 0 6px}
   .writing-contents>summary{font-size:15px;min-height:44px}
   .writing-course-nav{display:block;max-height:45dvh;overflow:auto}
   .writing-sidebar progress{margin-bottom:4px}
-  .writing-toolbox{position:static}
-  .writing-toolbox>details>summary{font-size:21px;min-height:48px;padding:12px 16px}
   .writing-toolbox-content{padding:0 16px 8px}
   [data-phrase-content]{max-height:40dvh}
-  .writing-draft-preview{display:none}
   .writing-intro{margin-bottom:18px}
   .writing-intro h1{font-size:36px}
   .writing-intro>p:not(.writing-category):not(.writing-caption){font-size:17px}
@@ -143,7 +133,6 @@
   .writing-task-pagination .writing-caption{font-size:11px!important}
   .writing-body [data-draft]{font-size:17px;min-height:210px}
   .writing-lesson-goals{grid-template-columns:1fr}
-  [data-studio-enhanced] .writing-task>summary{font-size:25px}
 }
 @media(max-width:360px){
   .reading-page.writing-main{padding:18px 16px}
@@ -153,26 +142,19 @@
 }
 .writing-workspace:not(:has(.writing-toolbox)){grid-template-columns:205px minmax(0,1fr);grid-template-areas:"lessons work"}
 .writing-workspace:not(:has(.writing-toolbox)) .writing-body{max-width:900px}
-.writing-outcome-details{font-size:14px;margin-top:4px}
-.writing-outcome-details>summary,.writing-brief-details>summary{min-height:36px!important;padding:7px 0!important;color:var(--muted)}
-.writing-outcome-details [data-outcome]{margin:4px 0 12px}
-.writing-brief-details{font-size:14px;margin:0 0 8px}
 [data-studio-stage=yaz] .writing-intro h1{font-size:29px;line-height:1.2}
 [data-studio-stage=yaz] .writing-intro{margin-bottom:18px}
 [data-studio-enhanced] #yaz>h2{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
-[data-studio-enhanced] .writing-task>summary{font-size:34px}
 .writing-task-points{display:grid;grid-template-columns:1fr 1fr;gap:4px 24px;padding:12px 16px 12px 34px!important}
 [data-phrase-content]{max-height:min(42dvh,420px);min-height:0}
 [data-phrase-content]:empty{display:none}
 @media(max-width:800px){
   .writing-workspace:not(:has(.writing-toolbox)){grid-template-columns:minmax(0,1fr);grid-template-areas:"lessons" "work"}
   [data-studio-stage=yaz] .writing-intro h1{font-size:26px}
-  [data-studio-enhanced] .writing-task>summary{font-size:28px}
   .writing-task-points{display:block}
 }
 .writing-contents>p{font-size:13px;color:var(--muted);margin:8px 0}
 .writing-guided .writing-workspace{grid-template-columns:205px minmax(0,1fr);grid-template-areas:"lessons work"}
-.writing-guided .writing-workspace>.writing-toolbox{display:none}
 .writing-guided .writing-step-links{display:none}
 .writing-guided .writing-intro{margin-bottom:12px}
 .writing-guided .writing-intro h1{font-size:22px}
@@ -204,7 +186,6 @@
 .letter-controls .button{font-size:16px;min-height:48px;padding:12px 24px}
 .letter-controls button:disabled{opacity:.4;cursor:default}
 .letter-sheet{margin:0!important;border:1px solid var(--line);border-radius:10px;overflow:hidden;position:sticky;top:24px;background:#FFFDF9}
-.letter-sheet>summary{display:flex;align-items:center;gap:10px;font:700 23px/1.2 Newsreader,Georgia,serif;background:var(--soft);padding:18px!important;min-height:60px!important;cursor:pointer}
 .letter-paper{padding:12px;max-height:70dvh;overflow:auto;scrollbar-width:thin}
 .letter-section{display:block;width:100%;border:0;border-left:3px solid transparent;background:transparent;padding:12px;text-align:left;color:var(--forest);font:inherit;cursor:pointer;border-radius:4px}
 .letter-section+.letter-section{border-top:1px solid var(--line)}
@@ -219,7 +200,6 @@
 .letter-full .writing-label{margin-top:8px}
 .letter-full [data-draft]{min-height:320px}
 .letter-support{margin-top:18px;border-top:1px solid var(--line);font-size:14px}
-.letter-support>summary{font-size:14px;color:var(--muted)}
 .letter-support .letter-instructions{padding-left:22px;margin:10px 0}
 .letter-support .writing-task-points{display:block}
 .letter-support .writing-task-brief{font-size:15px}
@@ -231,10 +211,8 @@
   .writing-guided .writing-workspace{grid-template-columns:minmax(0,1fr);grid-template-areas:"lessons" "work";gap:14px}
   .writing-guided .writing-breadcrumb{margin-bottom:14px}
   .writing-guided .writing-intro h1{font-size:20px}
-  .writing-guided .writing-intro .writing-outcome-details{display:none}
   .letter-layout{grid-template-columns:minmax(0,1fr);gap:16px}
   .letter-sheet{grid-row:1;position:static}
-  .letter-sheet>summary{font-size:20px;min-height:46px!important;padding:12px 14px!important}
   .letter-paper{max-height:55dvh}
   .letter-question{font-size:29px!important}
   .letter-instruction{font-size:16px;margin-bottom:14px}
@@ -242,15 +220,51 @@
   .letter-suggestions{margin:16px 0!important}
   .letter-suggestions h3{font-size:15px}
 }
-.writing-task-context>summary{font-size:14px;color:var(--muted)}
-@media(min-width:801px){
-  .writing-task-context>summary{display:none}
-  .writing-task-context{display:contents}
-}
+
 @media(max-width:800px){
   .writing-sidebar{position:relative;top:auto;padding-bottom:4px}
   .writing-sidebar>[data-progress]{position:absolute;right:0;top:10px;margin:0;font-size:12px;pointer-events:none}
   .writing-sidebar .writing-contents>summary{font-size:14px;padding-right:120px}
-  .writing-task-context{margin:8px 0 12px;border-bottom:1px solid var(--line)}
-  .writing-task-context>summary{font-size:15px}
 }
+
+.writing-guided .writing-body{max-width:none}.writing-editor-status:empty{display:none}
+
+/* Scene-first hierarchy: headings describe visible content. */
+.writing-course-group>h2{font:600 14px/1.4 BaulingoSans,Arial,sans-serif;margin:0;padding:16px 0 6px;color:var(--muted)}
+.writing-task-title,[data-studio-enhanced] .writing-task-title{font:700 28px/1.2 Newsreader,Georgia,serif;margin:0;padding:12px 0 16px;color:var(--forest)}
+.writing-task:not([hidden]){background:transparent;border:0;border-radius:0;overflow:visible}
+.writing-task-content{padding:0}
+.writing-outcome{max-width:65ch}
+.writing-review-tools{border-bottom:0;padding:18px 0}
+.writing-review-tools>h3{font-size:23px;margin:0 0 14px}
+.writing-phrase-group{padding:24px 0;border-bottom:1px solid var(--line)}
+.writing-phrase-group>h3{font-size:26px;margin:0 0 16px}
+.writing-toolbox-group>h3{font:600 16px/1.4 BaulingoSans,Arial,sans-serif;margin:0;padding:16px 0 8px}
+.letter-support{margin:0 0 24px;padding:0 0 18px;border-top:0;border-bottom:1px solid var(--line)}
+.letter-support>h3{font-size:24px;margin:0 0 12px;color:var(--forest)}
+.letter-support>a{font-size:14px}
+.letter-sheet>h3{display:flex;align-items:center;gap:8px;font-size:24px;margin:0;padding:16px}
+.letter-sheet{align-self:start}
+.letter-paper{max-height:none}
+@media(max-width:800px){
+  .writing-course-nav{grid-template-columns:1fr}
+  .letter-sheet{grid-row:auto;position:static}
+  .letter-paper{max-height:none}
+  .writing-guided .writing-intro h1{font-size:32px}
+  .writing-task-title{font-size:25px}
+}
+@media(prefers-reduced-motion:no-preference){
+  [data-studio-enhanced] .writing-learn:not([hidden]),
+  [data-studio-enhanced] .writing-activity:not([hidden]),
+  [data-studio-enhanced] .writing-task:not([hidden]){animation:scene-enter 280ms ease-out both}
+  .letter-section{transition:background-color 180ms ease,border-color 180ms ease}
+  .writing-step-links a,.writing-task-nav button,.writing-course-nav a{transition:background-color 180ms ease,color 180ms ease,border-color 180ms ease}
+  .letter-question{animation:scene-enter 240ms ease-out}
+}
+
+
+/* Keep full examples upright; highlight only the expression being taught. */
+.writing-learn blockquote,.writing-model blockquote,.writing-phrase-example,.letter-section-text{font-style:normal}
+.writing-learn figcaption,.writing-phrases dd>p:first-child{color:var(--muted);font-size:.9em;line-height:1.55}
+.writing-phrases dt,.writing-toolbox-group dt{background:var(--soft);border-radius:4px;padding:.12em .3em;width:fit-content;max-width:100%;font-weight:700;font-style:normal}
+.letter-pattern>.german-target{width:fit-content;max-width:100%;font-weight:600;font-style:normal}

@@ -38,7 +38,7 @@ export function activateExercise(container, initial = [], onChange = () => {}) {
     const render=()=>{
       bank.forEach(button=>{button.disabled=selected.includes(button);});
       const answer=selected.map(button=>button.textContent).join(' ');
-      output.textContent=answer||'Seçtiğin parçalar burada görünecek.';output.lang=answer?'de':'tr';
+      output.textContent=answer;output.lang=answer?'de':'tr';
       field.querySelector('[data-order-value]').value=answer;
       field.querySelector('[data-order-undo]').disabled=!selected.length;
       return answer;

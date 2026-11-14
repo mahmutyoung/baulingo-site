@@ -68,7 +68,12 @@ export function createSentenceBuilder(root, { language = 'tr', initialId = 'coff
       incorrect: english ? 'Not quite. Select a word in your answer to return it, then try a different order.' : 'Henüz olmadı. Kelimelere basarak sıralamayı değiştirebilirsin.',
       correct: `${english ? 'Correct!' : 'Doğru!'} ${exercise.sentence} — ${exercise.translation}`,
     };
-    $('#feedback').textContent = messages[state.status];
+    const feedback=$('#feedback');
+    feedback.textContent = messages[state.status];
+    if(state.status==='correct'){
+      const sentence=element('span',exercise.sentence,'german-example');sentence.lang='de';
+      feedback.replaceChildren(document.createTextNode(english?'Correct!':'Doğru!'),sentence,element('span',exercise.translation,'example-translation'));
+    }
     $('#feedback').dataset.status = state.status;
     $('#check-answer').textContent = english ? (state.status === 'correct' ? (exercise.next ? 'Another sentence' : 'Try again') : 'Check sentence') : state.status === 'correct' ? (['coffee', 'tea'].includes(state.id) ? 'Bir cümle daha' : 'Yeniden dene') : 'Cümleyi kontrol et';
     $('#reset-exercise').hidden = state.selected.length === 0;
