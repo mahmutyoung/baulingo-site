@@ -6,6 +6,16 @@ The [long-term roadmap](roadmap.md) owns product priorities. The next product mi
 
 ## Live deployment
 
+### Release — 15 November 2026
+
+The owner authorized pushing and deploying the merged main branch. Source revision `73d2647` is pushed to GitHub and deployed to the existing `baulingo-site` Worker, version `97ce523c-acf4-49d5-adee-615c6b71cad7`. This publishes the local learning UI, writing-course and consent-based GA4 changes described in earlier entries; their previous unpublished status is historical. The separate WWW Worker was not redeployed.
+
+All 85 Node tests, the static build and `git diff --check` pass. The study-filter test now accepts optional HTML attribute quotes removed by the existing build compaction. Live HTTP checks return 200 for the Turkish/English homepages, writing course, study page, privacy page, CSS and analytics module; the CSS and module match local bytes. Homepage and privacy HTML first differ at Cloudflare's injected closing-body script. Missing pages, development review and documentation paths return 404. The homepage sends `X-Content-Type-Options: nosniff`; WWW returns 301 to HTTPS apex preserving path and query. These are HTTP checks, not a fresh browser interaction or analytics event-collection audit.
+
+Wrangler's existing OAuth login worked when an ignored empty environment file bypassed the stale local API-token override. No credentials, domain settings or paid services were changed.
+
+
+
 `https://baulingo.app` serves the main static site. Its homepage, topic/legal pages and downloads return 200; missing pages return 404. Public responses include security headers and do not include the preview noindex header.
 
 The owner authorized and authenticated the WWW redirect setup. Wrangler's OAuth permission grants Worker routing, but the zone Redirect Rules API returns 403. A dedicated [WWW redirect Worker](../cloudflare/www-redirect/README.md) now serves only `www.baulingo.app/*`, returning 301 directly to HTTPS apex with the path/query preserved. Version: `12357254-9074-4dcb-acb0-c3b5218ca07c`. Live HTTP/HTTPS, nested-path, encoded-path and query checks pass. The apex stays on `baulingo-site`; no DNS edits or paid-plan changes were made for this redirect.
