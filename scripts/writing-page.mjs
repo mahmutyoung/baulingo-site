@@ -6,8 +6,13 @@ import { germanHTML, writingGermanMentions } from '../src/learning-text.js';
 export { writingMarkdown, escapeWriting } from './writing-format.mjs';
 
 const learning=writingLessons.filter(lesson=>!lesson.reference);
+export function writingCourseNavigation(base) {
+  return Object.entries(writingGroups).map(([group,label])=>`<section class="writing-course-group"><h2>${label}</h2><ol>${writingLessons.filter(lesson=>lesson.group===group).map(lesson=>`<li><a href="${base}${lesson.id}/">${e(lesson.title)}</a></li>`).join('')}</ol></section>`).join('');
+}
+
 function courseNav(current) {
-  return `<nav class="writing-course-nav" aria-label="Mektup yazma dersleri">${Object.entries(writingGroups).map(([group,label])=>`<section class="writing-course-group"><h2>${label}</h2><ol>${writingLessons.filter(lesson=>lesson.group===group).map(lesson=>`<li><a href="${writingBase}${lesson.id}/" data-lesson="${lesson.id}" ${lesson.reference?'data-reference="true"':''} data-task-ids="${lesson.tasks.map(task=>task.id).join(',')}"${current===lesson.id?' aria-current="page"':''}><span>${e(lesson.title)}</span><span class="writing-lesson-status" aria-label="${lesson.reference?'Kaynak sayfası':'Tamamlanmadı'}">${lesson.reference?'↗':'○'}</span></a></li>`).join('')}</ol></section>`).join('')}</nav>`;
+  const content = current ? `<a href="${writingBase}">Tüm mektup yazma dersleri</a>` : writingCourseNavigation('./');
+  return `<nav class="writing-course-nav" aria-label="Mektup yazma dersleri">${content}</nav>`;
 }
 
 function phraseToolbox(current) {

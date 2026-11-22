@@ -1,5 +1,256 @@
 [
   {
+    "id": "site-language-selection",
+    "title": "Site dili · Türkçe and English",
+    "date": "2026-11-22",
+    "summary": "Language controls share one saved preference and link to the equivalent course, lesson or help page.",
+    "files": ["src/language.js", "src/language-choice.js", "src/navigation.js", "src/mini-packs/player.js", "scripts/lesson-pages.mjs", "scripts/english-pages.mjs", "scripts/dtz-hub.mjs"],
+    "steps": [
+      {
+        "id": "level-language",
+        "title": "A2 kursunun dilini değiştir",
+        "path": "/konular/almanca-a2/",
+        "focus": ".header",
+        "check": "Open English from the menu. It should open the English A2 course, whose grammar and lesson links are in English."
+      },
+      {
+        "id": "grammar-language",
+        "title": "Switch the grammar lesson language",
+        "path": "/en/german-grammar/a1/modal-verbs/",
+        "focus": ".language-picker",
+        "check": "Choose Türkçe. Follow the related everyday lesson and confirm that its explanations are also in Turkish."
+      }
+    ]
+  },
+  {
+    "id": "grammar-course",
+    "title": "Almanca Gramer Kursu · German Grammar Course",
+    "date": "2026-11-22",
+    "summary": "Turkish and English each offer 53 grammar lessons with readable URLs and links between grammar and everyday practice.",
+    "files": ["index.html", "scripts/lesson-pages.mjs", "scripts/english-pages.mjs", "scripts/course-pages.mjs", "scripts/build.mjs", "src/mini-packs/grammar.json", "src/mini-packs/grammar-tr.json", "src/mini-packs/routes.js", "src/mini-packs/lesson.js", "src/mini-packs/player.js"],
+    "steps": [
+      {
+        "id": "grammar-course-levels",
+        "title": "Gramer derslerini düzeye göre aç",
+        "path": "/konular/almanca-gramer/",
+        "focus": "#a1",
+        "check": "Browse A1, A2 and B1 and follow the link to the corresponding Almanca Kursu level."
+      },
+      {
+        "id": "grammar-links",
+        "title": "Modal fiiller ve günlük pratik",
+        "path": "/konular/almanca-gramer/a1/modal-fiiller/",
+        "focus": "#lesson-title",
+        "check": "Open the related everyday lesson and follow its grammar link back. Switch to English to open the matching modal verbs lesson."
+      },
+      {
+        "id": "english-grammar",
+        "title": "German Grammar Course",
+        "path": "/en/german-grammar/",
+        "focus": "#a1",
+        "check": "Confirm the English lesson list, lesson URLs and links to the English level pages."
+      }
+    ]
+  },
+  {
+    "id": "readable-lesson-urls",
+    "title": "Readable lesson URLs · Türkçe and English",
+    "date": "2026-11-22",
+    "summary": "The 134 language-specific lesson pages have stable slugs, static examples, and sitemap entries. The same reader opens every lesson.",
+    "files": ["scripts/lesson-pages.mjs", "scripts/course-pages.mjs", "scripts/pages.mjs", "scripts/english-pages.mjs", "src/mini-packs/routes.js", "src/mini-packs/player.js", "src/mini-packs/style.css"],
+    "steps": [
+      {
+        "id": "turkish-lesson-slug",
+        "title": "Kendini tanıt",
+        "path": "/konular/almanca-a1/kendini-tanit/",
+        "focus": "#lesson-title",
+        "check": "Try an exercise, choose another topic, then use the browser Back button and switch to English."
+      },
+      {
+        "id": "english-course-links",
+        "title": "English course and lesson links",
+        "path": "/en/german-a1/",
+        "focus": ".topic-index",
+        "check": "Follow Introduce yourself and confirm the lesson opens at its clean English URL."
+      }
+    ]
+  },
+  {
+    "id": "course-levels-a1-test",
+    "title": "Almanca Kursu · Seviye sayfaları ve A1 testi",
+    "date": "2026-11-21",
+    "summary": "A1, A2 and B1 have dedicated course pages with an exercise and every lesson. A 12-question A1 test shows Turkish explanations and recommends lessons for missed answers.",
+    "files": ["index.html", "scripts/course-pages.mjs", "scripts/pages.mjs", "scripts/build.mjs", "src/a1-test.js", "style.css"],
+    "steps": [
+      {
+        "id": "level-pages",
+        "title": "A1 kursu ve ders listesi",
+        "path": "/konular/almanca-a1/",
+        "focus": "#main",
+        "check": "Open the sample answer, switch to A2 and B1 and follow a topic link into the reader."
+      },
+      {
+        "id": "a1-test",
+        "title": "12 soruluk A1 testi",
+        "path": "/konular/almanca-a1-test/",
+        "focus": "[data-a1-test]",
+        "check": "Answer all questions and submit. Review the score, Turkish explanations and recommended lessons, then retry."
+      }
+    ]
+  },
+  {
+    "id": "almanca-kursu-navigation",
+    "title": "Almanca Kursu · A1, A2 ve B1",
+    "date": "2026-11-21",
+    "summary": "The Turkish menu opens the existing course directly. The homepage card offers a start at each CEFR level.",
+    "files": ["index.html", "scripts/pages.mjs", "konular/mini-paketler/index.html", "src/mini-packs/lesson.js"],
+    "steps": [
+      {
+        "id": "course-entry",
+        "title": "Almanca Kursu bağlantıları",
+        "path": "/#gunluk",
+        "focus": "#gunluk",
+        "check": "Open A1, A2 or B1 from the homepage card. Each link selects the corresponding level."
+      },
+      {
+        "id": "course-menu",
+        "title": "Menüden kursa git",
+        "path": "/konular/articles/",
+        "focus": ".header",
+        "check": "Use Almanca Kursu in the menu to open the course from a topic page. On a phone, open Menü first."
+      }
+    ]
+  },
+  {
+    "id": "dtz-pruefung-hub",
+    "title": "DTZ-Prüfung · Modelltest und Schreibkurs",
+    "date": "2026-11-21",
+    "summary": "The German DTZ hub links the full interactive German test and original writing book. English and Turkish help have separate entry points.",
+    "files": [
+      "scripts/dtz-hub.mjs",
+      "scripts/dtz-page.mjs",
+      "scripts/data/dtz-writing-book.json",
+      "scripts/pages.mjs",
+      "src/dtz/german-resource.js",
+      "src/dtz/player.js"
+    ],
+    "steps": [
+      {
+        "id": "dtz-hub-de",
+        "title": "Deutsche DTZ-Übersicht",
+        "path": "/de/dtz-pruefung/",
+        "focus": ".exam-materials",
+        "check": "Open either German resource and follow the English and Turkish help links."
+      },
+      {
+        "id": "dtz-mock-de",
+        "title": "DTZ-Modelltest auf Deutsch",
+        "path": "/de/dtz-pruefung/modelltest/",
+        "focus": "#dtz-app",
+        "check": "Start the test, confirm the German instructions, and use the existing audio and question flow."
+      },
+      {
+        "id": "dtz-writing-de",
+        "title": "Schreibkurs auf Deutsch",
+        "path": "/de/dtz-pruefung/schreiben/#01-person-und-ton",
+        "focus": "[data-chapter='01-person-und-ton']",
+        "check": "Jump to a chapter, write a response, reveal the source model, and reload to see the saved response."
+      },
+      {
+        "id": "dtz-help-en",
+        "title": "English test and writing help",
+        "path": "/en/dtz-exam/",
+        "focus": "#writing-help",
+        "check": "Use the English glossary and follow its link to the German lesson on planning."
+      },
+      {
+        "id": "dtz-help-tr",
+        "title": "Türkçe DTZ sınav rehberi",
+        "path": "/dtz-sinavi/",
+        "focus": ".exam-materials",
+        "check": "Both activity links open the existing Turkish-guided versions."
+      }
+    ]
+  },
+  {
+    "id": "turkish-mini-packs-2026-11-21",
+    "title": "Konular · 67 Türkçe açıklamalı mini paket",
+    "date": "2026-11-21",
+    "summary": "Konular links to all 67 authored Turkish samples from pack1a. The reader uses the original lesson layout and Baulingo colors, with a link to the same topic in English.",
+    "files": [
+      "konular/mini-paketler/index.html",
+      "en/mini-packs/index.html",
+      "src/mini-packs/library-tr.json",
+      "src/mini-packs/language.js",
+      "src/mini-packs/lesson.js",
+      "src/mini-packs/player.js",
+      "src/mini-packs/style.css",
+      "scripts/pages.mjs"
+    ],
+    "steps": [
+      {
+        "id": "turkish-topics",
+        "title": "Konular bağlantısı",
+        "path": "/konular/",
+        "focus": ".topic-index",
+        "check": "Open Almanca mini paketler from the topic list."
+      },
+      {
+        "id": "turkish-library",
+        "title": "Türkçe açıklamalar ve alıştırmalar",
+        "path": "/konular/mini-paketler/",
+        "focus": "#lesson-title",
+        "check": "Switch levels, check an answer in German, then switch to English and confirm the topic stays selected."
+      },
+      {
+        "id": "turkish-scenario",
+        "title": "B1 rota seçimi",
+        "path": "/konular/mini-paketler/?topic=DE-B1-017#route-task",
+        "focus": "#route-task",
+        "check": "Use the German timetable, review a written response against the Turkish checklist and reveal the model."
+      }
+    ]
+  },
+  {
+    "id": "english-mini-packs-2026-11-21",
+    "title": "English Topics · 67 mini-packs",
+    "date": "2026-11-21",
+    "summary": "The English topics section links to the imported Wortwerk samples. The lesson reader keeps the source layout and uses Baulingo colors.",
+    "files": [
+      "en/mini-packs/index.html",
+      "src/mini-packs/library.json",
+      "src/mini-packs/style.css",
+      "src/mini-packs/lesson.js",
+      "src/mini-packs/player.js",
+      "scripts/english-pages.mjs",
+      "scripts/public-files.mjs",
+      "assets/cafe-hero.webp"
+    ],
+    "steps": [
+      {
+        "id": "english-topics",
+        "title": "Open from English Topics",
+        "path": "/en/#lessons",
+        "focus": "#everyday",
+        "check": "Follow Explore 67 A1–B1 mini-packs under Everyday conversations."
+      },
+      {
+        "id": "sample-library",
+        "title": "Browse and practise",
+        "path": "/en/mini-packs/",
+        "focus": "#lesson-title",
+        "check": "Switch between A1, A2 and B1. Review the vocabulary, check an answer and confirm that progress follows the selected lesson."
+      },
+      {
+        "id": "train-scenario",
+        "title": "Complete a B1 scenario",
+        "path": "/en/mini-packs/?topic=DE-B1-017#route-task",
+        "focus": "#route-task",
+        "check": "Use the replacement timetable, enter a German response and complete the self-check."
+      }
+    ]
+  },
+  {
     "id": "interface-copy-cleanup-2026-11-14",
     "title": "Daha az açıklama, doğrudan çalışma",
     "date": "2026-11-14",

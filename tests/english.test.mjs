@@ -2,13 +2,22 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import './build-fixture.mjs';
-import { preferredLanguage } from '../src/language-choice.js';
+import { otherLanguagePath, preferredLanguage } from '../src/language-choice.js';
 
 test('language choice respects saved preference and recognises English browser locales', () => {
   assert.equal(preferredLanguage('tr', ['en-US']), 'tr');
   assert.equal(preferredLanguage('en', ['tr-TR']), 'en');
   assert.equal(preferredLanguage(null, ['en-GB']), 'en');
   assert.equal(preferredLanguage(null, ['de-DE']), 'tr');
+});
+
+test('site language changes preserve the matching course, grammar page and help context', () => {
+  assert.equal(otherLanguagePath('/konular/almanca-a2/', 'en'), '/en/german-a2/');
+  assert.equal(otherLanguagePath('/en/german-b1/', 'tr'), '/konular/almanca-b1/');
+  assert.equal(otherLanguagePath('/en/german-grammar/', 'tr', '#b1'), '/konular/almanca-gramer/#b1');
+  assert.equal(otherLanguagePath('/dtz-mektup-yazma/kime-yaziyorum/', 'en'), '/en/dtz-exam/#writing-help');
+  assert.equal(otherLanguagePath('/konular/almanca-a1-test/', 'en'), '/en/german-a1/');
+  assert.equal(otherLanguagePath('/unknown/', 'tr'), '/?lang=tr');
 });
 
 test('English pages provide original English learning content and manual language links', async () => {

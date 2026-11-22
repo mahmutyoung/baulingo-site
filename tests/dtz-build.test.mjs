@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { gunzipSync } from 'node:zlib';
 import './build-fixture.mjs';
 import { createPreviewServer } from '../scripts/server.mjs';
 import { dtzWords, dtzPhrases, dtzSentences } from '../src/dtz-study.js';
@@ -65,14 +66,14 @@ test('DTZ audio preview serves byte ranges and rejects unsatisfiable ranges', as
 test('phrase entries provide complete examples and stable individual review targets', async () => {
   assert.ok(dtzPhrases.length >= 80);
   assert.equal(new Set(dtzPhrases.map(p=>p.id)).size,dtzPhrases.length);
-  const html = await readFile('dist/dtz-kelime-kalip-cumle/index.html','utf8');
+  const html = gunzipSync(await readFile('dist/src/dtz/study-lists.gz')).toString('utf8');
   for(const phrase of dtzPhrases) {
     assert.ok(phrase.meaning && phrase.example && /[.!?]$/.test(phrase.example));
     assert.ok(html.includes(`id="${phrase.id}"`));
     assert.ok(html.includes(phrase.example));
   }
   assert.equal((html.match(/data-review-item=/g)||[]).length,dtzPhrases.length);
-  assert.match(html,/<th[^>]*>Örnek cümle<\/th>/);
+  assert.match(html, /<th[^>]*>Örnek cümle(?:<\/th>)?<\/tr>/);
 });
 
 test('study lists cover A1 A2 B1 with situations and reusable sentence frames', async () => {

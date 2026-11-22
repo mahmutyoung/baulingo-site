@@ -1,7 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
-import vm from 'node:vm';
+import { initializeNavigation } from '../src/navigation.js';
 
 test('phone navigation collapses, closes with Escape/outside/link and resets on desktop', async () => {
   const listeners = new Map();
@@ -11,7 +10,7 @@ test('phone navigation collapses, closes with Escape/outside/link and resets on 
   const header = { querySelector: selector => ({ '.menu-toggle': toggle, '.navigation': nav, '.language': language })[selector], contains: target => target === toggle };
   const phone = { matches: true, addEventListener: (_, callback) => listeners.set('resize', callback) };
   const document = { querySelector: () => header, addEventListener: (type, callback) => listeners.set(type, callback) };
-  vm.runInNewContext(await readFile('src/navigation.js', 'utf8'), { document, matchMedia: () => phone });
+  initializeNavigation(document, () => phone);
   assert.equal(nav.hidden, true); assert.equal(language.hidden, true); assert.equal(toggle.hidden, false);
   listeners.get('toggleclick')(); assert.equal(nav.hidden, false); assert.equal(toggle.getAttribute('aria-expanded'), 'true');
   listeners.get('keydown')({ key: 'Escape' }); assert.equal(nav.hidden, true); assert.equal(toggle.focused, true);

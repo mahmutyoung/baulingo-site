@@ -15,7 +15,7 @@ test('writing course preserves every original task model in discoverable static 
   const sitemap = await readFile('dist/sitemap.xml', 'utf8');
   for (const lesson of writingLessons) {
     const url = `/dtz-mektup-yazma/${lesson.id}/`;
-    assert.ok(index.includes(url));
+    assert.ok(index.includes(`href="./${lesson.id}/"`));
     assert.ok(sitemap.includes(url));
     const html = await readFile(`dist${url}index.html`, 'utf8');
     assert.ok(html.includes(lesson.title));

@@ -45,7 +45,7 @@ export function trackLearningEvent(name, { activity_id, activity_type, content_l
   const params = {};
   if (typeof activity_id === 'string' && /^[a-z0-9-]{1,48}$/.test(activity_id)) params.activity_id = activity_id;
   if (['sentence', 'dtz'].includes(activity_type)) params.activity_type = activity_type;
-  if (['tr', 'en'].includes(content_language)) params.content_language = content_language;
+  if (['tr', 'en', 'de'].includes(content_language)) params.content_language = content_language;
   if (['correct', 'incorrect'].includes(outcome)) params.outcome = outcome;
   window.gtag('event', name, params);
 }
@@ -70,29 +70,32 @@ function initialize() {
   const footer = document.querySelector('footer');
   if (!footer) return;
   const english = document.documentElement.lang === 'en';
+  const german = document.documentElement.lang === 'de';
   const settings = document.createElement('button');
   settings.type = 'button';
   settings.className = 'analytics-settings';
-  settings.textContent = english ? 'Analytics settings' : 'Analiz ayarları';
+  settings.textContent = german ? 'Analyse-Einstellungen' : english ? 'Analytics settings' : 'Analiz ayarları';
   footer.append(settings);
 
   banner = document.createElement('section');
   banner.id = 'ga4-consent';
   banner.className = 'ga4-consent';
   banner.setAttribute('role', 'region');
-  banner.setAttribute('aria-label', english ? 'Analytics choice' : 'Analiz tercihi');
+  banner.setAttribute('aria-label', german ? 'Einwilligung zur Analyse' : english ? 'Analytics choice' : 'Analiz tercihi');
   const message = document.createElement('p');
-  message.textContent = english
+  message.textContent = german
+    ? 'Dürfen wir Google Analytics verwenden, um zu verstehen, welche Seiten und Übungen hilfreich sind? Die Analyse ist freiwillig und bleibt ohne deine Zustimmung aus.'
+    : english
     ? 'May we use Google Analytics to understand which pages and learning activities are useful? Optional; Google tracking stays off unless you agree.'
     : 'Hangi sayfaların ve alıştırmaların faydalı olduğunu anlamak için Google Analytics kullanabilir miyiz? İzin vermezsen Google takibi kapalı kalır.';
   const actions = document.createElement('div');
   actions.className = 'ga4-consent-actions';
   const reject = document.createElement('button');
   reject.type = 'button';
-  reject.textContent = english ? 'Decline' : 'Reddet';
+  reject.textContent = german ? 'Ablehnen' : english ? 'Decline' : 'Reddet';
   const accept = document.createElement('button');
   accept.type = 'button';
-  accept.textContent = english ? 'Allow analytics' : 'Analize izin ver';
+  accept.textContent = german ? 'Analyse erlauben' : english ? 'Allow analytics' : 'Analize izin ver';
   actions.append(reject, accept);
   banner.append(message, actions);
   document.body.append(banner);

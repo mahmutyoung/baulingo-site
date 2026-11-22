@@ -1,16 +1,23 @@
 import { copyFile, mkdir, rm, lstat, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { publicFiles, generatedFiles, fingerprintOnlyAssets } from './public-files.mjs';
-import { generatePages } from './pages.mjs';
+import { gzipSync } from 'node:zlib';
+import { publicFiles, generatedFiles, fingerprintOnlyAssets, legacyAssetAliases } from './public-files.mjs';
+import { dtzStudyArchive, fullStudyContent, generatePages } from './pages.mjs';
+import { dtzGermanArchives } from './dtz-hub.mjs';
+import { writingBase, writingLessons } from './writing-content.mjs';
+import { writingCourseNavigation } from './writing-page.mjs';
+import { examData } from '../src/dtz/content.js';
 import { fingerprintAssets, rewriteAssetURLs } from './assets.mjs';
 
 const root = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
 const output = path.resolve(root, 'dist');
+const miniPackLibraries = ['library', 'library-tr', 'grammar', 'grammar-tr'];
+const learnerData = (name, extension) => `src/mini-packs/${name}.${extension}`;
 if (output !== path.join(root, 'dist') || path.dirname(output) !== root) throw new Error('Invalid build output directory.');
 export async function build() {
   // Check every source and parent before copying; never follow a symlink outside this repo.
-  for (const file of [...publicFiles, '_headers', '_redirects']) {
+  for (const file of [...publicFiles, '_headers', '_redirects', ...miniPackLibraries.map(name => learnerData(name, 'json'))]) {
     let entry = path.join(root, file);
     while (entry !== root) {
       if ((await lstat(entry)).isSymbolicLink()) throw new Error(`Refusing to publish symlink: ${file}`);
@@ -23,16 +30,35 @@ export async function build() {
     await mkdir(path.dirname(path.join(output, file)), { recursive: true });
     await copyFile(path.join(root, file), path.join(output, file));
   }
-  const homepage = await readFile(path.join(root, 'index.html'), 'utf8');
-  for (const [file, html] of generatePages(homepage)) {
+  // Each reader fetches only the selected track and language.
+  const [en, tr, grammarEn, grammarTr] = await Promise.all(miniPackLibraries.map(async name =>
+    JSON.parse(await readFile(path.join(root, learnerData(name, 'json')), 'utf8'))));
+  const tracks = [withGrammarLinks(en, grammarEn), withGrammarLinks(tr, grammarTr), grammarEn, grammarTr];
+  for (const [index, name] of miniPackLibraries.entries()) {
+    await writeFile(path.join(output, learnerData(name, 'gz')), gzipSync(JSON.stringify(tracks[index]), { level: 9 }));
+  }
+  for (const [file, render] of dtzGermanArchives) {
+    await writeFile(path.join(output, file), gzipSync(render(), { level: 9 }));
+  }
+  await writeFile(path.join(output, dtzStudyArchive), gzipSync(fullStudyContent(), { level: 9 }));
+  const catalog = Object.fromEntries(writingLessons.map(({ id, reference, tasks }) =>
+    [id, { reference: !!reference, tasks: tasks.map(({ id }) => ({ id })) }]));
+  await writeFile(path.join(output, 'src/writing/catalog.js'), `export const writingCourse = ${JSON.stringify(catalog)};\nexport const writingNavigation = ${JSON.stringify(writingCourseNavigation(writingBase))};\n`);
+  await writeFile(path.join(output, 'src/dtz/content.js'), `export const examData = ${JSON.stringify(examData)};\n`);
+  for (const [file, html] of generatePages({ en, tr }, { en: grammarEn, tr: grammarTr })) {
     await mkdir(path.dirname(path.join(output, file)), { recursive: true });
-    // Remove optional quotes only from safe, unambiguous attributes in the two
-    // largest generated pages. Preserve ids, URLs, text, and quoted task selectors.
+    // Compact repeated markup in the training pages while preserving their DOM.
     const compact = file === 'dtz-kelime-kalip-cumle/index.html'
       ? html.replace(/(\s(?:class|lang|scope|type|data-[a-z-]+))="([A-Za-z0-9_-]+)"/g, '$1=$2')
+        .replace(/<\/(?:td|th)>(?=<(?:td|th)(?:[ >])|<\/tr>)/g, '')
+        .replace(/<\/li>(?=<li[ >]|<\/[ou]l>)/g, '')
       : file === 'dtz-deneme-sinavi/index.html'
         ? html.replace(/(\s(?:class|lang|scope|type))="([A-Za-z0-9_-]+)"/g, '$1=$2')
-        : html;
+        : file.startsWith('dtz-mektup-yazma/')
+          ? html.replace(/(\s(?:class|scope|type|data-(?!(?:task|task-kind)=)[a-z-]+))="([A-Za-z0-9_-]+)"/g, '$1=$2')
+            .replace(/ lang="de"/g, ' lang=de')
+            .replace(/<\/li>(?=<li[ >]|<\/[ou]l>)/g, '')
+          : html;
     await writeFile(path.join(output, file), compact);
   }
   const mapping = await fingerprintAssets(output);
@@ -41,7 +67,10 @@ export async function build() {
     await writeFile(target, rewriteAssetURLs(await readFile(target, 'utf8'), mapping));
   }
   // Cloudflare exact internal rewrites preserve old URLs without duplicate files.
-  const aliases = fingerprintOnlyAssets.map(source => `/${source} /${mapping.get(source)} 200`).join('\n');
+  const aliases = [
+    ...fingerprintOnlyAssets.map(source => [source, source]),
+    ...Object.entries(legacyAssetAliases),
+  ].map(([source, target]) => `/${source} /${mapping.get(target)} 200`).join('\n');
   await writeFile(path.join(output, '_redirects'), `${await readFile(path.join(root, '_redirects'), 'utf8')}\n${aliases}\n`);
   for (const source of fingerprintOnlyAssets) await rm(path.join(output, source));
   // Cloudflare's default revalidation remains on mutable URLs. Exact paths avoid
@@ -51,6 +80,18 @@ export async function build() {
   await writeFile(headerPath, `${await readFile(headerPath, 'utf8')}\n\n${immutableRules}\n`);
   return output;
 }
+function withGrammarLinks(course, grammar) {
+  const related = new Map();
+  for (const { pack, title, related: [practice] } of grammar) {
+    const links = related.get(practice.id) ?? [];
+    links.push({ id: pack.id, title });
+    related.set(practice.id, links);
+  }
+  return course.map(record => related.has(record.pack.id)
+    ? { ...record, related: related.get(record.pack.id) }
+    : record);
+}
+
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   await build();
   console.log(`Built public files in ${output}`);

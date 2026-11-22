@@ -15,9 +15,11 @@ from fontTools.ttLib import TTFont
 from fontTools import subset
 
 assets = root / "assets"
-for name in ["cafe-hero", "resources-banner"]:
+for name in ([] if "--fonts-only" in sys.argv else ["cafe-hero", "resources-banner"]):
     with Image.open(assets / f"{name}.png") as image:
-        image.convert("RGB").save(assets / f"{name}.webp", quality=88, method=6)
+        # Keep the largest responsive candidate within the public build budget.
+        quality = 62 if name == "cafe-hero" else 88
+        image.convert("RGB").save(assets / f"{name}.webp", quality=quality, method=6)
         if name == "cafe-hero":
             for width in [480, 800, 1200]:
                 height = round(image.height * width / image.width)
@@ -25,11 +27,16 @@ for name in ["cafe-hero", "resources-banner"]:
                     assets / f"{name}-{width}.webp", quality=84, method=6
                 )
 
-# Latin/extended Latin includes Turkish/German and names in the original exam.
-# Keep combining marks, punctuation, currencies, arrows and common math symbols.
-ranges = [(0x0000, 0x017F), (0x0300, 0x036F), (0x2000, 0x206F),
-          (0x2190, 0x21FF)]
-codepoints = {point for first, last in ranges for point in range(first, last + 1)}
+# Keep the alphabet used to write answers, plus every character in the authored
+# site and learning content, including accented names and combining marks.
+codepoints = set(range(32, 127)) | set(range(0x0300, 0x0370))
+codepoints.update(map(ord, "ÄÖÜäöüßẞÇĞİÖŞÜçğıöşüÂÎÛâîûÀÉÈàéèñÑáó€"))
+sources = [root / "index.html"]
+for folder in ["scripts", "src", "en", "konular", "privacy", "impressum"]:
+    sources.extend(path for path in (root / folder).rglob("*")
+                   if path.suffix in {".mjs", ".js", ".json", ".html"})
+for source in sources:
+    codepoints.update(map(ord, source.read_text(encoding="utf-8")))
 codepoints.update([0x1E9E, 0x20AC, 0x2212, 0x2713, 0xFFFD])
 for name in ["Newsreader-Bold", "Newsreader-SemiBold", "Lato-Regular", "Lato-SemiBold", "Lato-Bold"]:
     font = TTFont(assets / f"{name}.ttf", recalcTimestamp=False)

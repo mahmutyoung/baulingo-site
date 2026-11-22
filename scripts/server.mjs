@@ -2,7 +2,7 @@ import http from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { resolvePublicFile, isFingerprintedAsset, fingerprintOnlyAssets } from './public-files.mjs';
+import { resolvePublicFile, isFingerprintedAsset, fingerprintOnlyAssets, legacyAssetAliases } from './public-files.mjs';
 import { createReviewHandler, injectReviewBridge, isLocalReviewRequest, rewriteReviewLinks } from './review-server.mjs';
 import { rebuildReviewPreview } from './review-rebuild.mjs';
 
@@ -41,7 +41,7 @@ export async function createPreviewServer({ review = false, reviewStore } = {}) 
       let absolute = resolvePublicFile(root, pathname);
       if (!absolute) return send(404, notFound);
       // Only exact allowlisted large-asset aliases; never proxy arbitrary paths.
-      if (fingerprintOnlyAssets.includes(pathname.slice(1))) {
+      if (fingerprintOnlyAssets.includes(pathname.slice(1)) || Object.hasOwn(legacyAssetAliases, pathname.slice(1))) {
         const redirects = await readFile(path.join(root, '_redirects'), 'utf8');
         const alias = redirects.split(/\r?\n/).map(line=>line.trim().split(/\s+/)).find(([source,target,status])=>source===pathname && status==='200' && isFingerprintedAsset(target?.slice(1) || ''));
         if (alias) absolute = resolvePublicFile(root, alias[1]);

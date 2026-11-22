@@ -1,16 +1,30 @@
 import { restoreProgress, remainingTime, resumeTarget, mergeLesson } from './rules.js';
 import { activateExercise } from './activities.js';
 import { activateWritingStudio } from './studio.js';
+import { writingCourse, writingNavigation } from './catalog.js';
 
 const root=document.querySelector('[data-writing]');
 if(root)startWriting(root);
 
 function startWriting(root) {
   const key='baulingo-writing:v1';
-  const links=[...root.querySelectorAll('[data-lesson]')];
-  const lessons=links.map(link=>({id:link.dataset.lesson,title:link.querySelector('span').textContent,reference:link.dataset.reference==='true',
-    tasks:link.dataset.taskIds.split(',').filter(Boolean).map(id=>({id}))}));
   const current=root.dataset.current;
+  const navigation=root.querySelector('.writing-course-nav');
+  if(current) navigation.innerHTML=writingNavigation;
+  const review=new URLSearchParams(location.search).get('__review');
+  const entries=[...navigation.querySelectorAll('a')].map(link=>{
+    const url=new URL(link.href);
+    const id=url.pathname.split('/').at(-2);
+    if(id===current) link.setAttribute('aria-current','page');
+    if(review){url.searchParams.set('__review',review);link.href=url;}
+    const {reference,tasks}=writingCourse[id];
+    const title=link.textContent;
+    const status=document.createElement('span');
+    status.className='writing-lesson-status';
+    link.append(status);
+    return {status,lesson:{id,title,reference,tasks}};
+  });
+  const lessons=entries.map(({lesson})=>lesson);
   const lesson=lessons.find(lesson=>lesson.id===current);
   const storageMessage=root.querySelector('[data-storage]');
   const saveStatus=root.querySelector('[data-save-status]');
@@ -49,10 +63,8 @@ function startWriting(root) {
 
   const updateProgress=()=>{
     let count=0;
-    for(const link of links){
-      const done=progress.lessons[link.dataset.lesson]?.complete===true;
-      const reference=link.dataset.reference==='true';
-      const status=link.querySelector('.writing-lesson-status');
+    for(const {status,lesson:{id,reference}} of entries){
+      const done=progress.lessons[id]?.complete===true;
       status.textContent=done?'✓':reference?'↗':'○';
       status.setAttribute('aria-label',done?(reference?'Gözden geçirildi':'Tamamlandı'):reference?'Kaynak sayfası':'Henüz tamamlanmadı');
       if(done&&!reference)count++;

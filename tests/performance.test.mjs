@@ -13,7 +13,7 @@ test('responsive hero uses smaller candidates while keeping eager LCP loading', 
   assert.match(hero, /srcset=/); assert.match(hero, /sizes=/); assert.match(hero, /fetchpriority="high"/);
   assert.doesNotMatch(hero, /loading="lazy"/);
   const candidates = hero.match(/srcset="([^"]+)"/)[1].split(',').map(s => s.trim().split(/\s+/));
-  assert.deepEqual(candidates.map(([, width]) => width), ['480w', '800w', '1200w', '1594w']);
+  assert.deepEqual(candidates.map(([, width]) => width), ['480w', '800w', '1594w']);
   for (const [url] of candidates) assert.ok((await stat(resolvePublicFile(path.resolve('dist'), new URL(url, 'https://baulingo.app').pathname))).size > 0);
   const small = await stat(resolvePublicFile(path.resolve('dist'), new URL(candidates[0][0], 'https://baulingo.app').pathname));
   assert.ok(small.size < 60_000, `480px hero is ${small.size} bytes`);
@@ -50,6 +50,10 @@ test('large fingerprinted assets publish once while original addresses remain us
       assert.deepEqual(Buffer.from(await response.arrayBuffer()), await readFile(source));
       assert.doesNotMatch(response.headers.get('cache-control'), /immutable/);
     }
+    await assert.rejects(stat('dist/assets/cafe-hero-1200.webp'), { code: 'ENOENT' });
+    const legacy = await fetch(base + '/assets/cafe-hero-1200.webp');
+    assert.equal(legacy.status, 200);
+    assert.deepEqual(Buffer.from(await legacy.arrayBuffer()), await readFile('assets/cafe-hero.webp'));
   } finally { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); }
 });
 

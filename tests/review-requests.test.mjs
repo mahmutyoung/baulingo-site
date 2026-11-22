@@ -30,6 +30,18 @@ test('homepage topic links navigate to pages and app information has its own pag
   assert.match(about, /https:\/\/play\.google\.com\/store\/apps\/details\?id=com\.baulingo\.app/);
 });
 
+test('Turkish course navigation opens the mini-packs and offers all three levels', async () => {
+  const home = await readFile('dist/index.html', 'utf8');
+  const topic = await readFile('dist/konular/articles/index.html', 'utf8');
+  for (const html of [home, topic]) {
+    assert.match(html, /href="\/konular\/mini-paketler\/">Almanca Kursu<\/a>/);
+    assert.doesNotMatch(html, />Günlük Almanca<\/a>/);
+  }
+  for (const level of ['A1', 'A2', 'B1']) {
+    assert.ok(home.includes('/konular/almanca-' + level.toLowerCase() + '/'));
+  }
+});
+
 test('completed DTZ result does not offer a new attempt', async () => {
   const html = await readFile('dist/dtz-deneme-sinavi/index.html', 'utf8');
   assert.doesNotMatch(html, /Yeni deneme başlat/i);

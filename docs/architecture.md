@@ -15,8 +15,14 @@ Use embedded interactions to learn which needs and learning experiences matter t
 - Home: the supplied “Almancada aradığın cevap.” layout, topic search, a short phrase preview and three learning paths.
 - Grammar: articles, cases and word order, explained in Turkish.
 - Everyday German: situations such as appointments, shopping and speaking to a doctor.
+- Mini-packs: [Turkish Topics](../konular/mini-paketler/index.html) and [English Topics](../en/mini-packs/index.html) each link to 67 authored A1–B1 lessons. The shared reader fetches one gzip archive for the selected language. Progress stays in page memory.
+- Turkish course pages at `/konular/almanca-a1/`, `/konular/almanca-a2/` and `/konular/almanca-b1/` render course links and a sample exercise from the same mini-pack data. The A1 practice test uses original questions, client-side scoring and lesson recommendations.
+- English course pages at `/en/german-a1/`, `/en/german-a2/` and `/en/german-b1/` link to all the English packs. Both languages have stable lesson slugs, matching canonicals in their static previews and sitemap entries. The shared reader opens the full lesson from a clean URL or a legacy topic query.
+- Gramer Kursu and German Grammar Course are separate 53-lesson tracks. They use the same reader in teaching order, separate gzip archives by language, and readable topic URLs. Each grammar pack links to the source-designated everyday lesson, which links back to the grammar packs that use it.
+- Language switches share one English/Turkish preference in browser storage. The preference applies on the bare homepage. Explicit language URLs retain their own content. Switching maps to the same lesson or level when available and to the relevant course or help page otherwise.
 - Free resources: removed from the pending website output at the owner’s request; source downloads remain in the repository.
 - Exam preparation: `/sinavlar/` is the local static overview, leading with DTZ simulation and study cards; a secondary disclosure contains the guide to exam audiences. Other preparation packages remain planned.
+- DTZ-Prüfung: `/de/dtz-pruefung/` links the German Modelltest and the complete original German writing book. The German test uses the same exam player and browser attempt as the Turkish test. The English and Turkish help pages link to the resources with instructions in their respective languages.
 - About, contact and privacy: basic public information.
 - Embedded experiments: short interactions within the homepage or relevant existing content, using the same visual language and site deployment.
 

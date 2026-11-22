@@ -25,7 +25,6 @@
   <link rel="stylesheet" href="./style.css">
   <script type="module" src="./src/analytics.js"></script>
   <script type="module" src="./app.js"></script>
-  <script type="module" src="./src/language.js"></script>
   <script type="module" src="./src/navigation.js"></script>
 </head>
 <body>
@@ -36,7 +35,7 @@
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-navigation" hidden>Menü <span aria-hidden="true">☰</span></button>
       <nav id="main-navigation" class="navigation" aria-label="Ana menü">
         <a class="active" href="#konular" aria-current="location">Konular</a>
-        <a href="#gunluk">Günlük Almanca</a>
+        <a href="/konular/mini-paketler/">Almanca Kursu</a>
         <a href="/sinavlar/">Sınavlar</a>
       </nav>
       <button class="language" type="button" data-open="language-dialog" aria-haspopup="dialog">Türkçe <img src="./assets/icons/caret-down.svg" width="16" height="16" alt=""></button>
@@ -59,7 +58,7 @@
           </div>
         </div>
         <div class="hero-visual">
-          <img class="hero-photo" src="./assets/cafe-hero.webp" srcset="./assets/cafe-hero-480.webp 480w, ./assets/cafe-hero-800.webp 800w, ./assets/cafe-hero-1200.webp 1200w, ./assets/cafe-hero.webp 1594w" sizes="(max-width: 700px) calc(100vw - 32px), (max-width: 1450px) 53vw, (max-width: 1600px) 54vw, 864px" width="1594" height="987" alt="Kafede, elinde bir fincan kahveyle siparişini bekleyen görevli." fetchpriority="high">
+          <img class="hero-photo" src="./assets/cafe-hero.webp" srcset="./assets/cafe-hero-480.webp 480w, ./assets/cafe-hero-800.webp 800w, ./assets/cafe-hero.webp 1594w" sizes="(max-width: 700px) calc(100vw - 32px), (max-width: 1450px) 53vw, (max-width: 1600px) 54vw, 864px" width="1594" height="987" alt="Kafede, elinde bir fincan kahveyle siparişini bekleyen görevli." fetchpriority="high">
           <div class="phrase-panel">
             <div class="phrase-original"><p>Bu cümleyi Almanca söyle:</p><div class="phrase-with-audio"><strong lang="de">Einen Kaffee, bitte.</strong><button class="audio-button" id="play-phrase" type="button" aria-label="Einen Kaffee, bitte. Dinle"><img src="./assets/icons/speaker-high.svg" width="26" height="26" alt=""></button></div></div>
             <div class="phrase-meaning"><p>Anlamı:</p><span>Bir kahve, lütfen.</span></div>
@@ -79,6 +78,7 @@
             <div class="path-icon"><img src="./assets/icons/book-open.svg" width="34" height="34" alt=""></div>
             <div class="path-content"><h3>Grameri anla</h3><p>Temel kuralları Türkçe açıklamalarla öğren. Örneklerle pekiştir.</p>
               <ul class="path-links">
+                <li><a href="/konular/almanca-gramer/">Almanca Gramer Kursu <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
                 <li><a href="/konular/articles/">Der, die, das <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
                 <li><a href="/konular/cases/">Akkusativ ve Dativ <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
                 <li><a href="/konular/word-order/">Almanca cümle sırası <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
@@ -87,11 +87,11 @@
           </article>
           <article class="learning-path" id="gunluk">
             <div class="path-icon"><img src="./assets/icons/chat-circle.svg" width="34" height="34" alt=""></div>
-            <div class="path-content"><h3>Günlük hayatta kullan</h3><p>Gerçek durumlar için pratik kelime ve kalıpları öğren.</p>
+            <div class="path-content"><h3>Almanca Kursu</h3><p>Türkçe açıklamalı 67 dersle kelime, diyalog ve alıştırma çalış.</p>
               <ul class="path-links">
-                <li><a href="/konular/doctor/">Doktorda konuşma <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
-                <li><a href="/konular/doctor/">Randevu alma <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
-                <li><a href="/konular/kafede-siparis/">Kafede sipariş <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
+                <li><a href="/konular/almanca-a1/">A1 · Başlangıç <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
+                <li><a href="/konular/almanca-a2/">A2 · Temel <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
+                <li><a href="/konular/almanca-b1/">B1 · Orta <img src="./assets/icons/arrow-right.svg" width="19" height="19" alt=""></a></li>
               </ul>
             </div>
           </article>

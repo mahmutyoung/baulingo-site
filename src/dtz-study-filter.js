@@ -20,7 +20,29 @@ export function studyFilterState(items, selected) {
   return {filters,options};
 }
 
-for (const root of globalThis.document?.querySelectorAll('[data-study-root]') || []) {
+async function loadFullStudyList(preview) {
+  try {
+    const response = await fetch('/src/dtz/study-lists.gz');
+    if (!response.ok) throw new Error('Study lists could not load');
+    const html = await new Response(response.body.pipeThrough(new DecompressionStream('gzip'))).text();
+    const page = new DOMParser().parseFromString(html, 'text/html');
+    const full = page.querySelector('[data-study-root]');
+    if (!full) throw new Error('Study lists are missing');
+    preview.replaceWith(full);
+    if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
+    return full;
+  } catch {
+    const notice = document.createElement('p');
+    notice.setAttribute('role', 'status');
+    notice.textContent = 'Tam liste yüklenemedi. Temel listeyle çalışabilirsin.';
+    preview.prepend(notice);
+    preview.querySelector('[data-study-list]').closest('label').hidden = true;
+    return preview;
+  }
+}
+
+for (const preview of globalThis.document?.querySelectorAll('[data-study-root]') || []) {
+  const root = await loadFullStudyList(preview);
   const filters = root.querySelector('.study-filters');
   const levels = [...root.querySelectorAll('[data-study-level-section]')];
   for (const level of levels) {

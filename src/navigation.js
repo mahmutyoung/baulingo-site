@@ -1,7 +1,10 @@
-const header = document.querySelector('.header');
-const toggle = header?.querySelector('.menu-toggle');
-const navigation = header?.querySelector('.navigation');
-if (toggle && navigation) {
+import './language.js';
+
+export function initializeNavigation(document, matchMedia) {
+  const header = document.querySelector('.header');
+  const toggle = header?.querySelector('.menu-toggle');
+  const navigation = header?.querySelector('.navigation');
+  if (!toggle || !navigation) return;
   const phone = matchMedia('(max-width: 700px)');
   const language = header.querySelector('.language');
   function setOpen(open) {
@@ -21,3 +24,5 @@ if (toggle && navigation) {
   phone.addEventListener('change', reset);
   reset();
 }
+
+if (globalThis.document) initializeNavigation(document, matchMedia);

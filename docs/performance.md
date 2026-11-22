@@ -24,13 +24,19 @@ The café image is the LCP element. The report estimates responsive-image saving
 
 ## Changes
 
-- The same café artwork now has 480/800/1200 px WebP copies (38,004 / 76,086 / 128,014 bytes), selected using sizes/srcset. The 215,052-byte original fallback stays available. Actual 390 px browser checks select 480 px at 1× and 800 px at 2×. The LCP image remains eager/high-priority. Original composition and layout are unchanged.
+- The café artwork ships at 480, 800 and 1594 px (38,004, 76,086 and 106,502 bytes), selected using sizes/srcset. The 1594 px WebP is smaller than the former 1200 px encoding. Publishing one large copy keeps the bilingual mini-packs within the core budget. The old 1200 px URL serves the 1594 px copy through an exact rewrite. The LCP image remains eager/high-priority.
 - Local WOFF2 fonts are subset for Latin/Latin Extended A, combining marks, Turkish/German, punctuation, arrows and selected symbols. The two main body faces shrink from 425 KB to about 92 KB. Original retained glyph coverage is verified, and sample Latin/Turkish/German outlines/advance widths match the original TTFs. The Lato-derived subsets are named **Baulingo Sans** internally and in CSS to respect Lato's reserved name. Original attribution/license and the modification notice are published together in `assets/BaulingoSans-OFL.txt`. Newsreader retains its existing name/license. Original TTFs and unmodified full Lato WOFF2 files stay outside the public allowlist.
 - `scripts/assets.mjs` writes content-hashed copies of explicit core image/font/icon/phrase assets under `assets/cache/` and rewrites built HTML/CSS references. Mutable originals stay available where allowlisted; only generated fingerprints get immutable caching. The three DTZ media files are not duplicated and audio remains lazy loaded.
 
 Run `python scripts/optimize-assets.py` only when regenerating assets. Its pinned optional Pillow/fontTools dependencies can live in ignored `.dev/pydeps`. Original PNG/TTF sources remain unchanged. Font timestamps are preserved for reproducible output. Normal Node builds need no Python or installed dependencies.
 
 ## Caching and publication
+
+The level pages and A1 practice test fit the core budget by omitting optional HTML quotes and end tags from generated DTZ study and writing pages. The browser receives the same content and DOM.
+
+The 134 lesson previews fit by publishing each fingerprinted core asset once and sharing the writing course's task IDs across pages. Exact asset rewrites retain the old paths. Static writing navigation continues to list every lesson, with progress indicators added by the writing player.
+
+The grammar import keeps the 2 MB cap by generating font subsets for site content and the supported keyboard alphabets, sharing the Turkish writing lesson navigation, and loading the full DTZ study lists from a gzip archive. With JavaScript disabled, the study page renders the basic lists, and the writing index and lesson pagination remain readable. The full study archive retains all lists and filters.
 
 The builder appends exact immutable header rules for generated paths. It does not add a broad immutable wildcard or conflicting global Cache-Control directive. Cloudflare's normal `public, max-age=0, must-revalidate` default remains on mutable pages/assets; known fingerprints receive `public, max-age=31536000, immutable`. Missing hashes do not receive a year-long error TTL. The local preview mirrors this policy.
 

@@ -1,5 +1,33 @@
 # Website implementation handoff
 
+## Site-wide language preference
+
+The English and Turkish controls share the same browser preference across homepages, topic pages, course levels, grammar hubs and lesson readers. Lesson switches open the matching lesson; grammar and everyday links stay in the selected edition. The German DTZ materials retain their separate English and Turkish help links. The bare homepage respects the saved choice, and direct localized URLs remain shareable. Publication is pending.
+
+## Grammar course
+
+The Turkish and English homepages now link to separate grammar courses at `/konular/almanca-gramer/` and `/en/german-grammar/`. Each edition imports 21 A1, 16 A2 and 16 B1 samples from `GermanPacks/pack1a/data/samples/` in the source's teaching order. The course level pages and grammar hubs link in both directions. Grammar lessons expose the rule and a bilingual example in initial HTML and link to an everyday lesson for practice. The interactive reader links back to the relevant grammar lessons. Publication is pending.
+
+## Readable lesson URLs
+
+All 67 lessons have separate English and Turkish lesson URLs. The published HTML includes the lesson title, objective and a bilingual example. Course lists, the Turkish A1 practice test and the reader use these URLs. The previous `?topic=` links open the same lesson and update to its readable address in the browser. The static build and preview now include all 134 lesson routes and the three English course pages. Publication is pending.
+
+## A1–B1 course pages and A1 practice test
+
+The homepage links to static A1, A2 and B1 course pages at `/konular/almanca-a1/`, `/konular/almanca-a2/` and `/konular/almanca-b1/`. Each lists every lesson at that level and includes an authored sample exercise. The 12-question `/konular/almanca-a1-test/` checks vocabulary, sentence structure and short reading prompts. Results include Turkish explanations and links to relevant lessons. The test does not store answers or assign a CEFR level. Publication is pending.
+
+## Almanca Kursu navigation
+
+The Turkish menu links directly to the 67-lesson course as **Almanca Kursu**. The homepage card has direct starts for A1, A2 and B1. The course keeps its existing URL at `/konular/mini-paketler/`.
+
+## DTZ-Prüfung hub
+
+The German hub at `/de/dtz-pruefung/` links to the complete German Modelltest and the original 15-chapter German writing course, with its 47 activities and model answers. `/en/dtz-exam/` gives English test and writing guidance. `/dtz-sinavi/` links to the existing test and course with Turkish help. The build publishes the two German learning experiences as on-demand compressed fragments and keeps the hub and help content in static HTML. Publication is pending.
+
+## Turkish and English mini-packs — 21 November 2026
+
+Konular links to `/konular/mini-paketler/` and English Topics links to `/en/mini-packs/`. Each library contains 17 A1, 22 A2 and 28 B1 authored samples from `GermanPacks/pack1a/data/samples/`, with the Turkish collection taken from its `tr/` directory. The shared reader uses the original layout, catalog order and language picker with Baulingo colors. Each library loads only its selected language. Publication is pending.
+
 ## Writing audit fixed — 3 November 2026
 
 The owner requested all Product Design audit fixes and will perform the final review. The course now has 22 learning lessons plus two reference pages, 47 tasks in six appropriate formats, visible required choices, point-linked letter plans/checks/annotated models and 64 translated phrase entries. Resume targets unfinished work; save status is beside editors. Prior text/plan data remains accessible; old generic checks are kept separately. Multi-tab saves merge changed fields and failed-storage export includes later memory edits. See [the final review checklist](content/dtz-writing-review.md). No deployment or push is authorized by this request. The LAN preview remains on port 4173.

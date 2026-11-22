@@ -3,14 +3,16 @@ import { trackLearningEvent } from '../analytics.js';
 import { createAttempt, selectAnswer, finishListening, nextSection, syncClock, remainingSeconds, scoreAttempt, validateAttempt } from './rules.js';
 
 const root = document.querySelector('#dtz-app');
+const language = document.documentElement.lang === 'de' ? 'de' : 'tr';
+const t = (turkish, german) => language === 'de' ? german : turkish;
 const $ = selector => root.querySelector(selector);
 const $$ = selector => [...root.querySelectorAll(selector)];
 const storageKey = 'baulingo.dtz.mock-01.v1';
-const dtzEvent = () => ({ activity_id: 'dtz-mock-01', activity_type: 'dtz', content_language: 'tr' });
+const dtzEvent = () => ({ activity_id: 'dtz-mock-01', activity_type: 'dtz', content_language: language });
 function trackResultTransition(phase) {
   if (phase !== 'result' && attempt?.phase === 'result') trackLearningEvent('learning_completed', dtzEvent());
 }
-const labels = { listening: '01 · Dinleme', reading: '02 · Okuma', writing: '03 · Yazma', speaking: '04 · Konuşma', result: 'Sonuç' };
+const labels = { listening: t('01 · Dinleme', '01 · Hören'), reading: t('02 · Okuma', '02 · Lesen'), writing: t('03 · Yazma', '03 · Schreiben'), speaking: t('04 · Konuşma', '04 · Sprechen'), result: t('Sonuç', 'Ergebnis') };
 const audio = $('#dtz-audio');
 let attempt = null, active = false, audioStarted = false, audioLoading = false, invalidSaved = false;
 let scrollScheduled = false;
@@ -27,16 +29,16 @@ window.addEventListener('resize', updateToolbar);
 function status(message) { $('#dtz-status').textContent = message; }
 function save() {
   try { localStorage.setItem(storageKey, JSON.stringify(attempt)); }
-  catch { status('Tarayıcı kayda izin vermedi. Bu sekmede devam edebilirsin; kapatırsan yanıtların kaybolabilir. Yazını TXT olarak indirebilirsin.'); }
+  catch { status(t('Tarayıcı kayda izin vermedi. Bu sekmede devam edebilirsin; kapatırsan yanıtların kaybolabilir. Yazını TXT olarak indirebilirsin.', 'Der Browser konnte deine Antworten nicht speichern. Du kannst in diesem Tab weiterüben und deinen Text als TXT herunterladen.')); }
 }
 try {
   const saved = localStorage.getItem(storageKey);
   if (saved) {
     try { attempt = validateAttempt(JSON.parse(saved)); } catch { /* Report corrupt data without crashing. */ }
     invalidSaved = !attempt;
-    if (invalidSaved) status('Bu tarayıcıdaki deneme kaydı okunamadı. Yeniden başlamak için aşağıdaki “deneme verilerini sil” düğmesini kullan.');
+    if (invalidSaved) status(t('Bu tarayıcıdaki deneme kaydı okunamadı. Yeniden başlamak için aşağıdaki “deneme verilerini sil” düğmesini kullan.', 'Der gespeicherte Test konnte nicht gelesen werden. Lösche den gespeicherten Test unten, um neu zu beginnen.'));
   }
-} catch { status('Tarayıcı kayıtlara erişime izin vermedi. Denemeyi bu sekmede yapabilirsin; ilerlemen saklanamayabilir.'); }
+} catch { status(t('Tarayıcı kayıtlara erişime izin vermedi. Denemeyi bu sekmede yapabilirsin; ilerlemen saklanamayabilir.', 'Der Browser erlaubt keinen Zugriff auf gespeicherte Daten. Du kannst in diesem Tab weiterüben.')); }
 
 function stopAudio() {
   audio.pause();
@@ -58,7 +60,7 @@ function render() {
   $('#dtz-start-panel').hidden = active;
   $('#dtz-start').hidden = !!attempt || invalidSaved || active;
   $('#dtz-resume').hidden = !attempt || active;
-  $('#dtz-resume').textContent = phase === 'result' ? 'Sonucumu göster' : 'Kaldığım yerden devam et';
+  $('#dtz-resume').textContent = phase === 'result' ? t('Sonucumu göster', 'Ergebnis anzeigen') : t('Kaldığım yerden devam et', 'Gespeicherten Test fortsetzen');
   $('#dtz-clear').hidden = !attempt && !invalidSaved;
   $('#dtz-toolbar').hidden = !active || phase === 'result';
   updateToolbar();
@@ -67,7 +69,7 @@ function render() {
   for (const actions of $$('[data-action-for]')) actions.hidden = !active || actions.dataset.actionFor !== phase;
   $('#dtz-audio-panel').hidden = !active || phase !== 'listening';
   $('#dtz-play').disabled = audioLoading || audioStarted || !!attempt?.listeningFinished;
-  $('#dtz-play').textContent = audioLoading ? 'Ses yükleniyor…' : audioStarted ? 'Dinleme devam ediyor' : attempt?.listeningFinished ? 'Dinleme tamamlandı' : 'Dinlemeyi başlat';
+  $('#dtz-play').textContent = audioLoading ? t('Ses yükleniyor…', 'Aufnahme wird geladen…') : audioStarted ? t('Dinleme devam ediyor', 'Aufnahme läuft') : attempt?.listeningFinished ? t('Dinleme tamamlandı', 'Hörteil beendet') : t('Dinlemeyi başlat', 'Hörteil starten');
   $('[data-action-for="listening"] [data-next]').disabled = !attempt?.listeningFinished;
   for (const task of examData.listeningTasks) if (!task.isExample) {
     for (const q of task.questions) $(`[data-question="${q.id}"]`).disabled = !audioStarted || !!attempt?.listeningFinished;
@@ -94,9 +96,9 @@ function render() {
 function renderTimer() {
   if (!attempt) return;
   const seconds = remainingSeconds(attempt, Date.now());
-  $('#dtz-timer-label').textContent = attempt.phase === 'listening' ? 'Kayıt' : attempt.phase === 'speaking' ? 'Önerilen süre' : 'Kalan süre';
+  $('#dtz-timer-label').textContent = attempt.phase === 'listening' ? t('Kayıt', 'Aufnahme') : attempt.phase === 'speaking' ? t('Önerilen süre', 'Empfohlene Dauer') : t('Kalan süre', 'Verbleibende Zeit');
   const elapsed = Math.floor(audio.currentTime || 0);
-  $('#dtz-timer').textContent = seconds === null ? attempt.phase === 'speaking' ? '~16 dk.' : audioStarted ? `${Math.floor(elapsed / 60)}:${String(elapsed % 60).padStart(2, '0')}` : '—' : `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+  $('#dtz-timer').textContent = seconds === null ? attempt.phase === 'speaking' ? t('~16 dk.', 'ca. 16 Min.') : audioStarted ? `${Math.floor(elapsed / 60)}:${String(elapsed % 60).padStart(2, '0')}` : '—' : `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
 }
 
 function tick() {
@@ -105,7 +107,7 @@ function tick() {
   const updated = syncClock(attempt, Date.now());
   if (updated !== attempt) {
     attempt = updated; trackResultTransition(previousPhase); save(); render();
-    status(`Süre doldu. ${labels[attempt.phase]} bölümüne geçildi.`);
+    status(t(`Süre doldu. ${labels[attempt.phase]} bölümüne geçildi.`, `Die Zeit ist abgelaufen. Weiter mit ${labels[attempt.phase]}.`));
     if (active) focusSection();
   } else renderTimer();
 }
@@ -127,46 +129,46 @@ $('#dtz-resume').addEventListener('click', () => {
   active = true;
   const previous = attempt.phase;
   attempt = syncClock(attempt, Date.now());
-  status(attempt.phase !== previous ? 'Bölüm süresi dolduğu için sonraki bölüme geçildi.' : attempt.phase === 'listening' && !attempt.listeningFinished ? 'Dinlemeyi yeniden başlattığında kayıt baştan oynar. Önceki yanıtların korunur.' : 'Kayıtlı denemen açıldı.');
+  status(attempt.phase !== previous ? t('Bölüm süresi dolduğu için sonraki bölüme geçildi.', 'Die Zeit ist abgelaufen. Der nächste Teil wurde geöffnet.') : attempt.phase === 'listening' && !attempt.listeningFinished ? t('Dinlemeyi yeniden başlattığında kayıt baştan oynar. Önceki yanıtların korunur.', 'Wenn du den Hörteil erneut startest, läuft die Aufnahme von vorn. Deine Antworten sind gespeichert.') : t('Kayıtlı denemen açıldı.', 'Dein gespeicherter Test ist geöffnet.'));
   save(); render(); focusSection();
 });
 $('#dtz-exit').addEventListener('click', () => {
-  if (attempt.phase === 'listening' && audioStarted && !confirm('Ayrılırsan dinleme kaydını baştan dinlemen gerekir. Yanıtların saklanır. Ara verilsin mi?')) return;
+  if (attempt.phase === 'listening' && audioStarted && !confirm(t('Ayrılırsan dinleme kaydını baştan dinlemen gerekir. Yanıtların saklanır. Ara verilsin mi?', 'Beim Fortsetzen beginnt die Aufnahme von vorn. Deine Antworten bleiben gespeichert. Möchtest du pausieren?'))) return;
   tick(); save(); stopAudio(); active = false; render();
-  status('Deneme kapatıldı. Okuma ve yazmada süre işlemeye devam eder.');
+  status(t('Deneme kapatıldı. Okuma ve yazmada süre işlemeye devam eder.', 'Test pausiert. Beim Lesen und Schreiben läuft die Zeit weiter.'));
   $('#dtz-resume').focus();
 });
 $('#dtz-clear').addEventListener('click', () => {
-  if (!confirm('Bu tarayıcıdaki DTZ yanıtların ve yazın silinsin mi? Bu işlem geri alınamaz.')) return;
+  if (!confirm(t('Bu tarayıcıdaki DTZ yanıtların ve yazın silinsin mi? Bu işlem geri alınamaz.', 'Deine Antworten und deinen Text endgültig aus diesem Browser löschen?'))) return;
   try { localStorage.removeItem(storageKey); }
-  catch { status('Tarayıcı kaydın silinmesine izin vermedi. Tarayıcının site verileri ayarlarından silebilirsin.'); return; }
+  catch { status(t('Tarayıcı kaydın silinmesine izin vermedi. Tarayıcının site verileri ayarlarından silebilirsin.', 'Der Browser erlaubte das Löschen nicht. Du kannst die Daten über die Website-Einstellungen deines Browsers löschen.')); return; }
   stopAudio(); attempt = null; invalidSaved = false; active = false;
   $('#dtz-writing').value = ''; $('#dtz-writing-count').textContent = '0';
   for (const task of [...examData.listeningTasks, ...examData.readingTasks].filter(t => !t.isExample)) for (const q of task.questions) {
     for (const input of $$(`input[name="${q.id}"]`)) input.checked = false;
   }
-  status('Bu tarayıcıdaki deneme verileri silindi.'); render(); $('#dtz-start').focus();
+  status(t('Bu tarayıcıdaki deneme verileri silindi.', 'Der gespeicherte Test wurde gelöscht.')); render(); $('#dtz-start').focus();
 });
 
 $('#dtz-play').addEventListener('click', async () => {
   if (!active || attempt?.phase !== 'listening' || audioStarted || audioLoading || attempt.listeningFinished) return;
   audioLoading = true; render();
-  $('#dtz-audio-status').textContent = 'Dinleme kaydı yükleniyor…';
+  $('#dtz-audio-status').textContent = t('Dinleme kaydı yükleniyor…', 'Die Aufnahme wird geladen…');
   audio.src = audio.dataset.src;
   try {
     await audio.play();
     if (!active || attempt.phase !== 'listening') return;
     audioStarted = true;
-    $('#dtz-audio-status').textContent = 'Kayıt devam ediyor. Soruları aşağıda yanıtla.';
+    $('#dtz-audio-status').textContent = t('Kayıt devam ediyor. Soruları aşağıda yanıtla.', 'Die Aufnahme läuft. Beantworte die Fragen unten.');
   } catch {
     audioStarted = false;
-    $('#dtz-audio-status').textContent = 'Ses oynatılamadı. Bağlantını kontrol edip “Dinlemeyi başlat” ile tekrar dene. Kayıt baştan başlar.';
+    $('#dtz-audio-status').textContent = t('Ses oynatılamadı. Bağlantını kontrol edip “Dinlemeyi başlat” ile tekrar dene. Kayıt baştan başlar.', 'Die Aufnahme konnte nicht abgespielt werden. Prüfe deine Verbindung und starte den Hörteil erneut. Die Aufnahme beginnt von vorn.');
   } finally { audioLoading = false; render(); }
 });
 audio.addEventListener('error', () => {
   if (!audio.getAttribute('src') || !active || attempt?.phase !== 'listening') return;
   audioStarted = false; audioLoading = false;
-  $('#dtz-audio-status').textContent = 'Ses yüklenemedi. Bağlantını kontrol et ve dinlemeyi yeniden başlat. Kayıt baştan oynar.';
+  $('#dtz-audio-status').textContent = t('Ses yüklenemedi. Bağlantını kontrol et ve dinlemeyi yeniden başlat. Kayıt baştan oynar.', 'Die Aufnahme konnte nicht geladen werden. Prüfe deine Verbindung und starte den Hörteil erneut. Die Aufnahme beginnt von vorn.');
   render();
 });
 audio.addEventListener('timeupdate', () => {
@@ -178,7 +180,7 @@ audio.addEventListener('timeupdate', () => {
 audio.addEventListener('ended', () => {
   if (!active || attempt?.phase !== 'listening' || !audioStarted) return;
   attempt = finishListening(attempt); save();
-  $('#dtz-audio-status').textContent = 'Dinleme tamamlandı. Okuma bölümüne geçebilirsin.';
+  $('#dtz-audio-status').textContent = t('Dinleme tamamlandı. Okuma bölümüne geçebilirsin.', 'Der Hörteil ist beendet. Du kannst zum Lesen weitergehen.');
   render();
 });
 
@@ -209,9 +211,9 @@ for (const button of $$('[data-next]')) button.addEventListener('click', () => {
   if (attempt.phase !== previous) return;
   if (attempt.phase === 'reading') {
     const unanswered = examData.readingTasks.filter(t => !t.isExample).flatMap(t => t.questions).filter(q => !Object.hasOwn(attempt.answers, q.id)).length;
-    if (!confirm(`${unanswered ? `${unanswered} soru boş. ` : ''}Okuma bölümünü bitirip yazmaya geçilsin mi? Okuma yanıtlarına geri dönemezsin.`)) return;
+    if (!confirm(t(`${unanswered ? `${unanswered} soru boş. ` : ''}Okuma bölümünü bitirip yazmaya geçilsin mi? Okuma yanıtlarına geri dönemezsin.`, `${unanswered ? `${unanswered} Fragen sind offen. ` : ''}Zum Schreiben wechseln? Danach kannst du deine Leseantworten nicht mehr ändern.`))) return;
   }
-  if (attempt.phase === 'writing' && !confirm('Yazma bölümünü bitirip konuşmaya geçilsin mi? Yazını değiştiremeyeceksin.')) return;
+  if (attempt.phase === 'writing' && !confirm(t('Yazma bölümünü bitirip konuşmaya geçilsin mi? Yazını değiştiremeyeceksin.', 'Zum Sprechen wechseln? Danach kannst du deinen Text nicht mehr ändern.'))) return;
   // Native confirmation can remain open past the deadline; reconcile again.
   tick();
   if (attempt.phase !== previous) return;
@@ -224,7 +226,7 @@ for (const button of $$('[data-next]')) button.addEventListener('click', () => {
 function downloadWriting() {
   if (!attempt) return;
   const prompt = examData.writingPrompts.find(p => p.id === attempt.prompt);
-  const content = `Baulingo DTZ denemesi — yazma taslağı\n${prompt.title}\n\n${attempt.writing}\n\nBu metin otomatik değerlendirilmemiştir.\n`;
+  const content = t(`Baulingo DTZ denemesi — yazma taslağı\n${prompt.title}\n\n${attempt.writing}\n\nBu metin otomatik değerlendirilmemiştir.\n`, `Baulingo DTZ-Modelltest — Schreibentwurf\n${prompt.title}\n\n${attempt.writing}\n\nDieser Text wurde nicht automatisch bewertet.\n`);
   const url = URL.createObjectURL(new Blob([content], { type: 'text/plain;charset=utf-8' }));
   const link = document.createElement('a'); link.href = url; link.download = 'baulingo-dtz-yazim.txt'; link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
@@ -235,12 +237,12 @@ $('#dtz-result-download').addEventListener('click', downloadWriting);
 function renderResult() {
   const score = scoreAttempt(attempt);
   $('#dtz-score').textContent = `${score.total} / 45`;
-  $('#dtz-level').textContent = score.level === 'unter A2' ? 'A2 altı · dinleme ve okuma' : `${score.level} · dinleme ve okuma`;
-  $('#dtz-score-parts').textContent = `Dinleme: ${score.listening} / 20 · Okuma: ${score.reading} / 25`;
+  $('#dtz-level').textContent = score.level === 'unter A2' ? t('A2 altı · dinleme ve okuma', 'Unter A2 · Hören und Lesen') : t(`${score.level} · dinleme ve okuma`, `${score.level} · Hören und Lesen`);
+  $('#dtz-score-parts').textContent = t(`Dinleme: ${score.listening} / 20 · Okuma: ${score.reading} / 25`, `Hören: ${score.listening} / 20 · Lesen: ${score.reading} / 25`);
   const questions = [...examData.listeningTasks, ...examData.readingTasks].filter(t => !t.isExample).flatMap(t => t.questions);
   for (const q of questions) {
     const answer = attempt.answers[q.id];
-    const text = answer === undefined ? 'Boş bırakıldı.' : answer === q.correctAnswer ? 'Yanıtın doğru.' : `Yanıtın: ${q.choices[answer]}`;
+    const text = answer === undefined ? t('Boş bırakıldı.', 'Unbeantwortet.') : answer === q.correctAnswer ? t('Yanıtın doğru.', 'Richtig.') : t(`Yanıtın: ${q.choices[answer]}`, `Deine Antwort: ${q.choices[answer]}`);
     $(`[data-review="${q.id}"] .dtz-review-outcome`).textContent = text;
   }
 }
