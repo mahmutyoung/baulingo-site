@@ -10,7 +10,8 @@ test('GA4 consent module is present on learning pages, not loaded directly from 
     assert.doesNotMatch(html, /<script[^>]+src="https:\/\/www\.googletagmanager\.com/, file);
   }
   const asset = await readFile('dist/src/analytics.js', 'utf8');
-  assert.match(asset, /G-3XSNDN7FE4/);
+  assert.match(asset, /G-R1YH6T64JM/);
+  assert.doesNotMatch(asset, /G-3XSNDN7FE4/);
   assert.match(asset, /choice === 'granted'/);
   assert.match(asset, /location\.hostname !== 'baulingo\.app'/);
   assert.match(asset, /allowedEvents = new Set/);
@@ -30,6 +31,7 @@ test('the site permits only necessary GA4 endpoints and discloses opt-in collect
     assert.match(content, /static\.cloudflareinsights\.com/);
   }
   assert.match(privacy, /Google Analytics 4/);
+  assert.match(privacy, /G-R1YH6T64JM/);
   assert.match(privacy, /ausdrücklich zustimmst/);
   assert.match(privacy, /Einwilligung/);
 });
