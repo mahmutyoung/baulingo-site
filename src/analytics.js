@@ -167,8 +167,8 @@ function setConsent(choice) {
     banner.hidden = true;
     return;
   }
+  const wasEnabled = enabled;
   enabled = false;
-  const wasEnabled = Boolean(window.gtag);
   stopStudy();
   clearAnalyticsCookies();
   if (wasEnabled) {
@@ -181,8 +181,8 @@ function setConsent(choice) {
 }
 
 function initialize() {
+  if (document.getElementById('ga4-consent')) return;
   const footer = document.querySelector('footer');
-  if (!footer || document.getElementById('ga4-consent')) return;
   installInteractionTracking();
   const english = document.documentElement.lang === 'en';
   const german = document.documentElement.lang === 'de';
@@ -190,7 +190,15 @@ function initialize() {
   settings.type = 'button';
   settings.className = 'analytics-settings';
   settings.textContent = german ? 'Analyse-Einstellungen' : english ? 'Analytics settings' : 'Analiz ayarları';
-  footer.append(settings);
+  (footer || document.body).append(settings);
+  if (!footer && typeof MutationObserver !== 'undefined') {
+    // Direct lesson URLs insert their shared footer asynchronously.
+    const observer = new MutationObserver(() => {
+      const destination = document.querySelector('footer');
+      if (destination) { destination.append(settings); observer.disconnect(); }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
 
   banner = document.createElement('section');
   banner.id = 'ga4-consent';
