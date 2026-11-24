@@ -1,5 +1,5 @@
 // Optional website analytics. Google code is loaded only after a visitor opts in.
-const MEASUREMENT_ID = 'G-3XSNDN7FE4';
+const MEASUREMENT_ID = 'G-R1YH6T64JM';
 const CONSENT_KEY = 'baulingo.ga4-consent.v1';
 const allowedEvents = new Set(['learning_started', 'learning_completed', 'exercise_answered']);
 let enabled = false;
