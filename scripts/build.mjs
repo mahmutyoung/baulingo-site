@@ -37,6 +37,12 @@ function compactModule(source) {
   return source.split('\n').map(line => line.trimStart()).filter(line => !line.startsWith('//') && line.length).join('\n') + '\n';
 }
 
+// Compact only the formatted lesson stylesheet, preserving quoted strings and comments.
+function compactLessonStyle(source) {
+  return source.replace(/("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\/\*[\s\S]*?\*\/)|\s*([{};])\s*|:\s+/g,
+    (match, literal, punctuation) => literal || punctuation || ':');
+}
+
 export async function build() {
   // Check every source and parent before copying; never follow a symlink outside this repo.
   for (const file of [...publicFiles, '_headers', '_redirects', ...miniPackLibraries.map(name => learnerData(name, 'json'))]) {
@@ -53,6 +59,9 @@ export async function build() {
     if (compactModules.has(file)) {
       const source = await readFile(path.join(root, file), 'utf8');
       await writeFile(path.join(output, file), compactModule(source));
+    } else if (file === 'src/mini-packs/style.css') {
+      const source = await readFile(path.join(root, file), 'utf8');
+      await writeFile(path.join(output, file), compactLessonStyle(source));
     } else await copyFile(path.join(root, file), path.join(output, file));
   }
   // Each reader fetches only the selected track and language.
@@ -82,7 +91,7 @@ export async function build() {
         : file.startsWith('dtz-mektup-yazma/')
           ? html.replace(/(\s(?:class|scope|type|data-(?!(?:task|task-kind)=)[a-z-]+))="([A-Za-z0-9_-]+)"/g, '$1=$2')
             .replace(/ lang="de"/g, ' lang=de')
-            .replace(/(\s(?:aria-describedby|aria-labelledby|for|id|name|rows|maxlength|data-response))="([A-Za-z0-9_:-]+)"/g, '$1=$2')
+            .replace(/(\s(?:aria-describedby|aria-labelledby|for|rows|maxlength))="([A-Za-z0-9_:-]+)"/g, '$1=$2')
             .replace(/<\/option>(?=<option[ >]|<\/select>)/g, '')
             .replace(/<\/li>(?=<li[ >]|<\/[ou]l>)/g, '')
           : html;
