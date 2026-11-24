@@ -1,3 +1,4 @@
+import { trackLearningEvent, beginStudy, stopStudy } from '../analytics.js';
 import { restoreProgress, remainingTime, resumeTarget, mergeLesson } from './rules.js';
 import { activateExercise } from './activities.js';
 import { activateWritingStudio } from './studio.js';
@@ -26,6 +27,12 @@ function startWriting(root) {
   });
   const lessons=entries.map(({lesson})=>lesson);
   const lesson=lessons.find(lesson=>lesson.id===current);
+  const context={activity_id:current||'writing-course',activity_type:'writing',content_language:'tr'};
+  let completionRecorded=false;
+  const start=()=>{if(current&&!completionRecorded)beginStudy(context);};
+  root.addEventListener('input', start);
+  root.addEventListener('click', event=>{if(event.target.closest('[data-task] button, [data-task] summary, [data-complete], [data-timer-start], [data-activity] button'))start();},true);
+  root.addEventListener('toggle',event=>{if(event.target.matches?.('.writing-model')&&event.target.open){start();trackLearningEvent('answer_revealed',{...context,section_id:event.target.closest('[data-task]')?.dataset.task});}},true);
   const storageMessage=root.querySelector('[data-storage]');
   const saveStatus=root.querySelector('[data-save-status]');
   const failure='Tarayıcıda kayıt kullanılamıyor. Yazın bu açık sayfada kalır; sayfa değişince veya yenilenince kaybolur. Çıkmadan önce yanıtlarını indir.';
@@ -103,7 +110,7 @@ function startWriting(root) {
       review.setAttribute('aria-pressed',String(task.reviewed===true));
       review.textContent=task.reviewed?'Gözden geçirildi ✓ · İşareti kaldır':'Bu çalışmayı gözden geçirdim';
     };
-    updateReview();review.addEventListener('click',()=>{task.reviewed=!task.reviewed;updateReview();save(section,[],['reviewed']);});
+    updateReview();review.addEventListener('click',()=>{task.reviewed=!task.reviewed;updateReview();save(section,[],['reviewed']);if(task.reviewed){start();trackLearningEvent('section_completed',{...context,section_id:id,completion_type:'self_review'});}});
     section.addEventListener('writing-letter-change',event=>{
       const fields=Object.keys(event.detail.patch).filter(field=>['draft','letterParts','letterStep','letterPrevious'].includes(field));
       for(const field of fields)task[field]=event.detail.patch[field];
@@ -141,16 +148,16 @@ function startWriting(root) {
       input.addEventListener('change',()=>{(task.checks||=[])[index]=input.checked;save(section,[],['checks']);});
     });
     const exercise=section.querySelector('[data-exercise]');
-    if(exercise)activateExercise(exercise,task.responses||[],responses=>{task.responses=responses;changed('responses');});
+    if(exercise)activateExercise(exercise,task.responses||[],responses=>{task.responses=responses;changed('responses');},{...context,section_id:id});
     else section.querySelectorAll('[data-response]').forEach(input=>{
       const index=Number(input.dataset.valueIndex);input.value=task.responses?.[index]||'';
       input.addEventListener('input',()=>{(task.responses||=[])[index]=input.value;changed('responses');});
     });
   }
-  const quick=root.querySelector('[data-activity]');if(quick)activateExercise(quick);
+  const quick=root.querySelector('[data-activity]');if(quick)activateExercise(quick,[],()=>{},{...context,section_id:'quick-practice'});
   const note=root.querySelector('[data-note]');
   if(note){note.value=savedLesson().note||'';note.addEventListener('input',()=>{savedLesson().note=note.value;save(note.closest('section'),['note']);});}
-  root.querySelector('[data-complete]')?.addEventListener('click',()=>{savedLesson().complete=!savedLesson().complete;save(null,['complete']);updateProgress();});
+  root.querySelector('[data-complete]')?.addEventListener('click',()=>{savedLesson().complete=!savedLesson().complete;save(null,['complete']);updateProgress();if(savedLesson().complete&&!completionRecorded){start();completionRecorded=true;trackLearningEvent('learning_completed',{...context,completion_type:'self_review'});stopStudy();}});
 
   const showChoice=(id,remember=false)=>{
     taskSections.filter(task=>task.hasAttribute('data-choice')).forEach(task=>{
@@ -192,6 +199,7 @@ function startWriting(root) {
   }
 
   root.querySelector('[data-export]').addEventListener('click',()=>{
+    trackLearningEvent('download_clicked',{...context,activity_id:'writing-export'});
     if(persistent)try{progress=restoreProgress(localStorage.getItem(key)||'',lessons);}catch{unavailable();}
     const lines=['Baulingo · DTZ Mektup Yazma','Serbest yazılar otomatik değerlendirilmemiştir.',''];
     for(const lesson of lessons){
