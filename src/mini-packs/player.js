@@ -1,3 +1,4 @@
+import { trackLearningEvent, beginStudy, stopStudy, trackPageView, analyticsEnabled } from '../analytics.js';
 import { escapeLearningText as escape } from '../learning-text.js';
 import '../language.js';
 import { icon } from './icons.js';
@@ -33,7 +34,9 @@ function updateProgress(completed, sections) {
   }
 }
 
-function initializeExercise(form, exercise, completed, complete) {
+function initializeExercise(form, exercise, completed, complete, context, start) {
+  let attempts = 0;
+  const exerciseContext = { ...context, exercise_id: exercise.id };
   const inputs = [...form.querySelectorAll('input')];
   const actions = form.querySelector('.exercise-actions');
   const check = actions.querySelector('.primary');
@@ -69,7 +72,11 @@ function initializeExercise(form, exercise, completed, complete) {
   form.addEventListener('submit', event => {
     event.preventDefault();
     if (actions.hidden || check.disabled) return;
-    if (matchesAnswer(read(), exercise.answers)) {
+    start(); attempts++;
+    const correct = matchesAnswer(read(), exercise.answers);
+    if (attempts > 1) trackLearningEvent('exercise_retried', { ...exerciseContext, attempt_number: attempts });
+    trackLearningEvent('exercise_answered', { ...exerciseContext, outcome: correct ? 'correct' : 'incorrect', attempt_number: attempts });
+    if (correct) {
       showResult(label('Correct!', 'Doğru!'));
       mark();
       focusFeedback();
@@ -80,6 +87,7 @@ function initializeExercise(form, exercise, completed, complete) {
     }
   });
   form.querySelector('[data-show-answer]').addEventListener('click', () => {
+    start(); trackLearningEvent('answer_revealed', exerciseContext);
     showResult(label('Answer key', 'Cevap anahtarı'));
     finish.hidden = completed.has(id);
     focusFeedback();
@@ -103,7 +111,7 @@ function initializeChallenge(panel, completed, complete) {
   finish.addEventListener('click', () => { complete('challenge'); showComplete(); });
 }
 
-function initializeScenario(panel, id, completed, complete) {
+function initializeScenario(panel, id, completed, complete, context) {
   const form = panel.querySelector('form');
   const response = panel.querySelector('textarea');
   const review = form.querySelector('button');
@@ -136,6 +144,7 @@ function initializeScenario(panel, id, completed, complete) {
     checks[0].focus();
   });
   checklist.addEventListener('change', updateFinish);
+  model.addEventListener('toggle', () => { if (model.open && !completed.has(id)) trackLearningEvent('answer_revealed', { ...context, section_id: id }); });
   finish.addEventListener('click', () => {
     complete(id);
     response.disabled = true;
@@ -164,7 +173,10 @@ function render(record) {
   const { pack } = record;
   if (active?.pack.id === pack.id) return;
   if (active?.pack.cefr !== pack.cefr) renderTopics(pack.cefr);
+  stopStudy();
   active = record;
+  const context = { activity_id: pack.id, activity_type: grammarTrack ? 'grammar' : 'mini_pack', level: pack.cefr, content_language: language };
+  trackLearningEvent('topic_selected', context);
   for (const button of picker.children) button.setAttribute('aria-pressed', String(button.textContent === pack.cefr));
   for (const button of buttons) {
     if (button.dataset.topic === pack.id) button.setAttribute('aria-current', 'true');
@@ -186,9 +198,39 @@ function render(record) {
     if (exercisesDone === pack.exercises.length) completed.add('practice');
     updateProgress(completed, sections);
   }
+  let finished = sections.every(([id]) => completed.has(id));
+  const start = () => { if (!finished) beginStudy(context); };
+  main.oninput = start;
+  main.onclick = event => { if (event.target.closest('button, summary, input, textarea')) start(); };
   function complete(id) {
+    if (completed.has(id)) return;
+    start();
+    const practiceWasComplete = completed.has('practice');
     completed.add(id);
     update();
+    if (!id.startsWith('practice/')) trackLearningEvent('section_completed', { ...context, section_id: id });
+    if (!practiceWasComplete && completed.has('practice')) trackLearningEvent('section_completed', { ...context, section_id: 'practice' });
+    if (!finished && sections.every(([section]) => completed.has(section))) {
+      finished = true;
+      trackLearningEvent('learning_completed', { ...context, completion_type: 'self_review' });
+      stopStudy();
+      if (analyticsEnabled()) {
+        const panel = document.createElement('section');
+        panel.className = 'panel';
+        const prompt = document.createElement('p');
+        prompt.textContent = label('Was this lesson useful?', 'Bu ders faydalı mıydı?');
+        panel.append(prompt);
+        for (const [feedback, text] of [['helpful', label('Yes', 'Evet')], ['not_helpful', label('No', 'Hayır')]]) {
+          const button = document.createElement('button'); button.type = 'button'; button.className = 'text-button'; button.textContent = text;
+          button.addEventListener('click', () => {
+            trackLearningEvent('feedback_submitted', { ...context, feedback });
+            panel.replaceChildren(document.createTextNode(label('Thank you.', 'Teşekkürler.')));
+          }, { once: true });
+          panel.append(button);
+        }
+        main.append(panel);
+      }
+    }
   }
   update();
   for (const button of main.querySelectorAll('[data-review]')) {
@@ -202,9 +244,9 @@ function render(record) {
     button.addEventListener('click', () => { complete(id); showReviewed(); });
   }
   for (const form of main.querySelectorAll('[data-exercise]')) {
-    initializeExercise(form, pack.exercises[form.dataset.exercise], completed, complete);
+    initializeExercise(form, pack.exercises[form.dataset.exercise], completed, complete, context, start);
   }
-  if (pack.scenario) initializeScenario(main.querySelector('.scenario-response'), sections.at(-1)[0], completed, complete);
+  if (pack.scenario) initializeScenario(main.querySelector('.scenario-response'), sections.at(-1)[0], completed, complete, context);
   else initializeChallenge(main.querySelector('.challenge'), completed, complete);
   sidebar.hidden = false;
 }
@@ -238,6 +280,7 @@ function canonicalize(record) {
 function showLocation() {
   const record = fromLocation();
   canonicalize(record);
+  trackPageView();
   render(record);
   updateLanguageLink();
   if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
@@ -279,6 +322,7 @@ async function loadLibrary() {
     if (!sidebar) connectReader(shell);
     showLocation();
   } catch {
+    trackLearningEvent('learning_error', { activity_type: grammarTrack ? 'grammar' : 'mini_pack', content_language: language, error_code: 'library_failed' });
     if (!main.classList.contains('lesson-preview')) main.replaceChildren();
     main.insertAdjacentHTML('beforeend', `<section class="panel loading" data-load-error>
       <p role="alert">${label('The interactive lesson could not load.', 'Etkileşimli ders yüklenemedi.')}</p>
@@ -325,7 +369,10 @@ function connectReader(shell) {
   picker.innerHTML = levels.map(level => `<button type="button" aria-pressed="false">${level}</button>`).join('');
   picker.addEventListener('click', event => {
     const button = event.target.closest('button');
-    if (button && button.getAttribute('aria-pressed') === 'false') select(library.find(({ pack }) => pack.cefr === button.textContent));
+    if (button && button.getAttribute('aria-pressed') === 'false') {
+      trackLearningEvent('level_selected', { activity_type: grammarTrack ? 'grammar' : 'mini_pack', content_language: language, level: button.textContent });
+      select(library.find(({ pack }) => pack.cefr === button.textContent));
+    }
   });
   topics.addEventListener('click', event => {
     const link = event.target.closest('a[data-topic]');
