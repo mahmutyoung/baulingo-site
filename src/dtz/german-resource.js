@@ -3,7 +3,7 @@ import { remainingTime } from '../writing/rules.js';
 
 const container = document.querySelector('[data-dtz-fragment]');
 const resource = container.dataset.dtzFragment;
-const context = { activity_id: 'dtz-' + resource, activity_type: 'writing', content_language: 'de' };
+const context = { activity_id: 'dtz-' + resource, activity_type: resource === 'modelltest' ? 'dtz' : 'writing', content_language: 'de' };
 const storagePrefix = 'baulingo-dtz-schreibkurs:de:';
 
 async function load() {
