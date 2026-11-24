@@ -1,3 +1,4 @@
+import { trackLearningEvent } from './src/analytics.js';
 import { createSentenceBuilder } from './src/sentence-builder.js';
 import { topics, searchTopics } from './src/topics.js';
 import { appendGermanText } from './src/learning-text.js';
@@ -52,6 +53,7 @@ function openTopic(topicId, trigger = document.activeElement) {
   const topic = topics.find(topic => topic.id === topicId);
   if (!topic) return;
   currentTopic = topic.id;
+  trackLearningEvent('topic_selected', { activity_id: topic.id, activity_type: 'topic', content_language: 'tr' });
   $('#topic-dialog-title').textContent = topic.title;
   $('#topic-dialog-subtitle').textContent = topic.subtitle;
   const content = $('#topic-content');
@@ -91,6 +93,7 @@ $('#topic-practice').addEventListener('click', () => {
 
 const phraseAudio = $('#phrase-audio');
 const playButton = $('#play-phrase');
+const audioContext = { activity_id: 'coffee-phrase', activity_type: 'audio', content_language: 'tr' };
 function resetAudioButton() {
   playButton.setAttribute('aria-busy', 'false');
   playButton.setAttribute('aria-label', 'Einen Kaffee, bitte. Dinle');
@@ -106,14 +109,16 @@ playButton.addEventListener('click', async () => {
   try {
     phraseAudio.currentTime = 0;
     await phraseAudio.play();
+    trackLearningEvent('audio_played', audioContext);
     playButton.setAttribute('aria-busy', 'true');
     playButton.setAttribute('aria-label', 'Sesi durdur');
   } catch {
+    trackLearningEvent('learning_error', { ...audioContext, error_code: 'audio_failed' });
     resetAudioButton();
     $('#audio-status').textContent = 'Ses açılamadı. Yeniden dene.';
   }
 });
-phraseAudio.addEventListener('ended', resetAudioButton);
+phraseAudio.addEventListener('ended', () => { trackLearningEvent('audio_completed', audioContext); resetAudioButton(); });
 phraseAudio.addEventListener('error', () => {
   resetAudioButton();
   $('#audio-status').textContent = 'Ses açılamadı. Yeniden dene.';
@@ -136,14 +141,26 @@ function renderResults() {
   }
   $('#empty-search').hidden = results.length > 0;
 }
+let searchTimer;
+function reportSearch() {
+  if (!$('#search-dialog').open || !$('#dialog-query').value.trim()) return;
+  const result_count = searchTopics($('#dialog-query').value).length;
+  const params = { activity_type: 'site', content_language: 'tr', result_count };
+  trackLearningEvent('search_performed', params);
+  if (!result_count) trackLearningEvent('search_no_results', params);
+}
 function openSearch() {
   $('#dialog-query').value = $('#search-query').value;
   renderResults();
   openDialog($('#search-dialog'), $('#search-query'));
   $('#dialog-query').focus();
+  reportSearch();
 }
 $('#topic-search').addEventListener('submit', event => { event.preventDefault(); openSearch(); });
-$('#dialog-query').addEventListener('input', renderResults);
+$('#dialog-query').addEventListener('input', () => {
+  renderResults(); clearTimeout(searchTimer); searchTimer = setTimeout(reportSearch, 600);
+});
+$('#search-dialog').addEventListener('close', () => clearTimeout(searchTimer));
 $('#dialog-query').addEventListener('keydown', event => {
   if (event.key === 'ArrowDown' || event.key === 'Enter') {
     event.preventDefault();
