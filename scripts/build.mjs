@@ -24,21 +24,30 @@ function compactGzip(input) {
   return variants.reduce((best, candidate) => candidate.length < best.length ? candidate : best);
 }
 
-// These modules contain no multiline string literals. Preserve line breaks and tokens.
+// Reviewed browser modules: preserve multiline template lines, line breaks and tokens.
 const compactModules = new Set([
   'src/analytics.js', 'app.js', 'src/sentence-builder.js', 'src/writing/player.js',
+  'src/mini-packs/player.js',
   'src/writing/activities.js', 'src/dtz/player.js', 'src/a1-test.js', 'src/dtz/german-resource.js',
   'src/language.js', 'src/dtz-study-filter.js', 'src/writing/studio.js', 'src/writing/letter-builder.js',
   'src/writing/letter-rules.js', 'src/writing/rules.js', 'src/dtz/rules.js',
   'src/mini-packs/routes.js', 'src/learning-text.js', 'src/topics.js',
 ]);
 function compactModule(source) {
-  if (source.includes('/*') || source.includes('\\\n') || source.split('\n').some(line => (line.match(/`/g) || []).length % 2)) return source;
-  return source.split('\n').map(line => line.trimStart()).filter(line => !line.startsWith('//') && line.length).join('\n') + '\n';
+  if (source.includes('/*') || source.includes('\\\n')) return source;
+  let template = false;
+  const lines = [];
+  for (const line of source.split('\n')) {
+    const wasTemplate = template;
+    if ((line.match(/`/g) || []).length % 2) template = !template;
+    if (wasTemplate || template) lines.push(line);
+    else if (line.trim() && !line.trimStart().startsWith('//')) lines.push(line.trimStart());
+  }
+  return template ? source : lines.join('\n') + '\n';
 }
 
-// Compact only the formatted lesson stylesheet, preserving quoted strings and comments.
-function compactLessonStyle(source) {
+// Compact public stylesheets, preserving quoted strings and comments.
+function compactStyle(source) {
   return source.replace(/("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\/\*[\s\S]*?\*\/)|\s*([{};])\s*|:\s+/g,
     (match, literal, punctuation) => literal || punctuation || ':');
 }
@@ -59,9 +68,9 @@ export async function build() {
     if (compactModules.has(file)) {
       const source = await readFile(path.join(root, file), 'utf8');
       await writeFile(path.join(output, file), compactModule(source));
-    } else if (file === 'src/mini-packs/style.css') {
+    } else if (file.endsWith('.css')) {
       const source = await readFile(path.join(root, file), 'utf8');
-      await writeFile(path.join(output, file), compactLessonStyle(source));
+      await writeFile(path.join(output, file), compactStyle(source));
     } else await copyFile(path.join(root, file), path.join(output, file));
   }
   // Each reader fetches only the selected track and language.
