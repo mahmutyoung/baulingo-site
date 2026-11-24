@@ -1,7 +1,7 @@
 import { copyFile, mkdir, rm, lstat, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { gzipSync } from 'node:zlib';
+import { gzipSync, constants as zlib } from 'node:zlib';
 import { publicFiles, generatedFiles, fingerprintOnlyAssets, legacyAssetAliases } from './public-files.mjs';
 import { dtzStudyArchive, fullStudyContent, generatePages } from './pages.mjs';
 import { dtzGermanArchives } from './dtz-hub.mjs';
@@ -15,6 +15,43 @@ const output = path.resolve(root, 'dist');
 const miniPackLibraries = ['library', 'library-tr', 'grammar', 'grammar-tr'];
 const learnerData = (name, extension) => `src/mini-packs/${name}.${extension}`;
 if (output !== path.join(root, 'dist') || path.dirname(output) !== root) throw new Error('Invalid build output directory.');
+// Choose the smallest standard gzip encoding; all variants decode to identical bytes.
+function compactGzip(input) {
+  const variants = [gzipSync(input, { level: 9 })];
+  for (const memLevel of [8, 9]) for (const strategy of [zlib.Z_DEFAULT_STRATEGY, zlib.Z_FILTERED]) {
+    variants.push(gzipSync(input, { level: 9, memLevel, strategy }));
+  }
+  return variants.reduce((best, candidate) => candidate.length < best.length ? candidate : best);
+}
+
+// Reviewed browser modules: preserve multiline template lines, line breaks and tokens.
+const compactModules = new Set([
+  'src/analytics.js', 'app.js', 'src/sentence-builder.js', 'src/writing/player.js',
+  'src/mini-packs/player.js',
+  'src/writing/activities.js', 'src/dtz/player.js', 'src/a1-test.js', 'src/dtz/german-resource.js',
+  'src/language.js', 'src/dtz-study-filter.js', 'src/writing/studio.js', 'src/writing/letter-builder.js',
+  'src/writing/letter-rules.js', 'src/writing/rules.js', 'src/dtz/rules.js',
+  'src/mini-packs/routes.js', 'src/learning-text.js', 'src/topics.js',
+]);
+function compactModule(source) {
+  if (source.includes('/*') || source.includes('\\\n')) return source;
+  let template = false;
+  const lines = [];
+  for (const line of source.split('\n')) {
+    const wasTemplate = template;
+    if ((line.match(/`/g) || []).length % 2) template = !template;
+    if (wasTemplate || template) lines.push(line);
+    else if (line.trim() && !line.trimStart().startsWith('//')) lines.push(line.trimStart());
+  }
+  return template ? source : lines.join('\n') + '\n';
+}
+
+// Compact public stylesheets, preserving quoted strings and comments.
+function compactStyle(source) {
+  return source.replace(/("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\/\*[\s\S]*?\*\/)|\s*([{};])\s*|:\s+/g,
+    (match, literal, punctuation) => literal || punctuation || ':');
+}
+
 export async function build() {
   // Check every source and parent before copying; never follow a symlink outside this repo.
   for (const file of [...publicFiles, '_headers', '_redirects', ...miniPackLibraries.map(name => learnerData(name, 'json'))]) {
@@ -28,19 +65,25 @@ export async function build() {
   await mkdir(output, { recursive: true });
   for (const file of [...publicFiles, '_headers', '_redirects']) {
     await mkdir(path.dirname(path.join(output, file)), { recursive: true });
-    await copyFile(path.join(root, file), path.join(output, file));
+    if (compactModules.has(file)) {
+      const source = await readFile(path.join(root, file), 'utf8');
+      await writeFile(path.join(output, file), compactModule(source));
+    } else if (file.endsWith('.css')) {
+      const source = await readFile(path.join(root, file), 'utf8');
+      await writeFile(path.join(output, file), compactStyle(source));
+    } else await copyFile(path.join(root, file), path.join(output, file));
   }
   // Each reader fetches only the selected track and language.
   const [en, tr, grammarEn, grammarTr] = await Promise.all(miniPackLibraries.map(async name =>
     JSON.parse(await readFile(path.join(root, learnerData(name, 'json')), 'utf8'))));
   const tracks = [withGrammarLinks(en, grammarEn), withGrammarLinks(tr, grammarTr), grammarEn, grammarTr];
   for (const [index, name] of miniPackLibraries.entries()) {
-    await writeFile(path.join(output, learnerData(name, 'gz')), gzipSync(JSON.stringify(tracks[index]), { level: 9 }));
+    await writeFile(path.join(output, learnerData(name, 'gz')), compactGzip(JSON.stringify(tracks[index])));
   }
   for (const [file, render] of dtzGermanArchives) {
-    await writeFile(path.join(output, file), gzipSync(render(), { level: 9 }));
+    await writeFile(path.join(output, file), compactGzip(render()));
   }
-  await writeFile(path.join(output, dtzStudyArchive), gzipSync(fullStudyContent(), { level: 9 }));
+  await writeFile(path.join(output, dtzStudyArchive), compactGzip(fullStudyContent()));
   const catalog = Object.fromEntries(writingLessons.map(({ id, reference, tasks }) =>
     [id, { reference: !!reference, tasks: tasks.map(({ id }) => ({ id })) }]));
   await writeFile(path.join(output, 'src/writing/catalog.js'), `export const writingCourse = ${JSON.stringify(catalog)};\nexport const writingNavigation = ${JSON.stringify(writingCourseNavigation(writingBase))};\n`);
@@ -57,6 +100,8 @@ export async function build() {
         : file.startsWith('dtz-mektup-yazma/')
           ? html.replace(/(\s(?:class|scope|type|data-(?!(?:task|task-kind)=)[a-z-]+))="([A-Za-z0-9_-]+)"/g, '$1=$2')
             .replace(/ lang="de"/g, ' lang=de')
+            .replace(/(\s(?:aria-describedby|aria-labelledby|for|rows|maxlength))="([A-Za-z0-9_:-]+)"/g, '$1=$2')
+            .replace(/<\/option>(?=<option[ >]|<\/select>)/g, '')
             .replace(/<\/li>(?=<li[ >]|<\/[ou]l>)/g, '')
           : html;
     await writeFile(path.join(output, file), compact);

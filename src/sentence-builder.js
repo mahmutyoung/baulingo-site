@@ -1,5 +1,5 @@
 import { exercises, newExercise, toggleWord, checkAnswer, nextHint } from './exercise.js';
-import { trackLearningEvent } from './analytics.js';
+import { trackLearningEvent, beginStudy, stopStudy } from './analytics.js';
 
 function element(tag, text, className) {
   const node = document.createElement(tag);
@@ -14,8 +14,11 @@ export function createSentenceBuilder(root, { language = 'tr', initialId = 'coff
   const english = language === 'en';
   let state = newExercise(initialId);
   let hintVisible = false;
+  let attempts = 0;
+  let finished = false;
   const eventContext = () => ({ activity_id: state.id, activity_type: 'sentence', content_language: language });
   function chooseWord(wordId, fromAnswer = false) {
+    if (!finished) beginStudy(eventContext());
     state = toggleWord(state, wordId);
     renderExercise();
     const target = fromAnswer ? `#word-bank [data-word="${wordId}"]` : `#answer-slots [data-word="${wordId}"]`;
@@ -88,29 +91,41 @@ export function createSentenceBuilder(root, { language = 'tr', initialId = 'coff
   $('#check-answer').addEventListener('click', () => {
     if (state.status === 'correct') {
       state = newExercise(exercises[state.id].next || (state.id === 'coffee' ? 'tea' : state.id === 'tea' ? 'coffee' : state.id));
-      trackLearningEvent('learning_started', eventContext());
+      attempts = 0; finished = false;
+      beginStudy(eventContext());
       hintVisible = false;
       renderExercise();
       $('#exercise-title').focus({ preventScroll: true });
     } else {
+      beginStudy(eventContext());
       state = checkAnswer(state);
       if (state.status === 'correct' || state.status === 'incorrect') {
-        trackLearningEvent('exercise_answered', { ...eventContext(), outcome: state.status });
-        if (state.status === 'correct') trackLearningEvent('learning_completed', eventContext());
+        attempts++;
+        if (attempts > 1) trackLearningEvent('exercise_retried', { ...eventContext(), attempt_number: attempts });
+        trackLearningEvent('exercise_answered', { ...eventContext(), outcome: state.status, attempt_number: attempts });
+        if (state.status === 'correct') {
+          finished = true;
+          trackLearningEvent('learning_completed', { ...eventContext(), completion_type: 'checked', questions_answered: 1, correct_answers: 1 });
+          stopStudy();
+        }
       }
       renderExercise();
       $('#check-answer').focus({ preventScroll: true });
     }
   });
-  $('#hint-toggle').addEventListener('click', () => { hintVisible = !hintVisible; renderExercise(); });
+  $('#hint-toggle').addEventListener('click', () => { hintVisible = !hintVisible; if (hintVisible && !finished) { beginStudy(eventContext()); trackLearningEvent('hint_used', eventContext()); } renderExercise(); });
   $('#reset-exercise').addEventListener('click', () => {
+    trackLearningEvent('exercise_retried', eventContext());
+    stopStudy(); attempts = 0; finished = false;
     state = newExercise(state.id);
+    beginStudy(eventContext());
     hintVisible = false;
     renderExercise();
     $('#word-bank button').focus({ preventScroll: true });
   });
 
 
+  root.addEventListener('close', () => { if (!finished) stopStudy(); });
   renderExercise();
-  return { reset(id = initialId) { state = newExercise(id); hintVisible = false; renderExercise(); trackLearningEvent('learning_started', eventContext()); } };
+  return { reset(id = initialId) { stopStudy(); state = newExercise(id); hintVisible = false; attempts = 0; finished = false; renderExercise(); beginStudy(eventContext()); } };
 }

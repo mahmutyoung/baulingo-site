@@ -1,7 +1,9 @@
+import { trackLearningEvent, beginStudy } from '../analytics.js';
 import { checkResponses } from './rules.js';
 
 // One controller for small checked exercises. Free writing never enters this code.
-export function activateExercise(container, initial = [], onChange = () => {}) {
+export function activateExercise(container, initial = [], onChange = () => {}, context = null) {
+  let attempts = 0;
   const fields=[...container.querySelectorAll('[data-exercise-item]')];
   const values=initial.slice();
   const items=fields.map(field=>({answers:JSON.parse(field.dataset.answers || '[]')}));
@@ -14,7 +16,7 @@ export function activateExercise(container, initial = [], onChange = () => {}) {
       field.removeAttribute('data-correct');
     });
   };
-  const changed=(index,value)=>{ values[index]=value;clear();onChange(values.slice()); };
+  const changed=(index,value)=>{ if(context)beginStudy(context); values[index]=value;clear();onChange(values.slice()); };
   fields.forEach((field,index)=>{
     const controls=[...field.querySelectorAll('[data-response]')];
     for(const input of controls) {
@@ -53,6 +55,12 @@ export function activateExercise(container, initial = [], onChange = () => {}) {
   });
   container.querySelector('[data-exercise-check]').addEventListener('click',()=>{
     const results=checkResponses(items,values);
+    if(context&&results.some(value=>value!==null)){
+      beginStudy(context);
+      attempts++;
+      if(attempts>1)trackLearningEvent('exercise_retried',{...context,attempt_number:attempts});
+      results.forEach((value,index)=>{if(value!==null)trackLearningEvent('exercise_answered',{...context,exercise_id:'item-'+(index+1),outcome:value?'correct':'incorrect',attempt_number:attempts});});
+    }
     results.forEach((result,index)=>{
       const field=fields[index];
       const selected=field.querySelector('input[type="radio"]:checked');

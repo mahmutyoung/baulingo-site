@@ -1,3 +1,4 @@
+import { trackLearningEvent } from './analytics.js';
 const listRanks = {temel:1,genisletilmis:2,full:3};
 export function matchesStudyItem(item, filters) {
   return (!filters.list || (listRanks[item.listTier || 'full'] <= listRanks[filters.list]))
@@ -32,6 +33,7 @@ async function loadFullStudyList(preview) {
     if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
     return full;
   } catch {
+    trackLearningEvent('learning_error', { activity_id:'dtz-study-list', activity_type:'resource', content_language:'tr', error_code:'library_failed' });
     const notice = document.createElement('p');
     notice.setAttribute('role', 'status');
     notice.textContent = 'Tam liste yüklenemedi. Temel listeyle çalışabilirsin.';
@@ -145,12 +147,13 @@ for (const preview of globalThis.document?.querySelectorAll('[data-study-root]')
     root.querySelector('[data-study-count]').textContent = `${name} · ${unique('word')} kelime · ${unique('phrase')} ifade · ${unique('sentence')} cümle kalıbı (${examples} cümle örneği)`;
   }
   for (const [key,control] of Object.entries(controls)) control.addEventListener('change', () => {
+    if(key === 'level' && control.value) trackLearningEvent('level_selected', { activity_id:'dtz-study-list', activity_type:'resource', content_language:'tr', level:control.value });
     if(key === 'type' && control.value) controls.kind.value = 'word';
     if(key === 'kind' && control.value !== 'word') controls.type.value = '';
     update();
   });
   root.querySelector('[data-study-reset]').addEventListener('click',()=>{for(const control of Object.values(controls))control.value='';controls.list.value='temel';update();});
-  for (const link of root.querySelectorAll('[data-level-link]')) link.addEventListener('click',()=>{controls.level.value=link.dataset.levelLink;update();});
+  for (const link of root.querySelectorAll('[data-level-link]')) link.addEventListener('click',()=>{controls.level.value=link.dataset.levelLink;trackLearningEvent('level_selected',{activity_id:'dtz-study-list',activity_type:'resource',content_language:'tr',level:controls.level.value});update();});
   function applyHash() {
     const kind = {kelimeler:'word',kaliplar:'phrase',ifadeler:'phrase',cumleler:'sentence','cumle-kaliplari':'sentence'}[location.hash.slice(1)];
     if(kind) {controls.kind.value=kind;controls.type.value='';}

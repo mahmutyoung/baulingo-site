@@ -1,3 +1,4 @@
+import { trackLearningEvent } from './analytics.js';
 import { otherLanguagePath, preferredLanguage } from './language-choice.js';
 
 const key = 'baulingo-language';
@@ -10,6 +11,7 @@ function initialize() {
     if (!link || link.origin !== location.origin) return;
     const selected = link.dataset.languageChoice;
     if (selected === 'tr' || selected === 'en') {
+      if (selected !== language) trackLearningEvent('language_changed', { activity_type: 'site', content_language: language, target_language: selected });
       try { localStorage.setItem(key, selected); } catch { /* The language URL still works. */ }
       if (link.hasAttribute('data-match-language')) {
         const url = new URL(otherLanguagePath(location.pathname, selected, location.hash), location.origin);
