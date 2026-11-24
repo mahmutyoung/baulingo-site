@@ -91,11 +91,11 @@ Source-side instrumentation, pending build, deployment and GA4 verification. The
 | learning_completed | Checked exercise/test, exam-result transition or self-marked lesson completion; distinguish completion_type |
 | exercise_answered / exercise_retried | Graded checks or final exam answers; attempts may repeat, so not unique questions |
 | section_completed | Reviewed mini-pack sections, writing tasks, DTZ phase transitions |
-| topic_selected / level_selected / language_changed | Content or explicit level/language choice |
+| topic_selected / level_selected / language_changed | Content opened or explicit level/language choice |
 | search_performed / search_no_results | Submitted homepage search or settled input; result count only |
 | hint_used / answer_revealed | Explicit assistance; not a correct answer |
 | audio_played / audio_completed | Successful playback start/end of tracked clips |
-| study_time | Noncumulative seconds while visible, up to 60 seconds since last interaction; approximate, not attention or mastery |
+| study_time | Noncumulative seconds while visible, up to 60 seconds since last interaction; approximate, not attention or mastery; passive listening/reading beyond the inactivity cap is not included |
 | feedback_submitted | Optional mini-pack helpful/not-helpful response after all sections completed |
 | download_clicked / app_store_clicked | Public resource and local export clicks, Android store link clicks |
 | learning_error | Fixed error categories, no message/stack contents |
