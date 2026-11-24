@@ -79,3 +79,27 @@ Events: `learning_started` and `learning_completed` for the short sentence build
 The website also includes the necessary Google Tag Manager/Analytics script, connection and image CSP exceptions, while preserving Cloudflare Web Analytics. It updates only the public website privacy section; native app tracking and Android disclosures are unchanged. The code changes are not evidence of live delivery, data collection or analytics dashboards. After the feature is released, verify the GA4 tag in the production browser only after consent, no Google requests before consent, event visibility in GA4 Realtime/DebugView, and no tracking after withdrawal. Run `npm test` and `npm run build` before release.
 
 **Manual Google account step:** Go to GA4 Admin → Product links → Search Console links and link the verified `baulingo.app` property to the matching GA4 web stream. This account-level action cannot be completed by repository changes alone. Then publish the Search Console reports collection in GA4 Reports → Library. The integration does not expose each visitor's Google query to activity events; use landing-page aggregates for comparisons.
+
+
+## Expanded learning analytics — 24 November 2026
+
+Source-side instrumentation, pending build, deployment and GA4 verification. The dedicated website property uses `G-R1YH6T64JM`. The v2 consent notice requests renewed consent from previously consenting visitors; earlier refusals remain respected. No analytics are sent for local, review or noindex pages. No new database or native app changes.
+
+| Event | Meaning |
+| --- | --- |
+| learning_started / learning_resumed / learning_paused | Explicit practice start, resume or pause; a start is per active activity, not a unique learner |
+| learning_completed | Checked exercise/test, exam-result transition or self-marked lesson completion; distinguish completion_type |
+| exercise_answered / exercise_retried | Graded checks or final exam answers; attempts may repeat, so not unique questions |
+| section_completed | Reviewed mini-pack sections, writing tasks, DTZ phase transitions |
+| topic_selected / level_selected / language_changed | Content or explicit level/language choice |
+| search_performed / search_no_results | Submitted homepage search or settled input; result count only |
+| hint_used / answer_revealed | Explicit assistance; not a correct answer |
+| audio_played / audio_completed | Successful playback start/end of tracked clips |
+| study_time | Noncumulative seconds while visible, up to 60 seconds since last interaction; approximate, not attention or mastery |
+| feedback_submitted | Optional mini-pack helpful/not-helpful response after all sections completed |
+| download_clicked / app_store_clicked | Public resource and local export clicks, Android store link clicks |
+| learning_error | Fixed error categories, no message/stack contents |
+
+GA4 Admin: register event-scoped custom dimensions activity_id, activity_type, exercise_id, section_id, level, content_language, target_language, outcome, completion_type, feedback and error_code; register custom metrics duration_seconds, result_count, attempt_number, questions_answered, correct_answers. Mark learning_started and learning_completed as key events if desired. Disable enhanced measurement automatic page views based on browser history, site search, form interactions, outbound clicks and file downloads (the site sends its own sanitized events; prevent duplication and URL/query/draft leakage). Review URL data redaction, Google Signals and ads settings in the new property; code disables ads signals and personalization. Page URLs omit queries and fragments, so campaign attribution from UTM parameters is limited. Use Search Console landing-page reporting. Do not treat consented GA4 users as all visitors.
+
+Acceptance checks: no Google script/events before consent, after rejection/withdrawal, or in review. Test a Turkish and English mini-pack, grammar lesson, sentence builder, A1 test, DTZ test and writing course. Check one event per meaningful action, correct vs incorrect, no raw answer/search/draft text, clean page URLs and no duplicate SPA page views. Verify 30-second study-time deltas, visibility/idle cutoff and optional feedback. Keep the property separate from Android. No historical backfill.
