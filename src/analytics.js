@@ -90,9 +90,13 @@ export function trackPageView() {
 export function analyticsEnabled() { return enabled; }
 export function trackLearningEvent(name, values = {}) {
   if (!enabled || typeof window.gtag !== 'function') return;
+  sendLearningEvent(name, values, cleanPage());
+}
+function sendLearningEvent(name, values, page) {
+  if (!enabled || typeof window.gtag !== 'function') return;
   const params = sanitizeLearningEvent(name, values);
   if (!params) return;
-  window.gtag('event', name, { ...params, page_location: cleanPage() });
+  window.gtag('event', name, { ...params, page_location: page });
 }
 
 // One in-memory activity at a time. Visible, recently interacted time only.
@@ -111,7 +115,7 @@ function flushStudy() {
   const seconds = Math.floor(study.pending / 1000);
   if (seconds > 0) {
     study.pending -= seconds * 1000;
-    trackLearningEvent('study_time', { ...study.context, duration_seconds: seconds });
+    sendLearningEvent('study_time', { ...study.context, duration_seconds: seconds }, study.page);
   }
 }
 export function stopStudy() {
@@ -125,7 +129,7 @@ export function beginStudy(context, eventName = 'learning_started') {
   if (study && study.context.activity_id === context.activity_id && study.context.activity_type === context.activity_type) return true;
   stopStudy();
   const time = now();
-  study = { context: sanitizeLearningEvent('study_time', context), pending: 0, lastInput: time, lastTick: time, visible: document.visibilityState === 'visible' };
+  study = { context: sanitizeLearningEvent('study_time', context), page: cleanPage(), pending: 0, lastInput: time, lastTick: time, visible: document.visibilityState === 'visible' };
   trackLearningEvent(eventName, context);
   studyTimer = setInterval(flushStudy, 30000);
   return true;
@@ -191,7 +195,7 @@ function initialize() {
   settings.className = 'analytics-settings';
   settings.textContent = german ? 'Analyse-Einstellungen' : english ? 'Analytics settings' : 'Analiz ayarları';
   (footer || document.body).append(settings);
-  if (!footer && typeof MutationObserver !== 'undefined') {
+  if (!footer && document.querySelector('.lesson-preview') && typeof MutationObserver !== 'undefined') {
     // Direct lesson URLs insert their shared footer asynchronously.
     const observer = new MutationObserver(() => {
       const destination = document.querySelector('footer');
