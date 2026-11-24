@@ -1,7 +1,9 @@
+import { trackLearningEvent, beginStudy } from '../analytics.js';
 import { remainingTime } from '../writing/rules.js';
 
 const container = document.querySelector('[data-dtz-fragment]');
 const resource = container.dataset.dtzFragment;
+const context = { activity_id: 'dtz-' + resource, activity_type: 'writing', content_language: 'de' };
 const storagePrefix = 'baulingo-dtz-schreibkurs:de:';
 
 async function load() {
@@ -12,6 +14,7 @@ async function load() {
     const html = await new Response(stream).text();
     container.innerHTML = html;
   } catch {
+    trackLearningEvent('learning_error', { ...context, error_code: 'resource_failed' });
     const feedback = document.createElement('p');
     feedback.setAttribute('role', 'status');
     feedback.textContent = 'Die Übungen konnten nicht geladen werden.';
@@ -38,6 +41,7 @@ function connectWriting() {
     try { field.value = localStorage.getItem(key) ?? ''; }
     catch { status.textContent = 'Dieser Browser erlaubt keinen Zugriff auf gespeicherte Entwürfe.'; }
     field.addEventListener('input', () => {
+      beginStudy(context);
       try {
         if (field.value) localStorage.setItem(key, field.value);
         else localStorage.removeItem(key);
@@ -60,6 +64,7 @@ function connectWriting() {
       status.textContent = 'Schreibe zuerst eine Antwort.';
       return;
     }
+    trackLearningEvent('download_clicked', { ...context, activity_id: 'dtz-german-writing-export' });
     const url = URL.createObjectURL(new Blob([content], { type: 'text/plain;charset=utf-8' }));
     const link = document.createElement('a');
     link.href = url;
