@@ -2,8 +2,9 @@ import english from '../mini-packs/library.json' with { type: 'json' };
 import turkish from '../mini-packs/library-tr.json' with { type: 'json' };
 import grammarEnglish from '../mini-packs/grammar.json' with { type: 'json' };
 import grammarTurkish from '../mini-packs/grammar-tr.json' with { type: 'json' };
-import { grammarPath, lessonPath, levelPath } from '../mini-packs/routes.js';
+import { grammarPath, lessonPath, lessonTitle, levelPath, readerPath } from '../mini-packs/routes.js';
 import { englishHome } from '../../scripts/english-pages.mjs';
+import { grammarIndexMetadata } from '../../scripts/lesson-pages.mjs';
 import { createCatalog, siteOrigin } from './model.ts';
 import type { CollectionRecord, ContentRecord, Level, PageRecord } from './model.ts';
 
@@ -11,6 +12,7 @@ type LessonLocale = 'en' | 'tr';
 type Link = { id: string; title: string };
 type Example = { de: string } & Partial<Record<LessonLocale, string>>;
 type LessonRecord = {
+  title?: string;
   pack: {
     id: string;
     cefr: string;
@@ -61,6 +63,28 @@ function level(value: string): Level {
   throw new Error(`Unknown lesson level: ${value}`);
 }
 
+export const readerPages: PageRecord[] = [
+  {
+    id: 'reader-en', path: readerPath('en'), locale: 'en', title: 'German mini-packs · Baulingo',
+    heading: 'German mini-packs',
+    description: 'Practise everyday German with 67 free A1–B1 mini-packs with English explanations and interactive exercises.',
+    collectionId: 'everyday-communication', translationGroup: 'mini-pack-reader', index: true, sitemap: true,
+  },
+  {
+    id: 'reader-tr', path: readerPath('tr'), locale: 'tr',
+    title: 'Almanca Kursu A1–B1: Türkçe Açıklamalı 67 Ders · Baulingo',
+    heading: 'Almanca Kursu A1–B1',
+    description: 'Türkçe açıklamalar, diyaloglar ve alıştırmalarla ücretsiz Almanca kursu. A1, A2 ve B1 düzeylerinde 67 ders.',
+    collectionId: 'everyday-communication', translationGroup: 'mini-pack-reader', index: true, sitemap: true,
+  },
+];
+
+export const grammarIndexPages: PageRecord[] = locales.map(locale => ({
+  ...grammarIndexMetadata(locale),
+  id: `grammar-index-${locale}`, locale, collectionId: 'grammar',
+  translationGroup: 'grammar-index', index: true, sitemap: true,
+}));
+
 const content: ContentRecord[] = [];
 const collections: CollectionRecord[] = [];
 const lessonRecords = new Map<string, LessonRecord>();
@@ -92,7 +116,7 @@ for (const track of tracks) {
       const path = lessonPath(pack.id, locale);
       if (!path) throw new Error(`Missing public route: ${id}`);
       lessonPages.push({
-        id, path, locale, title: `${pack.title} · ${languageLabels[locale]} ${pack.cefr} · Baulingo`,
+        id, path, locale, title: lessonTitle(pack, locale),
         heading: pack.title, description: pack.objective, contentId: pack.id, translationGroup: pack.id,
         index: true, sitemap: true,
       });
@@ -101,7 +125,17 @@ for (const track of tracks) {
   }
 }
 
-export const catalog = createCatalog(content, collections, [homeTr, homeEn, ...lessonPages]);
+export const catalog = createCatalog(content, collections, [homeTr, homeEn, ...readerPages, ...grammarIndexPages, ...lessonPages]);
+
+export function grammarIndexLessons(page: PageRecord) {
+  const collection = page.collectionId && catalog.collections.get(page.collectionId);
+  if (!collection) throw new Error(`Missing collection for ${page.id}`);
+  return collection.contentIds.map(id => {
+    const record = lessonRecords.get(`${id}:${page.locale}`);
+    if (!record) throw new Error(`Missing localized collection lesson: ${id}:${page.locale}`);
+    return { pack: record.pack, title: record.title ?? record.pack.title };
+  });
+}
 
 export function lessonPreview(page: PageRecord) {
   const record = lessonRecords.get(page.id);
@@ -124,6 +158,7 @@ export function lessonPreview(page: PageRecord) {
     : parentURL === levelURL ? '../' : levelURL;
   return {
     back,
+    grammar,
     label: `${languageLabels[locale]} ${definition.level}`,
     info: grammar ? pack.grammar.explanation : pack.objective,
     example: example.de, translation,

@@ -1,8 +1,28 @@
 # Baulingo architecture migration
 
+## Phase 4 mini-pack pilot
+
+**Status:** Local candidate acceptance passed. Phase 5 awaits authorization. The legacy workflow continues to emit `dist/`; the pilot runs in `.dev/astro-dist/`.
+
+- The catalog now owns both everyday reader entries and both grammar indexes as well as all 240 localized lesson pages. One [Astro reader template](../src/pages/[...reader].astro) serves the two everyday entry pages. Both grammar indexes take their lesson order and links from the validated collection. The two tracks use the [same existing player](../src/mini-packs/player.js), exercise logic and four unchanged archives.
+- The catalog emits reciprocal and self `hreflang` links for every localized lesson. The static preview passes the grammar classification to the player, so the candidate chooses the archive independently of the URL prefix. The player keeps the title, canonical and alternate links synchronized after direct entry, legacy query entry and in-page navigation.
+- The four archive filenames, all lesson IDs and existing URLs, static introductory content and examples, and in-memory progress semantics are preserved. Deep links continue to fetch the shared reader shell and the selected track/language archive. The legacy reader shell files remain the dependency-free build's inputs until that workflow retires.
+- The candidate replaces the legacy string compaction for published JS and CSS with the pinned Oxc minifier through Vite and Lightning CSS. Files keep their public paths and JS module boundaries. Compared with the legacy build from the same checkout, compiled JS is 51,908 bytes smaller and compiled CSS is 2,076 bytes smaller. This provides space for reciprocal metadata and explicit track attribution without changing assets or budgets.
+
+| Check | Phase 4 result |
+| --- | --- |
+| Strict types and candidate | `npm run check:astro` passed with zero diagnostics. `npm run test:astro` passed. There are 372 published files and 297 sitemap locations. The automation checks both index language pairs, all 240 lesson canonical and alternate sets, the preserved preview markup and the 53 grammar links in each index. |
+| Browser parity | Chrome at 1440 and 390 px covered both tracks in both languages, a direct lesson URL, legacy topic and level entry, incorrect and correct answers, B1 scenario review, language switching, retained section/exercise progress, and canonical and hreflang updates on Back/Forward. Four lesson previews remained readable with JavaScript disabled. Shared-asset smoke checks also covered homepage interactions, DTZ audio and resume, and German writing draft recovery. |
+| Visitor transfer | Six sampled mini-pack URLs at each width transferred approximately 16.6–18.8 kB less than the archived legacy baseline, including the new metadata. The pilot added no requests to those loads. The local setup uses the same cold-cache Chrome methodology recorded in Phase 1. |
+| Output budgets | Candidate core is 1,999,318 bytes, with 682 bytes of headroom. DTZ media is 8,913,392 bytes, within its separate cap. The legacy build succeeds and its suite remains at 99 of 100. Its existing core budget failure now measures 2,002,675 bytes, 611 bytes above the Phase 3 legacy build because the shared player now also supports catalog-backed pages. |
+
+The pilot reuses the existing learning engine and archives, and one template replaces the two candidate reader shells. Catalog-driven publishing adds static equivalents without increasing the sampled page transfers. The narrow total-output margin remains a constraint on expanding static educational content. Measure each remaining slice before expanding it. CI on GitHub, Cloudflare edge behavior and production analytics were outside local verification.
+
+**Exact next task after Phase 5 authorization.** Migrate the six Turkish and English A1–B1 course overview pages through the catalog. Compare their existing URLs, lesson order and links, sample exercises, metadata and browser behavior before starting the A1 test or another format.
+
 ## Phase 3 content and publishing model
 
-**Status:** Local acceptance passed. The typed catalog owns candidate publishing metadata for two homepages and 240 mini-pack previews. Production still uses the legacy build. Phase 4 awaits authorization.
+**Status at the end of Phase 3:** Local acceptance passed. The typed catalog owned candidate publishing metadata for two homepages and 240 mini-pack previews.
 
 - [The publishing model](../src/publishing/model.ts) validates content, collections and page records. It catches duplicate IDs and paths, invalid routes, missing content, collection or canonical references, and incompatible translation and indexing policies. Paths belong to pages. Tests exercise English and Turkish equivalents at different path depths and reusable content in more than one collection.
 - [The catalog](../src/publishing/catalog.ts) projects 120 stable lesson identities from the four existing libraries. The 67 everyday and 53 grammar items retain their own categories and collection order. Editorial metadata and examples come from the existing sources. Full exercise data remains in the existing libraries.
@@ -15,8 +35,6 @@
 | Budgets | Candidate core remains 1,999,648 bytes, 352 bytes below the limit. DTZ media remains 8,913,392 bytes of 10,000,000. |
 | Local browser | At 1440 and 390 px, checked homepage journeys, direct lesson entry, both track archives, section review, canonical attribution and language switching across everyday and grammar lessons. Checked readable German examples and canonicals on four lesson URLs with JavaScript disabled. The default `/favicon.ico` request returns 404 on both builds. |
 | Legacy workflow | `npm run build` passed. All 372 files match the clean baseline after normalizing checkout line endings, and byte counts match the Phase 1 inventory. `npm test` remained at 99 of 100 with the established legacy core-size failure at 2,002,064 bytes. |
-
-**Exact next task after Phase 4 authorization.** Migrate the everyday and grammar reader entry points through the catalog using the existing player and educational data. Verify direct links, legacy query entry, Back/Forward, language switching, progress and answer behavior. Validate the amount of static lesson content and lesson language metadata against page-transfer and total output budgets before expanding to other formats.
 
 ## Phase 2 Astro foundation
 

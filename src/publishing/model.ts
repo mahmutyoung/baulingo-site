@@ -25,6 +25,7 @@ export interface PageRecord {
   heading: string;
   description: string;
   contentId?: string;
+  collectionId?: string;
   canonicalId?: string;
   translationGroup?: string;
   index: boolean;
@@ -82,6 +83,9 @@ export function createCatalog(
       if (!record) throw new Error(`Unknown content ${page.contentId} on ${page.id}`);
       if (!record.locales.includes(page.locale)) throw new Error(`Missing content locale on ${page.id}`);
     }
+    if (page.collectionId !== undefined && !collections.has(page.collectionId)) {
+      throw new Error(`Unknown collection ${page.collectionId} on ${page.id}`);
+    }
     if (!page.index && (page.sitemap || page.translationGroup !== undefined)) {
       throw new Error(`Non-indexable page in sitemap or translations: ${page.id}`);
     }
@@ -99,8 +103,8 @@ export function createCatalog(
       if (group.some(other => other.locale === page.locale)) {
         throw new Error(`Duplicate translation locale in ${page.translationGroup}`);
       }
-      if (group.some(other => other.contentId !== page.contentId)) {
-        throw new Error(`Translation group links different content: ${page.translationGroup}`);
+      if (group.some(other => other.contentId !== page.contentId || other.collectionId !== page.collectionId)) {
+        throw new Error(`Translation group links different content or collections: ${page.translationGroup}`);
       }
       group.push(page);
       translations.set(page.translationGroup, group);

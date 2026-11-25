@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { dtzMediaFiles } from '../scripts/public-files.mjs';
+import { catalog, grammarIndexPages, lessonPages, readerPages } from '../src/publishing/catalog.ts';
+import { outputFile, siteOrigin } from '../src/publishing/model.ts';
 
 const legacy = 'dist';
 const candidate = '.dev/astro-dist';
@@ -30,12 +32,34 @@ const candidateSitemap = sitemapURLs(await readFile(path.join(candidate, 'sitema
 assert.deepEqual(candidateSitemap, sitemapURLs(await readFile(path.join(legacy, 'sitemap.xml'), 'utf8')));
 assert.equal(new Set(candidateSitemap).size, candidateSitemap.length, 'No duplicate sitemap URLs');
 
-const candidateChanges = new Set(['index.html', 'style.css', 'sitemap.xml']);
+const candidatePages = [...lessonPages, ...readerPages];
+const alternateTag = /<link rel="?alternate"? hreflang="?(en|tr)"? href="?([^"\s>]+)"?>/g;
+for (const page of [...candidatePages, ...grammarIndexPages]) {
+  const html = await readFile(path.join(candidate, outputFile(page.path)), 'utf8');
+  const alternates = [...html.matchAll(alternateTag)]
+    .map(([, locale, url]) => [locale, url]);
+  assert.deepEqual(alternates, catalog.alternates(page).map(other => [other.locale, siteOrigin + other.path]), page.path);
+  assert.ok(html.includes(`rel="canonical" href="${siteOrigin}${page.path}"`), page.path);
+  if (page.contentId) {
+    const previous = await readFile(path.join(legacy, outputFile(page.path)), 'utf8');
+    assert.equal(html.includes(' data-grammar>'), catalog.content.get(page.contentId).category === 'grammar');
+    assert.equal(html.replace(alternateTag, '').replace(' data-grammar>', '>'), previous, `Static examples and markup on ${page.path}`);
+  } else if (readerPages.includes(page)) {
+    assert.ok(html.includes('data-reader') && html.includes('/src/mini-packs/player.js'), page.path);
+  } else {
+    const grammarLinks = lessonPages.filter(lesson => lesson.locale === page.locale &&
+      catalog.content.get(lesson.contentId).category === 'grammar');
+    assert.equal(grammarLinks.length, 53);
+    for (const lesson of grammarLinks) assert.ok(html.includes(`href="${lesson.path}"`), lesson.path);
+  }
+}
+
+const candidateChanges = new Set(['index.html', 'sitemap.xml', ...candidatePages.map(page => outputFile(page.path))]);
 let coreBytes = 0;
 let mediaBytes = 0;
 for (const file of files) {
   const output = path.join(candidate, file);
-  if (!candidateChanges.has(file)) {
+  if (!candidateChanges.has(file) && !/\.(?:js|css)$/.test(file)) {
     assert.deepEqual(await readFile(output), await readFile(path.join(legacy, file)), file);
   }
   const { size } = await stat(output);

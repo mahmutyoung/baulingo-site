@@ -127,6 +127,8 @@ export const levelPath = (level, language) => language === 'tr'
   : `/en/german-${level.toLowerCase()}/`;
 
 export const grammarPath = language => language === 'tr' ? '/konular/almanca-gramer/' : '/en/german-grammar/';
+export const readerPath = language => language === 'tr' ? '/konular/mini-paketler/' : '/en/mini-packs/';
+export const lessonTitle = (pack, language) => `${pack.title} · ${language === 'tr' ? 'Almanca' : 'German'} ${pack.cefr} · Baulingo`;
 export const grammarPaths = ['tr', 'en'].map(grammarPath);
 export const grammarLesson = id => id.includes('-G');
 

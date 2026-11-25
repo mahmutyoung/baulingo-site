@@ -1,0 +1,76 @@
+---
+import type { GetStaticPaths } from 'astro';
+import PageLayout from '../layouts/PageLayout.astro';
+import { catalog, homeEn, homeTr, readerPages } from '../publishing/catalog.ts';
+import { siteOrigin } from '../publishing/model.ts';
+import type { PageRecord } from '../publishing/model.ts';
+
+export const getStaticPaths = (() => readerPages.map(page => ({
+  params: { reader: page.path.slice(1, -1) },
+  props: { page },
+}))) satisfies GetStaticPaths;
+
+interface Props {
+  page: PageRecord;
+}
+
+const { page } = Astro.props;
+const turkish = page.locale === 'tr';
+const alternates = catalog.alternates(page);
+const topics = turkish ? '/konular/' : '/en/#lessons';
+const copy = turkish ? {
+  skip: 'Derse geç', home: 'Baulingo ana sayfa', nav: 'Ana menü', library: 'Almanca Kursu',
+  topics: 'Konular', language: 'Açıklama dili', archive: 'Ders arşivi', level: 'Ders seviyesi',
+  lessonTopics: 'Ders konuları', noscript: 'Dersleri açmak için JavaScript’i etkinleştir.',
+  browse: 'Almanca konularına göz at', footer: 'Almanca Kursu · A1–B1',
+} : {
+  skip: 'Skip to lesson', home: 'Baulingo home', nav: 'Main navigation', library: 'Learning pack',
+  topics: 'English topics', language: 'Study language', archive: 'Lesson library', level: 'Lesson level',
+  lessonTopics: 'Lesson topics', noscript: 'Turn on JavaScript to open the interactive mini-packs. You can also',
+  browse: 'browse the English topics', footer: 'Everyday German · A1–B1',
+};
+---
+
+<PageLayout locale={page.locale} title={page.title} description={page.description}
+  canonical={siteOrigin + catalog.canonical(page).path} index={page.index}>
+  <Fragment slot="head">
+    <meta name="theme-color" content="#FAF7F0">
+    {alternates.map(other => <link rel="alternate" hreflang={other.locale} href={siteOrigin + other.path}>)}
+    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/src/mini-packs/style.css">
+    <script is:inline type="module" src="/src/mini-packs/player.js"></script>
+  </Fragment>
+  <a class="skip" href="#main-content">{copy.skip}</a>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href={turkish ? homeTr.path : homeEn.path} aria-label={copy.home}><span>baulingo<span class="brand-dot">.</span></span></a>
+      <nav class="top-nav" aria-label={copy.nav}>
+        <a href={page.path} aria-current="page">{copy.library}</a>
+        <a href={topics}>{copy.topics}</a>
+      </nav>
+      <span class="edition"><span class="status-dot"></span> A1–B1</span>
+    </div>
+  </header>
+  <div class="workspace">
+    <aside class="sidebar" hidden>
+      <div class="sidebar-caption">{copy.language}</div>
+      <div class="language-picker" role="group" aria-label={copy.language}>
+        {alternates.map(other => {
+          const name = other.locale === 'tr' ? 'Türkçe' : 'English';
+          return other.locale === page.locale
+            ? <span aria-current="true">{name}</span>
+            : <a href={other.path} hreflang={other.locale} lang={other.locale}>{name}</a>;
+        })}
+      </div>
+      <div class="sidebar-caption">{copy.archive}</div>
+      <div class="level-picker" role="group" aria-label={copy.level}></div>
+      <nav class="topic-list" aria-label={copy.lessonTopics}></nav>
+      <div id="lesson-outline"></div>
+    </aside>
+    <main id="main-content" class="min-w-0" tabindex="-1" data-reader>
+      <h1>{page.heading}</h1>
+      <noscript><p>{copy.noscript} <a href={topics}>{copy.browse}</a>{turkish ? '' : '.'}</p></noscript>
+    </main>
+  </div>
+  <footer class="footer"><span>baulingo.</span><span>{copy.footer}</span></footer>
+</PageLayout>

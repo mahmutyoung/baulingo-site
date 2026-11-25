@@ -30,6 +30,7 @@ assert.throws(() => createCatalog([record], [], [page, { ...translated, path: pa
 assert.throws(() => createCatalog([record], [], [{ ...page, path: '/konular/../gizli/' }, translated]), /Invalid page path/);
 assert.throws(() => createCatalog([record], [{ ...collection, contentIds: ['missing'] }], []), /Unknown content/);
 assert.throws(() => createCatalog([record], [], [{ ...page, contentId: 'missing' }, translated]), /Unknown content/);
+assert.throws(() => createCatalog([record], [], [{ ...page, collectionId: 'missing' }, translated]), /Unknown collection/);
 assert.throws(() => createCatalog([record], [], [{ ...page, canonicalId: 'missing' }, translated]), /Unknown canonical/);
 assert.throws(() => createCatalog([record], [], [page, { ...translated, locale: 'tr' }]), /Duplicate translation locale/);
 assert.throws(() => createCatalog([record], [], [page]), /Translation group.*requires/);

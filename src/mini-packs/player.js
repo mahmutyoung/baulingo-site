@@ -5,17 +5,20 @@ import { icon } from './icons.js';
 import { sectionsFor, lessonMarkup, progressMarkup, lessonNumber } from './lesson.js';
 import { matchesAnswer } from './answers.js';
 import { label, language } from './language.js';
-import { grammarPath, lessonPath } from './routes.js';
+import { grammarPath, lessonPath, lessonTitle, readerPath } from './routes.js';
 
 const levels = ['A1', 'A2', 'B1'];
 const main = document.querySelector('#main-content');
-const libraryPath = label('/en/mini-packs/', '/konular/mini-paketler/');
-const grammarTrack = location.pathname.startsWith(grammarPath(language));
-const trackContext = miniPackEventContext(grammarTrack, language);
+const libraryPath = readerPath(language);
 const canonical = document.querySelector('link[rel="canonical"]');
 const description = document.querySelector('meta[name="description"]');
 const initialDescription = description.content;
 const alternates = [...document.querySelectorAll('head link[rel="alternate"]')];
+const publishedReader = main.hasAttribute('data-reader') ||
+  (main.classList.contains('lesson-preview') && alternates.length > 0);
+const grammarTrack = publishedReader ? main.hasAttribute('data-grammar') : location.pathname.startsWith(grammarPath(language));
+const trackContext = miniPackEventContext(grammarTrack, language);
+const initialTitle = document.title;
 const progress = new Map();
 let sidebar, picker, alternateLanguage, topics, outline;
 let library;
@@ -271,9 +274,12 @@ function canonicalize(record) {
   const lesson = url.pathname === path;
   canonical.href = new URL(lesson ? path : libraryPath, 'https://baulingo.app');
   description.content = lesson ? record.pack.objective : initialDescription;
-  document.title = `${record.pack.title}${lesson ? ' · ' + label('German', 'Almanca') + ' ' + record.pack.cefr : ''} · Baulingo`;
+  document.title = lesson ? lessonTitle(record.pack, language)
+    : publishedReader ? initialTitle : `${record.pack.title} · Baulingo`;
   for (const link of alternates) {
-    if (lesson) link.remove();
+    if (publishedReader) {
+      link.href = new URL(lesson ? lessonPath(record.pack.id, link.hreflang) : readerPath(link.hreflang), canonical.href);
+    } else if (lesson) link.remove();
     else if (!link.isConnected) document.head.append(link);
   }
 }

@@ -3,15 +3,16 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { build as buildAstro } from 'astro';
 import { transform } from 'lightningcss';
+import { minify } from 'vite';
 import { build as buildLegacy } from './build.mjs';
 import { rewriteAssetURLs } from './assets.mjs';
-import { isFingerprintedAsset } from './public-files.mjs';
-import { lessonPaths } from '../src/mini-packs/routes.js';
+import { generatedFiles, isFingerprintedAsset, publicFiles } from './public-files.mjs';
+import { grammarPaths, lessonPaths, readerPath } from '../src/mini-packs/routes.js';
 import { catalog } from '../src/publishing/catalog.ts';
 import { outputFile, siteOrigin, sitemapXml } from '../src/publishing/model.ts';
 
 const candidate = fileURLToPath(new URL('../.dev/astro-dist', import.meta.url));
-const legacyOwnedPaths = new Set(['/', '/en/', ...lessonPaths]);
+const legacyOwnedPaths = new Set(['/', '/en/', readerPath('en'), readerPath('tr'), ...grammarPaths, ...lessonPaths]);
 if (catalog.paths.size !== legacyOwnedPaths.size || [...catalog.paths.keys()].some(route => !legacyOwnedPaths.has(route))) {
   throw new Error('Publishing metadata must preserve the existing homepage and mini-pack paths');
 }
@@ -46,12 +47,21 @@ const unmodeled = [...legacySitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(([, ur
   .filter(url => !catalog.paths.has(url.slice(siteOrigin.length)));
 await writeFile(path.join(candidate, 'sitemap.xml'), sitemapXml([...unmodeled, ...catalog.sitemapLocations()]));
 
-// Use a CSS parser for the shared stylesheet while keeping its existing public URL.
-const stylesheet = await readFile(new URL('../style.css', import.meta.url), 'utf8');
-const { code } = transform({
-  filename: 'style.css',
-  code: Buffer.from(rewriteAssetURLs(stylesheet, fingerprints)),
-  minify: true,
-});
-await writeFile(path.join(candidate, 'style.css'), code);
+// Compile only allowlisted browser assets, retaining their URLs and module boundaries.
+for (const file of [...publicFiles, ...generatedFiles].filter(name => /\.(?:js|css)$/.test(name))) {
+  const source = publicFiles.includes(file) ? new URL(`../${file}`, import.meta.url) : path.join(legacy, file);
+  const text = await readFile(source, 'utf8');
+  if (file.endsWith('.css')) {
+    const { code } = transform({
+      filename: file,
+      code: Buffer.from(rewriteAssetURLs(text, fingerprints)),
+      minify: true,
+    });
+    await writeFile(path.join(candidate, file), code);
+  } else {
+    const result = await minify(file, text, { compress: true, mangle: true });
+    if (result.errors?.length) throw new Error(`Could not compile ${file}: ${JSON.stringify(result.errors)}`);
+    await writeFile(path.join(candidate, file), result.code);
+  }
+}
 console.log(`Built Astro candidate in ${candidate}`);
