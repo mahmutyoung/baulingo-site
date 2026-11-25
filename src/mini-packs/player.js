@@ -1,4 +1,4 @@
-import { trackLearningEvent, beginStudy, stopStudy, trackPageView, analyticsEnabled } from '../analytics.js';
+import { trackLearningEvent, beginStudy, stopStudy, trackPageView, analyticsEnabled, miniPackEventContext } from '../analytics.js';
 import { escapeLearningText as escape } from '../learning-text.js';
 import '../language.js';
 import { icon } from './icons.js';
@@ -11,6 +11,7 @@ const levels = ['A1', 'A2', 'B1'];
 const main = document.querySelector('#main-content');
 const libraryPath = label('/en/mini-packs/', '/konular/mini-paketler/');
 const grammarTrack = location.pathname.startsWith(grammarPath(language));
+const trackContext = miniPackEventContext(grammarTrack, language);
 const canonical = document.querySelector('link[rel="canonical"]');
 const description = document.querySelector('meta[name="description"]');
 const initialDescription = description.content;
@@ -175,7 +176,7 @@ function render(record) {
   if (active?.pack.cefr !== pack.cefr) renderTopics(pack.cefr);
   stopStudy();
   active = record;
-  const context = { activity_id: pack.id, activity_type: grammarTrack ? 'grammar' : 'mini_pack', level: pack.cefr, content_language: language };
+  const context = { ...trackContext, activity_id: pack.id, level: pack.cefr };
   trackLearningEvent('topic_selected', context);
   for (const button of picker.children) button.setAttribute('aria-pressed', String(button.textContent === pack.cefr));
   for (const button of buttons) {
@@ -322,7 +323,7 @@ async function loadLibrary() {
     if (!sidebar) connectReader(shell);
     showLocation();
   } catch {
-    trackLearningEvent('learning_error', { activity_type: grammarTrack ? 'grammar' : 'mini_pack', content_language: language, error_code: 'library_failed' });
+    trackLearningEvent('learning_error', { ...trackContext, error_code: 'library_failed' });
     if (!main.classList.contains('lesson-preview')) main.replaceChildren();
     main.insertAdjacentHTML('beforeend', `<section class="panel loading" data-load-error>
       <p role="alert">${label('The interactive lesson could not load.', 'Etkileşimli ders yüklenemedi.')}</p>
@@ -370,7 +371,7 @@ function connectReader(shell) {
   picker.addEventListener('click', event => {
     const button = event.target.closest('button');
     if (button && button.getAttribute('aria-pressed') === 'false') {
-      trackLearningEvent('level_selected', { activity_type: grammarTrack ? 'grammar' : 'mini_pack', content_language: language, level: button.textContent });
+      trackLearningEvent('level_selected', { ...trackContext, level: button.textContent });
       select(library.find(({ pack }) => pack.cefr === button.textContent));
     }
   });
