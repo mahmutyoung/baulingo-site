@@ -18,7 +18,17 @@
 
 The pilot reuses the existing learning engine and archives, and one template replaces the two candidate reader shells. Catalog-driven publishing adds static equivalents without increasing the sampled page transfers. The narrow total-output margin remains a constraint on expanding static educational content. Measure each remaining slice before expanding it. CI on GitHub, Cloudflare edge behavior and production analytics were outside local verification.
 
-**Exact next task after Phase 5 authorization.** Migrate the six Turkish and English A1–B1 course overview pages through the catalog. Compare their existing URLs, lesson order and links, sample exercises, metadata and browser behavior before starting the A1 test or another format.
+**Exact next task after Phase 5 authorization.** Migrate the six Turkish and English A1–B1 course overview pages through the catalog. Compare their existing URLs, lesson order and links, sample exercises, metadata and browser behavior. Verify the static educational content and applicable structured data before starting the A1 test or another format.
+
+## Discoverability gates
+
+AI search uses the existing publishing and analytics migration. These checks apply to upcoming slices and the final release review. Phase 4 evidence above predates this addition. [Publishing requirements](architecture.md#ai-search-discoverability)
+
+| Phase | Acceptance evidence |
+| --- | --- |
+| 5. Remaining formats | Inspect rendered HTML with JavaScript disabled. Check logical headings, usable definitions, original examples and translations, and links to related material. Verify content identity, canonicals, locales and indexing. Generate and validate applicable structured data from the same records and compare it with visible content. Recheck both output budgets and representative page transfers. |
+| 6. Unified analytics | Verify consented AI-referral classification, allowlisted campaign attribution and engagement by landing page and content ID. Test missing referrers, unknown and duplicate tags, locale redirects, in-page navigation and consent withdrawal. Keep URL queries and fragments out of analytics URLs. Document reporting limits and the release boundary. [Measurement contract](analytics.md#planned-ai-referral-and-campaign-attribution) |
+| 7. Release readiness | Check rendered HTML, ordinary links, structured data, sitemap, canonicals and indexing across representative routes and locales. Verify crawler policy in the candidate and record separate search and training decisions. Record any edge or analytics checks that require an authorized deployment. [Release verification](production.md#search-discoverability-release-checks) |
 
 ## Phase 3 content and publishing model
 

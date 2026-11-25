@@ -38,6 +38,14 @@ Page records drive static route generation, internal links, the sitemap and reci
 
 Preserve existing public routes, linking behavior and indexing intent. Any route change requires owner approval and a permanent redirect. Keep explanations, examples and navigation in generated HTML. Interactive controls enhance that material. Use original localized editorial content where it exists and avoid extra pages for minor keyword variants.
 
+#### AI search discoverability
+
+Use the same Astro pages and SEO metadata for conventional and AI search. For each indexable learning page, render enough of the lesson in HTML for a learner to understand and use it without JavaScript. Use headings, paragraphs, lists and tables according to their meaning. Give clear definitions, original German examples, translations in the page language and practical explanations where relevant. Use ordinary HTML links to related concepts and reuse the existing content IDs, descriptive URLs, canonicals and language equivalents. Avoid keyword stuffing, manufactured FAQs, duplicate pages and unverified ranking techniques. The existing static build is the publishing engine for this work. [Google Search AI guidance](https://developers.google.com/search/docs/appearance/ai-features)
+
+Generate structured data at build time from validated page and content records where the type accurately describes visible content. Compare the markup with the rendered page and validate it against the applicable schema and search feature. An eligible breadcrumb trail is one example. Keep JavaScript optional for reading, and preserve the site's CSP and output budgets. No separate AI publishing engine, vector database, paid API or runtime LLM dependency is required. [Google structured data policies](https://developers.google.com/search/docs/appearance/structured-data/sd-policies)
+
+Treat crawler access, indexing and training permissions as separate controls. Record the intended policy for each relevant crawler purpose and verify the deployed `robots.txt`, indexing directives and effective Cloudflare access together. `OAI-SearchBot` and `GPTBot` are examples of separate search and training controls. Apply training permissions according to the owner's policy. [OpenAI crawler roles](https://developers.openai.com/api/docs/bots) · [Cloudflare crawler rules](https://developers.cloudflare.com/ai-crawl-control/configuration/ai-crawl-control-with-waf/)
+
 ### Learning and measurement
 
 Retain the existing answer checks, exam deadlines and scoring, lazy audio, writing drafts, progress, keyboard behavior and local exports. Migrate each format through its normal entry points with stored-data fixtures and browser parity checks. Where content is shared with the Android app, use a controlled export and keep the website build and app release independent.
@@ -45,6 +53,8 @@ Retain the existing answer checks, exam deadlines and scoring, lazy audio, writi
 Derive analytics context from the content and page records, including content ID, page ID, format, subject category, collection context, CEFR and content language. Define each event's trigger, required parameters, unit and deduplication scope. Distinguish direct exposure from explicit selection and active engagement, start from resume, and checked completion from self-review. Attribute outcomes and time to the right page, lesson and attempt through navigation and resume. Reading and reference material can be measured without a completion event.
 
 Keep GA4 measurement ID `G-R1YH6T64JM` and the existing consent behavior. Exclude raw searches, answers and drafts from event payloads, and keep unique attempt IDs out of reporting dimensions. Document metric changes and their release boundary before comparing historical and new data. Android analytics remains independent. [Analytics operations](analytics.md)
+
+Measure identifiable AI referrals and their later content engagement through the same consented GA4 contract. Keep campaign attribution separate from clean page URLs by mapping approved signals to controlled fields. [Attribution requirements](analytics.md#planned-ai-referral-and-campaign-attribution)
 
 ### Source layout and migration
 

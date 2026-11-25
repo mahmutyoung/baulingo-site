@@ -97,6 +97,12 @@ Deployment and maintenance checklist (the owner's initial deployment is already 
 
 The GitHub workflow runs tests, builds and saves an artifact; it does not deploy automatically. Product experiments are embedded in the main website and ship with its normal deployment to understand visitor demand and preferences. They do not need a separate experiment page, project or subdomain. The WWW redirect Worker is hosting infrastructure.
 
+### Search discoverability release checks
+
+1. Inspect representative built pages across languages and learning formats with JavaScript disabled. Confirm readable educational content, ordinary related links, correct canonicals and reciprocal language equivalents, expected indexing and sitemap membership, and applicable structured data that matches visible content. Keep noindex on review and nonpublic previews. Record both payload budgets and the relevant page-transfer checks.
+2. Compare the intended search, training and other crawler policies with the built `robots.txt` and the effective Cloudflare policy. Review managed robots settings, AI Crawl Control, WAF and bot rules for conflicts. Check the apex `robots.txt`, response status and indexing headers after an authorized deployment. Where verified crawler logs are available, confirm intended crawlers can reach representative public pages. A user-agent-only probe can test routing but cannot establish the result for a verified crawler. Record missing edge evidence separately. [Cloudflare crawler rules](https://developers.cloudflare.com/ai-crawl-control/configuration/ai-crawl-control-with-waf/) · [OpenAI crawler roles](https://developers.openai.com/api/docs/bots)
+3. Recheck the approved campaign fields and identifiable AI referral segment through entry redirects, consent and subsequent engagement. Verify synthetic cases separately from post-deployment GA4 ingestion. Record limitations in the release notes and keep the existing sign-off and deployment authorization. [Attribution requirements](analytics.md#planned-ai-referral-and-campaign-attribution)
+
 ## Evidence
 
 - 18 automated checks: exercise/search behavior, canonical public paths, static routes/content, local references, deployment metadata, output boundary/size, response headers, errors, redirects, methods, downloads and the dedicated WWW redirect's path/query/hostname behavior.
