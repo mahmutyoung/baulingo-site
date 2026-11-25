@@ -10,7 +10,8 @@ const allowedEvents = new Set([
   'feedback_submitted', 'language_changed', 'download_clicked', 'app_store_clicked', 'learning_error',
 ]);
 const enums = {
-  activity_type: ['sentence','dtz','mini_pack','grammar','writing','a1_test','topic','resource','audio','site'],
+  activity_type: ['sentence','dtz','mini_pack','writing','a1_test','topic','resource','audio','site'],
+  content_category: ['grammar','everyday_communication'],
   content_language: ['tr','en','de'],
   target_language: ['tr','en','de'],
   level: ['A1','A2','B1','B2','C1','C2'],
@@ -21,6 +22,10 @@ const enums = {
 };
 const idFields = ['activity_id','exercise_id','section_id'];
 const countFields = ['result_count','attempt_number','questions_answered','correct_answers','duration_seconds'];
+export function miniPackEventContext(grammarTrack, content_language) {
+  return { activity_type: 'mini_pack', content_category: grammarTrack ? 'grammar' : 'everyday_communication', content_language };
+}
+
 export function sanitizeLearningEvent(name, values = {}) {
   if (!allowedEvents.has(name)) return null;
   const params = {};
