@@ -44,7 +44,7 @@ const policies = createCatalog([record], [], [page, translated, alias, unindexed
 assert.equal(policies.canonical(alias).id, page.id);
 assert.equal(policies.sitemapLocations().length, 2);
 
-assert.equal(catalog.content.size, 120);
+assert.equal([...catalog.content.values()].filter(content => content.format === 'mini_pack').length, 120);
 assert.equal(catalog.collections.get('grammar').contentIds.length, 53);
 assert.equal(catalog.collections.get('everyday-communication').contentIds.length, 67);
 assert.equal(lessonPages.length, 240);

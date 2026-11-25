@@ -1,5 +1,9 @@
 # Website implementation handoff
 
+## Phase 5 Astro candidate
+
+The candidate publishes all indexed pages through the catalog. The latest slice includes the six course overviews, the A1 practice test, topic and phrase pages, DTZ guides and practice formats, and app information. German mock-test and writing pages have static previews with the existing full interactive exercises. The next migration phase covers unified analytics. The current production workflow builds `dist/`, and the Astro candidate can be inspected locally with `npm run preview:astro`. [Phase 5 verification](migration.md#phase-5-remaining-formats)
+
 ## Site-wide language preference
 
 The English and Turkish controls share the same browser preference across homepages, topic pages, course levels, grammar hubs and lesson readers. Lesson switches open the matching lesson; grammar and everyday links stay in the selected edition. The German DTZ materials retain their separate English and Turkish help links. The bare homepage respects the saved choice, and direct localized URLs remain shareable. Publication is pending.

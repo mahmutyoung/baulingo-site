@@ -65,6 +65,20 @@ export function englishPages({ alternateLinks = homeAlternates, canonicalPath = 
 </div></section>
 <section class="en-practice" aria-labelledby="practice-title"><div><h2 id="practice-title">Build your first German sentence</h2><p>English usually keeps the subject before the verb. In a German statement, a time expression can come first, followed by the verb.</p></div><div><p>Say “Today I’m learning German.”</p>${practiceLink('en-word-order', 'Build the sentence')}<noscript><p id="sentence-example">Example: <span lang="de" class="german-example">Heute lerne ich Deutsch.</span></p><p>Café request: <span lang="de" class="german-example">Einen Kaffee, bitte.</span></p></noscript></div></section>
 <section class="en-questions" aria-labelledby="questions-title"><h2 id="questions-title">Getting started with German</h2><details><summary>Where should I start as a beginner?</summary><p>Pick a situation you need, such as making an appointment, and learn a complete phrase. Then look at how it works: the noun’s article, the verb and the word order. Start with our <a href="/en/appointments/">German appointment phrases</a>.</p></details><details><summary>How can I remember der, die and das?</summary><p>Learn each noun together with its article: <i lang="de">der Tisch</i>, <i lang="de">die Lampe</i>, <i lang="de">das Fenster</i>. Say the pair aloud and use it in a short sentence. Our <a href="/en/articles/">guide to German articles</a> shows the basics.</p></details><details><summary>Are the lessons free?</summary><p>Yes. You can read every English lesson and try the short practice tasks without an account.</p></details></section>`));
-  for (const lesson of lessons) pages.set(`en/${lesson.slug}/index.html`, page(lesson.title, lesson.summary, `/en/${lesson.slug}/`, {}, `<p><a href="/en/">← All English lessons</a></p><article><h1>${lesson.title}</h1><p class="dialog-subtitle">${lesson.summary}</p>${lesson.content.replace(/<details>[\s\S]*?<\/details>/g, '')}<p>${practiceLink(`en-${lesson.slug}`)}</p><noscript><p id="sentence-example">Example: <span lang="de" class="german-example">${englishExercises[`en-${lesson.slug}`].sentence}</span></p></noscript></article>`));
+  for (const resource of englishResources()) pages.set(resource.path.slice(1) + 'index.html', resource.render(resource));
   return pages;
+}
+
+/** @returns {import('../src/publishing/resources.ts').ResourceDefinition[]} */
+export function englishResources() {
+  return lessons.map(lesson => {
+    const key = `en-${lesson.slug}`;
+    const body = `<p><a href="/en/">← All English lessons</a></p><article><h1>${lesson.title}</h1><p class="dialog-subtitle">${lesson.summary}</p>${lesson.content.replace(/<details>[\s\S]*?<\/details>/g, '')}<p>${practiceLink(key)}</p><noscript><p id="sentence-example">Example: <span lang="de" class="german-example">${englishExercises[key].sentence}</span></p></noscript></article>`;
+    return {
+      key, format: 'topic', locale: 'en', path: `/en/${lesson.slug}/`,
+      title: lesson.title + ' · Baulingo', heading: lesson.title, description: lesson.summary,
+      render: (record, alternates) => page(record.title.slice(0, -' · Baulingo'.length),
+        record.description, record.path, { alternateLinks: alternates, index: record.index }, body),
+    };
+  });
 }

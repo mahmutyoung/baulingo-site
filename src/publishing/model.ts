@@ -5,9 +5,9 @@ export type Level = 'A1' | 'A2' | 'B1';
 
 export interface ContentRecord {
   id: string;
-  format: 'mini_pack';
-  category: 'grammar' | 'everyday_communication';
-  level: Level;
+  format: 'mini_pack' | 'a1_test' | 'topic' | 'phrase' | 'exam_guide' | 'study_list' | 'dtz_mock' | 'writing';
+  category?: 'grammar' | 'everyday_communication';
+  level?: Level;
   locales: readonly Locale[];
   relatedIds: readonly string[];
 }

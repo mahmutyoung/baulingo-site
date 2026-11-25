@@ -1,5 +1,28 @@
 [
   {
+    "id": "phase-5-static-dtz-previews",
+    "title": "DTZ-Leseprobe und Schreibkapitel",
+    "date": "2026-11-25",
+    "summary": "The German DTZ pages include a reading exercise and writing chapter excerpts in the initial HTML.",
+    "files": ["scripts/dtz-hub.mjs", "scripts/dtz-page.mjs", "scripts/data/dtz-writing-book.json"],
+    "steps": [
+      {
+        "id": "german-mock-preview",
+        "title": "Eine Leseaufgabe ansehen",
+        "path": "/de/dtz-pruefung/modelltest/",
+        "focus": "[data-dtz-fragment]",
+        "check": "With JavaScript disabled, read the example, its answer and the link to the full Turkish-guided test. With JavaScript enabled, start or resume the German mock test."
+      },
+      {
+        "id": "german-writing-preview",
+        "title": "Person und Ton lesen",
+        "path": "/de/dtz-pruefung/schreiben/",
+        "focus": "nav[aria-label='Kapitel']",
+        "check": "With JavaScript disabled, follow a chapter link and read its excerpt. With JavaScript enabled, open the same chapter to see its full exercises."
+      }
+    ]
+  },
+  {
     "id": "site-language-selection",
     "title": "Site dili · Türkçe and English",
     "date": "2026-11-22",

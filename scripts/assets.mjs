@@ -20,3 +20,20 @@ export function rewriteAssetURLs(text, mapping) {
   for (const [source, target] of mapping) text = text.replaceAll(source, target);
   return text;
 }
+
+// Omit optional markup only in the generated formats that use it.
+export function compactGeneratedHTML(file, html) {
+  return file === 'dtz-kelime-kalip-cumle/index.html'
+    ? html.replace(/(\s(?:class|lang|scope|type|data-[a-z-]+))="([A-Za-z0-9_-]+)"/g, '$1=$2')
+      .replace(/<\/(?:td|th)>(?=<(?:td|th)(?:[ >])|<\/tr>)/g, '')
+      .replace(/<\/li>(?=<li[ >]|<\/[ou]l>)/g, '')
+    : file === 'dtz-deneme-sinavi/index.html'
+      ? html.replace(/(\s(?:class|lang|scope|type))="([A-Za-z0-9_-]+)"/g, '$1=$2')
+      : file.startsWith('dtz-mektup-yazma/')
+        ? html.replace(/(\s(?:class|scope|type|data-(?!(?:task|task-kind)=)[a-z-]+))="([A-Za-z0-9_-]+)"/g, '$1=$2')
+          .replace(/ lang="de"/g, ' lang=de')
+          .replace(/(\s(?:aria-describedby|aria-labelledby|for|rows|maxlength))="([A-Za-z0-9_:-]+)"/g, '$1=$2')
+          .replace(/<\/option>(?=<option[ >]|<\/select>)/g, '')
+          .replace(/<\/li>(?=<li[ >]|<\/[ou]l>)/g, '')
+        : html;
+}

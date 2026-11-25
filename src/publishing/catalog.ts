@@ -4,9 +4,11 @@ import grammarEnglish from '../mini-packs/grammar.json' with { type: 'json' };
 import grammarTurkish from '../mini-packs/grammar-tr.json' with { type: 'json' };
 import { grammarPath, lessonPath, lessonTitle, levelPath, readerPath } from '../mini-packs/routes.js';
 import { englishHome } from '../../scripts/english-pages.mjs';
-import { grammarIndexMetadata } from '../../scripts/lesson-pages.mjs';
+import { englishCourseMetadata, grammarIndexMetadata } from '../../scripts/lesson-pages.mjs';
+import { a1ReviewIds, a1TestMetadata, turkishCourseMetadata } from '../../scripts/course-pages.mjs';
 import { createCatalog, siteOrigin } from './model.ts';
 import type { CollectionRecord, ContentRecord, Level, PageRecord } from './model.ts';
+import { resourceCollections, resourceContent, resourcePages } from './resources.ts';
 
 type LessonLocale = 'en' | 'tr';
 type Link = { id: string; title: string };
@@ -125,7 +127,46 @@ for (const track of tracks) {
   }
 }
 
-export const catalog = createCatalog(content, collections, [homeTr, homeEn, ...readerPages, ...grammarIndexPages, ...lessonPages]);
+const courseLevels = ['A1', 'A2', 'B1'] as const;
+const courseCollections = courseLevels.map(level => ({
+  id: `everyday-${level.toLowerCase()}`,
+  contentIds: english.filter(({ pack }) => pack.cefr === level).map(({ pack }) => pack.id),
+}));
+export const coursePages = courseLevels.flatMap((level, index) => {
+  const collection = courseCollections[index]!;
+  return locales.map(locale => ({
+    ...({ en: englishCourseMetadata, tr: turkishCourseMetadata }[locale](level, collection.contentIds.length)),
+    id: `${collection.id}-${locale}`, locale, level, collectionId: collection.id,
+    translationGroup: collection.id, index: true, sitemap: true,
+  }));
+});
+
+export const a1TestPage: PageRecord = {
+  ...a1TestMetadata, title: a1TestMetadata.title + ' · Baulingo',
+  id: 'a1-test-tr', contentId: 'a1-practice-test', locale: 'tr', index: true, sitemap: true,
+};
+content.push({
+  id: 'a1-practice-test', format: 'a1_test', category: 'everyday_communication', level: 'A1',
+  locales: ['tr'], relatedIds: a1ReviewIds,
+});
+
+export const catalog = createCatalog([...content, ...resourceContent],
+  [...collections, ...courseCollections, ...resourceCollections],
+  [homeTr, homeEn, ...readerPages, ...grammarIndexPages, ...coursePages, ...lessonPages, a1TestPage, ...resourcePages]);
+
+const everydayRecords = {
+  en: new Map(english.map(record => [record.pack.id, record])),
+  tr: new Map(turkish.map(record => [record.pack.id, record])),
+};
+
+export function courseLessons(page: typeof coursePages[number]) {
+  const collection = catalog.collections.get(page.collectionId)!;
+  return collection.contentIds.map(id => {
+    const record = everydayRecords[page.locale].get(id);
+    if (!record) throw new Error(`Missing localized course lesson: ${id}:${page.locale}`);
+    return record;
+  });
+}
 
 export function grammarIndexLessons(page: PageRecord) {
   const collection = page.collectionId && catalog.collections.get(page.collectionId);
@@ -140,7 +181,7 @@ export function grammarIndexLessons(page: PageRecord) {
 export function lessonPreview(page: PageRecord) {
   const record = lessonRecords.get(page.id);
   const definition = page.contentId && catalog.content.get(page.contentId);
-  if (!record || !definition || (page.locale !== 'tr' && page.locale !== 'en')) {
+  if (!record || !definition || !definition.level || (page.locale !== 'tr' && page.locale !== 'en')) {
     throw new Error(`Missing lesson preview: ${page.id}`);
   }
   const { pack } = record;

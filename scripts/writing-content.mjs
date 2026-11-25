@@ -1,8 +1,8 @@
-import { readFileSync } from 'node:fs';
 import { taskGuidance, lessonOutcomes, activityRevisions } from './writing-guidance.mjs';
 
 // Build-only snapshot of the owner's book. Never read sibling repositories in a build.
-export const writingBook = JSON.parse(readFileSync(new URL('./data/dtz-writing-book.json', import.meta.url), 'utf8'));
+import writingBook from './data/dtz-writing-book.json' with { type: 'json' };
+export { writingBook };
 export const writingBase = '/dtz-mektup-yazma/';
 export const writingGroups = { basics: 'Mektup Yazmaya Giriş', functions: 'Ne söylemek istiyorsun?', types: '11 mektup türü', exam: 'Yazma pratiği', help: 'Yardım ve tekrar' };
 const example = (de, tr) => ({ de, tr });

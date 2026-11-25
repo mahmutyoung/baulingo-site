@@ -1,6 +1,6 @@
 # Baulingo website architecture
 
-The target is a static Astro site with strict TypeScript and browser-local learning. The production build still uses HTML, CSS, native JavaScript and a custom static builder. The Phase 4 candidate uses validated publishing metadata for both mini-pack tracks while sharing the existing reader and learning rules. [Migration handoff](migration.md)
+The target is a static Astro site with strict TypeScript and browser-local learning. The production build uses HTML, CSS, native JavaScript and a custom static builder. The Phase 5 candidate renders every indexed route from the validated catalog and generates its sitemap directly from those records. It shares the existing browser modules and learning rules. The candidate build still takes allowlisted assets, legal pages and the 404 from the legacy build. [Migration handoff](migration.md)
 
 Turkish speakers learning German remain the primary audience. The roadmap governs product priorities and experiments, and the approved homepage reference governs the layout and Turkish copy. [Roadmap](roadmap.md) · [Homepage reference](design/homepage.md)
 

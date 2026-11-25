@@ -1,8 +1,27 @@
 # Baulingo architecture migration
 
+## Phase 5 remaining formats
+
+The Astro candidate renders all 297 indexed URLs and generates the sitemap from the validated catalog. Six English and Turkish A1–B1 overviews use level collections with 17, 22 and 28 lessons in their existing order. Their paired pages have reciprocal language links. The A1 test keeps its 12 questions, scoring and review links. The catalog also covers topics, the café phrase, exam guides, both mock tests, the study lists, both writing courses and the app information page. The static legal documents and 404 continue through the legacy allowlist.
+
+The German mock test includes an original reading example and answer in its initial HTML. The German writing course provides an authored excerpt and a working anchor for each of its 15 chapters before the interactive book loads. Full exercises continue to load through the existing archives. Both builds publish only the scoring and draft-export fields in the DTZ player module. Exam texts, options, answers and media references remain in the appropriate rendered exercise content. The German listening button and the Turkish and German audio-size notices use their respective translations.
+
+Course and resource pages use [LearningResource microdata](https://schema.org/LearningResource) on their web pages. Tests check the marked-up names and descriptions against rendered copy, the declared language against catalog records, and the canonical and sitemap location of every indexed page. The self-paced courses use general learning-resource markup. Google's course-list feature has separate instructor and roster requirements. [Google course-list guidance](https://developers.google.com/search/docs/appearance/structured-data/course)
+
+| Local check | Result |
+| --- | --- |
+| Types and candidate | `npm run check:astro` reported zero diagnostics. `npm run test:astro` passed. The candidate preserves 372 files and 297 indexed URLs. |
+| Output budgets | Candidate core 1,992,534 bytes and legacy core 1,986,656 bytes, both below 2,000,000. DTZ media remains 8,913,392 bytes in each build, below the separate 10,000,000 cap. `npm test` passed all 100 tests and `npm run build` passed. |
+| Chrome at 1440 and 390 px | Verified course sample disclosure, A1 validation and score focus, review links and reset, study-list filters, lazy exam audio, Turkish-to-German attempt resume, and recovery of Turkish and German writing drafts. A saved DTZ fixture produced the same 44/45 score, wrong-answer review and TXT export on both mock routes. |
+| JavaScript disabled | Read the six course samples, A1 explanations, study-list examples, Turkish writing examples and translations, and the German mock example and writing excerpts. All 15 German writing chapter links have static targets. |
+| Course transfers | The six overviews at 1440 and 390 px each transferred about 6.3–6.9 kB less than the legacy build using cold local Chrome loads. |
+| Other transfers | Against the Phase 4 candidate at both widths, Turkish DTZ mock transfer fell from 329,383 to 303,717 bytes. German writing grew from 228,918 to 238,527 bytes with the static excerpts. The A1 test, study lists and Turkish writing index each added at most 210 bytes. |
+
+Phase 6 covers the typed consented analytics contract and attribution in the [measurement guide](analytics.md#planned-ai-referral-and-campaign-attribution). The release workflow still uses `npm run build` and `dist/`. Phase 5 verification used local builds.
+
 ## Phase 4 mini-pack pilot
 
-**Status:** Local candidate acceptance passed. Phase 5 awaits authorization. The legacy workflow continues to emit `dist/`; the pilot runs in `.dev/astro-dist/`.
+**Status at the end of Phase 4:** Local candidate acceptance passed. The legacy workflow emitted `dist/`, and the pilot ran in `.dev/astro-dist/`.
 
 - The catalog now owns both everyday reader entries and both grammar indexes as well as all 240 localized lesson pages. One [Astro reader template](../src/pages/[...reader].astro) serves the two everyday entry pages. Both grammar indexes take their lesson order and links from the validated collection. The two tracks use the [same existing player](../src/mini-packs/player.js), exercise logic and four unchanged archives.
 - The catalog emits reciprocal and self `hreflang` links for every localized lesson. The static preview passes the grammar classification to the player, so the candidate chooses the archive independently of the URL prefix. The player keeps the title, canonical and alternate links synchronized after direct entry, legacy query entry and in-page navigation.
@@ -17,8 +36,6 @@
 | Output budgets | Candidate core is 1,999,318 bytes, with 682 bytes of headroom. DTZ media is 8,913,392 bytes, within its separate cap. The legacy build succeeds and its suite remains at 99 of 100. Its existing core budget failure now measures 2,002,675 bytes, 611 bytes above the Phase 3 legacy build because the shared player now also supports catalog-backed pages. |
 
 The pilot reuses the existing learning engine and archives, and one template replaces the two candidate reader shells. Catalog-driven publishing adds static equivalents without increasing the sampled page transfers. The narrow total-output margin remains a constraint on expanding static educational content. Measure each remaining slice before expanding it. CI on GitHub, Cloudflare edge behavior and production analytics were outside local verification.
-
-**Exact next task after Phase 5 authorization.** Migrate the six Turkish and English A1–B1 course overview pages through the catalog. Compare their existing URLs, lesson order and links, sample exercises, metadata and browser behavior. Verify the static educational content and applicable structured data before starting the A1 test or another format.
 
 ## Discoverability gates
 

@@ -14,19 +14,23 @@ const englishDescriptions = {
   B1: 'Describe experiences, explain your choices and respond to real-life situations in German.',
 };
 
-function englishLevelPage(level, library) {
-  const route = levelPath(level, 'en');
-  const records = library.filter(({ pack }) => pack.cefr === level);
+export function englishCourseMetadata(level, count) {
+  const heading = `German ${level} Course`;
+  return { path: levelPath(level, 'en'), heading, title: `${heading} – ${count} Free Lessons · Baulingo`, description: englishDescriptions[level] };
+}
+
+export function renderEnglishCourse(level, records, { path, title, heading, description, index, lessonLink, levelLink } = {
+  ...englishCourseMetadata(level, records.length), lessonLink: id => lessonPath(id, 'en'), levelLink: code => levelPath(code, 'en'),
+}) {
   const first = records[0].pack;
   const example = first.exercises.find(exercise => exercise.options.length);
-  const links = Object.keys(englishDescriptions).map(code => code === level ? `<strong aria-current="page">${code}</strong>` : `<a href="${levelPath(code, 'en')}">${code}</a>`).join(' · ');
-  const heading = `German ${level} Course`;
+  const links = Object.keys(englishDescriptions).map(code => code === level ? `<strong aria-current="page">${code}</strong>` : `<a href="${levelLink(code)}">${code}</a>`).join(' · ');
   const body = `<main class="reading-page"><p><a href="/en/#lessons">← English Topics</a></p><nav aria-label="Course level">${links}</nav>
-<h1>${heading}</h1><p>${englishDescriptions[level]}</p><p>${records.length} free lessons with English explanations. <a href="${grammarPath('en')}#${level.toLowerCase()}">Study ${level} grammar</a>.</p>
-<p><a class="button button-primary" href="${lessonPath(first.id, 'en')}">Start the first lesson →</a></p>
+<h1>${e(heading)}</h1><p>${e(description)}</p><p>${records.length} free lessons with English explanations. <a href="${grammarPath('en')}#${level.toLowerCase()}">Study ${level} grammar</a>.</p>
+<p><a class="button button-primary" href="${lessonLink(first.id)}">Start the first lesson →</a></p>
 <section class="exam-section"><h2>Sample exercise</h2><p>${e(example.prompt)}</p><ul lang="de">${example.options.map(option => `<li>${e(option)}</li>`).join('')}</ul><details><summary>See the answer</summary><p lang="de"><strong>${e(example.answers[0])}</strong></p><p>${e(example.explanation)}</p></details></section>
-<h2>${level} lessons</h2><ol class="topic-index">${records.map(({ pack, title = pack.title }) => `<li><a href="${lessonPath(pack.id, 'en')}">${e(title)}</a></li>`).join('')}</ol></main>`;
-  return [route.slice(1) + 'index.html', webPage('en', route, heading + ' – ' + records.length + ' Free Lessons · Baulingo', englishDescriptions[level], 'style.css', body, languageScript)];
+<h2>${level} lessons</h2><ol class="topic-index">${records.map(({ pack, title = pack.title }) => `<li><a href="${lessonLink(pack.id)}">${e(title)}</a></li>`).join('')}</ol></main>`;
+  return webPage('en', path, title, description, 'style.css', body, languageScript, index);
 }
 
 export function grammarIndexMetadata(language) {
@@ -89,7 +93,10 @@ export function lessonPages(libraries, grammar) {
     }
   }
   if (pages.size !== lessonPaths.length) throw Error('Lesson routes do not match the libraries');
-  for (const level of Object.keys(englishDescriptions)) pages.set(...englishLevelPage(level, libraries.en));
+  for (const level of Object.keys(englishDescriptions)) {
+    const records = libraries.en.filter(({ pack }) => pack.cefr === level);
+    pages.set(levelPath(level, 'en').slice(1) + 'index.html', renderEnglishCourse(level, records));
+  }
   for (const locale of Object.keys(grammar)) {
     const page = { ...grammarIndexMetadata(locale), locale, index: true };
     pages.set(page.path.slice(1) + 'index.html', renderGrammarIndex(page, grammar[locale]));

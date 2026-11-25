@@ -5,19 +5,20 @@ import { build as buildAstro } from 'astro';
 import { transform } from 'lightningcss';
 import { minify } from 'vite';
 import { build as buildLegacy } from './build.mjs';
-import { rewriteAssetURLs } from './assets.mjs';
+import { compactGeneratedHTML, rewriteAssetURLs } from './assets.mjs';
 import { generatedFiles, isFingerprintedAsset, publicFiles } from './public-files.mjs';
-import { grammarPaths, lessonPaths, readerPath } from '../src/mini-packs/routes.js';
 import { catalog } from '../src/publishing/catalog.ts';
-import { outputFile, siteOrigin, sitemapXml } from '../src/publishing/model.ts';
+import { outputFile, sitemapXml } from '../src/publishing/model.ts';
 
 const candidate = fileURLToPath(new URL('../.dev/astro-dist', import.meta.url));
-const legacyOwnedPaths = new Set(['/', '/en/', readerPath('en'), readerPath('tr'), ...grammarPaths, ...lessonPaths]);
-if (catalog.paths.size !== legacyOwnedPaths.size || [...catalog.paths.keys()].some(route => !legacyOwnedPaths.has(route))) {
-  throw new Error('Publishing metadata must preserve the existing homepage and mini-pack paths');
-}
 const rendered = new Set([...catalog.paths.keys()].map(outputFile));
 const legacy = await buildLegacy();
+const legacySitemap = await readFile(path.join(legacy, 'sitemap.xml'), 'utf8');
+const legacyLocations = new Set([...legacySitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(([, url]) => url));
+const catalogLocations = catalog.sitemapLocations();
+if (legacyLocations.size !== catalogLocations.length || catalogLocations.some(url => !legacyLocations.has(url))) {
+  throw new Error('The catalog must preserve all indexed public URLs');
+}
 await buildAstro({});
 
 // Reuse only the legacy builder's public artifact during the incremental cutover.
@@ -37,19 +38,16 @@ for (const line of redirects.trim().split(/\r?\n/)) {
 for (const file of rendered) {
   const target = path.join(candidate, file);
   const html = await readFile(target, 'utf8');
-  const rewritten = rewriteAssetURLs(html, fingerprints);
+  const rewritten = rewriteAssetURLs(compactGeneratedHTML(file, html), fingerprints);
   if (rewritten !== html) await writeFile(target, rewritten);
 }
 
-// Until all route families migrate, keep the unmodeled routes from the legacy sitemap.
-const legacySitemap = await readFile(path.join(legacy, 'sitemap.xml'), 'utf8');
-const unmodeled = [...legacySitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(([, url]) => url)
-  .filter(url => !catalog.paths.has(url.slice(siteOrigin.length)));
-await writeFile(path.join(candidate, 'sitemap.xml'), sitemapXml([...unmodeled, ...catalog.sitemapLocations()]));
+await writeFile(path.join(candidate, 'sitemap.xml'), sitemapXml(catalogLocations));
 
 // Compile only allowlisted browser assets, retaining their URLs and module boundaries.
 for (const file of [...publicFiles, ...generatedFiles].filter(name => /\.(?:js|css)$/.test(name))) {
-  const source = publicFiles.includes(file) ? new URL(`../${file}`, import.meta.url) : path.join(legacy, file);
+  const source = publicFiles.includes(file) && file !== 'src/dtz/content.js'
+    ? new URL(`../${file}`, import.meta.url) : path.join(legacy, file);
   const text = await readFile(source, 'utf8');
   if (file.endsWith('.css')) {
     const { code } = transform({

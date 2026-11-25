@@ -1,4 +1,4 @@
-import { dtzPageContent } from './dtz-page.mjs';
+import { dtzPageContent, germanReadingPreview } from './dtz-page.mjs';
 import { writingBook } from './writing-content.mjs';
 import { escapeWriting as e, writingMarkdown } from './writing-format.mjs';
 
@@ -57,7 +57,7 @@ function page(lang, route, title, description, body, options = {}) {
   return `<!doctype html>
 <html lang="${lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${e(title)} · Baulingo</title><meta name="description" content="${e(description)}">
-<link rel="canonical" href="${origin}${route}">
+<link rel="canonical" href="${origin}${route}">${options.index === false ? '<meta name="robots" content="noindex">' : ''}
 ${options.alternates ?? ''}<meta name="theme-color" content="#FAF7F0">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/style.css">
 <script type="module" src="/src/language.js"></script>
@@ -70,12 +70,11 @@ ${options.fragment ? '<script type="module" src="/src/dtz/german-resource.js"></
 </div></body></html>`;
 }
 
-function overview(lang) {
+function overview(lang, record, alternates) {
   const copy = guide[lang];
   const [mock, course] = lang === 'tr' ? ['/dtz-deneme-sinavi/', '/dtz-mektup-yazma/'] : [test, writing];
   const card = ([title, description, link], path) => `<article><h3>${e(title)}</h3><p>${e(description)}</p><a class="button button-primary" href="${path}">${e(link)} →</a></article>`;
   const skills = ['Hören', 'Lesen', 'Schreiben', 'Sprechen'];
-  const alternates = Object.entries(routes).map(([code, path]) => `<link rel="alternate" hreflang="${code}" href="${origin}${path}">`).join('');
   const englishWritingHelp = lang === 'en' ? `<section id="writing-help" class="exam-section">
 <h2>Writing help in English</h2><p>Read the situation before you write. Identify who will receive the message, then make a short note for each of the four points.</p>
 <dl><dt><strong lang="de">Anrede</strong></dt><dd>The greeting. Use <span lang="de">Sehr geehrte Frau …</span> in a formal message and <span lang="de">Liebe …</span> for a friend.</dd>
@@ -83,9 +82,9 @@ function overview(lang) {
 <dt><strong lang="de">Grußformel</strong></dt><dd>The closing. <span lang="de">Mit freundlichen Grüßen</span> is a formal closing. Put your name on the next line.</dd></dl>
 <p>For example, <span lang="de">„Könnten Sie mir bitte einen neuen Termin geben?“</span> means “Could you please give me a new appointment?” Give a specific day or time if the task asks for one.</p>
 <p><a href="${writing}#03-vier-punkte-planen">Practise planning the four points</a></p></section>` : '';
-  return page(lang, routes[lang], copy.title, copy.description, `${languages(lang)}<h1>${copy.heading}</h1><p>${copy.intro}</p>
+  return page(lang, record.path, record.title.slice(0, -' · Baulingo'.length), record.description, `${languages(lang)}<h1>${e(record.heading)}</h1><p>${copy.intro}</p>
 <section class="exam-section" aria-label="DTZ"><div class="exam-materials">${card(copy.test, mock)}${card(copy.writing, course)}</div></section>
-<section id="pruefungsteile" class="exam-section"><h2>${copy.format}</h2><dl>${skills.map((skill, i) => `<dt><strong lang="de">${skill}</strong></dt><dd>${copy.parts[i]}</dd>`).join('')}</dl><p>${copy.scoring}</p><p><a href="${source}">${copy.official}</a></p></section>${englishWritingHelp}`, { alternates });
+<section id="pruefungsteile" class="exam-section"><h2>${copy.format}</h2><dl>${skills.map((skill, i) => `<dt><strong lang="de">${skill}</strong></dt><dd>${copy.parts[i]}</dd>`).join('')}</dl><p>${copy.scoring}</p><p><a href="${source}">${copy.official}</a></p></section>${englishWritingHelp}`, { alternates, index: record.index });
 }
 
 const chapterNav = `<ol class="topic-index">${writingBook.chapters.map(chapter =>
@@ -93,23 +92,46 @@ const chapterNav = `<ol class="topic-index">${writingBook.chapters.map(chapter =
 const mockFallback = `<h1>DTZ-Modelltest A2–B1</h1><p>Ein vollständiger Modelltest mit 20 Höraufgaben, 25 Leseaufgaben, einer Schreibaufgabe und Sprechtraining. Hören und Lesen werden automatisch ausgewertet.</p>`;
 const courseIntro = `<h1>DTZ-Schreibkurs A2–B1</h1><p>Arbeite mit 15 Kapiteln und 47 Übungen. Lerne von kurzen Sätzen bis zum vollständigen Brief. Schreibe zuerst selbst, prüfe deinen Text und vergleiche ihn dann mit der Musterlösung.</p>`;
 
-export function dtzHubPages() {
-  const pages = new Map(Object.keys(routes).map(lang => [routes[lang].slice(1) + 'index.html', overview(lang)]));
+/** @returns {import('../src/publishing/resources.ts').ResourceDefinition[]} */
+export function dtzResources() {
+  const guides = Object.entries(routes).map(([locale, path]) => {
+    const { title, heading, description } = guide[locale];
+    return {
+      key: 'dtz-guide', format: 'exam_guide', translationGroup: 'dtz-guide', locale, path,
+      title: title + ' · Baulingo', heading, description,
+      render: (record, alternates) => overview(locale, record, alternates),
+    };
+  });
   const back = `<p><a href="${routes.de}">← DTZ-Prüfung</a></p>`;
   const mockHelp = `<p><a href="${routes.en}#pruefungsteile" lang="en" data-language-choice="en">English test instructions</a> · <a href="/dtz-deneme-sinavi/" lang="tr" data-language-choice="tr">Türkçe yönergeli deneme</a></p>`;
   const courseHelp = `<p><a href="${routes.en}#writing-help" lang="en" data-language-choice="en">English writing help</a> · <a href="/dtz-mektup-yazma/" lang="tr" data-language-choice="tr">Türkçe açıklamalı yazma kursu</a></p>`;
-  pages.set(test.slice(1) + 'index.html', page('de', test, 'Kostenloser DTZ-Modelltest A2–B1',
+  const germanResource = (format, key, path, title, heading, description, body, options) => ({
+    key, format, locale: 'de', path, title: title + ' · Baulingo', heading, description, translationGroup: options.translationGroup,
+    render: (record, alternates) => page('de', record.path, record.title.slice(0, -' · Baulingo'.length),
+      record.description, body, { ...options, alternates, index: record.index }),
+  });
+  const mock = germanResource('dtz_mock', 'dtz-mock', test, 'Kostenloser DTZ-Modelltest A2–B1', 'DTZ-Modelltest A2–B1',
     'Vollständiger Übungstest zum Deutsch-Test für Zuwanderer. Höre, lies, schreibe und übe das Sprechen.', `${back}${mockHelp}
-<div data-dtz-fragment="modelltest">${mockFallback}</div>
+<div data-dtz-fragment="modelltest">${mockFallback}${germanReadingPreview()}</div>
 <noscript><p>Für die Auswertung und die Uhr brauchst du JavaScript. <a href="/dtz-deneme-sinavi/">Aufgaben und Hördatei öffnen</a>.</p></noscript>`, {
-      css: 'dtz.css', mainClass: 'dtz-main', fragment: true,
-      alternates: `<link rel="alternate" hreflang="de" href="${origin}${test}"><link rel="alternate" hreflang="tr" href="${origin}/dtz-deneme-sinavi/">`,
-    }));
-  pages.set(writing.slice(1) + 'index.html', page('de', writing, 'DTZ Schreiben A2–B1: Vollständiger Briefkurs',
+      css: 'dtz.css', mainClass: 'dtz-main', fragment: true, translationGroup: 'dtz-mock',
+    });
+  const course = germanResource('writing', 'dtz-german-writing', writing, 'DTZ Schreiben A2–B1: Vollständiger Briefkurs', 'DTZ-Schreibkurs A2–B1',
     '15 Kapitel mit 47 Schreibübungen, Satzbausteinen und Musterbriefen für den Deutsch-Test für Zuwanderer.', `${back}${courseHelp}${courseIntro}
-<nav aria-label="Kapitel">${chapterNav}</nav><div class="writing-body" data-dtz-fragment="schreiben"></div>
-<noscript><p>Aktiviere JavaScript, um die deutschen Kapitel und die Schreibfelder zu öffnen. <a href="/dtz-mektup-yazma/">Deutsche Aufgaben und Mustertexte mit türkischer Erklärung lesen</a>.</p></noscript>`, {css: 'writing.css', fragment:true}));
-  return pages;
+<nav aria-label="Kapitel">${chapterNav}</nav><div class="writing-body" data-dtz-fragment="schreiben">${germanWritingPreview()}</div>
+<noscript><p>Für alle Übungen und die Schreibfelder brauchst du JavaScript. <a href="/dtz-mektup-yazma/">Deutsche Aufgaben und Mustertexte mit türkischer Erklärung lesen</a>.</p></noscript>`, {css: 'writing.css', fragment:true});
+  return [...guides, mock, course];
+}
+
+export function dtzHubPages() {
+  const alternateLinks = entries => entries.map(([locale, path]) => `<link rel="alternate" hreflang="${locale}" href="${origin}${path}">`).join('');
+  const groups = {
+    'dtz-guide': alternateLinks(Object.entries(routes)),
+    'dtz-mock': alternateLinks([['de', test], ['tr', '/dtz-deneme-sinavi/']]),
+  };
+  return new Map(dtzResources().map(resource => [
+    resource.path.slice(1) + 'index.html', resource.render(resource, groups[resource.translationGroup] ?? ''),
+  ]));
 }
 
 function bookText(markdown) {
@@ -117,6 +139,17 @@ function bookText(markdown) {
   return writingMarkdown(markdown.replace(/^.*\[\[[^\n]*\]\].*\n?/gm, '').replace(/^> \[!\w+\] (.*)$/gm, '> **$1**'))
     .replace(/<\/?h4>/g, heading => heading.replace('4', '3'))
     .replace(/<li>\[ \] (.*?)<\/li>/g, '<li><label><input type="checkbox"> $1</label></li>');
+}
+
+function germanWritingPreview() {
+  return writingBook.chapters.map(chapter => {
+    const intro = chapter.markdown.replace(/^# .*\n/, '').trim();
+    // Show the opening paragraph or the first teaching section before the interactive book loads.
+    const end = intro.search(/\n## /);
+    const excerpt = end === -1 ? intro : intro.slice(0, end);
+    const text = excerpt.startsWith('## ') ? excerpt.replace(/^## (.*)$/m, '### $1') : excerpt;
+    return `<section class="exam-section" id="${chapter.slug}"><h2>${e(chapter.title)}</h2>${bookText(text)}</section>`;
+  }).join('');
 }
 
 export function dtzGermanWritingContent() {

@@ -8,7 +8,7 @@ import { dtzGermanArchives } from './dtz-hub.mjs';
 import { writingBase, writingLessons } from './writing-content.mjs';
 import { writingCourseNavigation } from './writing-page.mjs';
 import { examData } from '../src/dtz/content.js';
-import { fingerprintAssets, rewriteAssetURLs } from './assets.mjs';
+import { compactGeneratedHTML, fingerprintAssets, rewriteAssetURLs } from './assets.mjs';
 
 const root = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
 const output = path.resolve(root, 'dist');
@@ -87,24 +87,20 @@ export async function build() {
   const catalog = Object.fromEntries(writingLessons.map(({ id, reference, tasks }) =>
     [id, { reference: !!reference, tasks: tasks.map(({ id }) => ({ id })) }]));
   await writeFile(path.join(output, 'src/writing/catalog.js'), `export const writingCourse = ${JSON.stringify(catalog)};\nexport const writingNavigation = ${JSON.stringify(writingCourseNavigation(writingBase))};\n`);
-  await writeFile(path.join(output, 'src/dtz/content.js'), `export const examData = ${JSON.stringify(examData)};\n`);
+  // The static HTML carries the exam text and media. The player needs only scoring and export data.
+  const scoringTasks = tasks => tasks.filter(task => !task.isExample).map(task => ({
+    questions: task.questions.map(({ id, choices, correctAnswer }) => ({ id, choices, correctAnswer })),
+  }));
+  const playerExam = {
+    id: examData.id,
+    listeningTasks: scoringTasks(examData.listeningTasks),
+    readingTasks: scoringTasks(examData.readingTasks),
+    writingPrompts: examData.writingPrompts.map(({ id, title }) => ({ id, title })),
+  };
+  await writeFile(path.join(output, 'src/dtz/content.js'), `export const examData = ${JSON.stringify(playerExam)};\n`);
   for (const [file, html] of generatePages({ en, tr }, { en: grammarEn, tr: grammarTr })) {
     await mkdir(path.dirname(path.join(output, file)), { recursive: true });
-    // Compact repeated markup in the training pages while preserving their DOM.
-    const compact = file === 'dtz-kelime-kalip-cumle/index.html'
-      ? html.replace(/(\s(?:class|lang|scope|type|data-[a-z-]+))="([A-Za-z0-9_-]+)"/g, '$1=$2')
-        .replace(/<\/(?:td|th)>(?=<(?:td|th)(?:[ >])|<\/tr>)/g, '')
-        .replace(/<\/li>(?=<li[ >]|<\/[ou]l>)/g, '')
-      : file === 'dtz-deneme-sinavi/index.html'
-        ? html.replace(/(\s(?:class|lang|scope|type))="([A-Za-z0-9_-]+)"/g, '$1=$2')
-        : file.startsWith('dtz-mektup-yazma/')
-          ? html.replace(/(\s(?:class|scope|type|data-(?!(?:task|task-kind)=)[a-z-]+))="([A-Za-z0-9_-]+)"/g, '$1=$2')
-            .replace(/ lang="de"/g, ' lang=de')
-            .replace(/(\s(?:aria-describedby|aria-labelledby|for|rows|maxlength))="([A-Za-z0-9_:-]+)"/g, '$1=$2')
-            .replace(/<\/option>(?=<option[ >]|<\/select>)/g, '')
-            .replace(/<\/li>(?=<li[ >]|<\/[ou]l>)/g, '')
-          : html;
-    await writeFile(path.join(output, file), compact);
+    await writeFile(path.join(output, file), compactGeneratedHTML(file, html));
   }
   const mapping = await fingerprintAssets(output);
   for (const file of [...publicFiles, ...generatedFiles].filter(name => /\.(?:html|css)$/.test(name))) {
