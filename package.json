@@ -2,11 +2,23 @@
   "name": "baulingo-site",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "node scripts/dev.mjs",
     "preview": "node scripts/dev.mjs --production",
+    "preview:astro": "node scripts/dev.mjs --astro",
     "build": "node scripts/build.mjs",
+    "build:astro": "node scripts/build-astro.mjs",
+    "check:astro": "astro check",
+    "test:astro": "node tests/publishing.mjs && npm run build:astro && node tests/astro-foundation.mjs",
     "test": "node --test --test-isolation=none tests/*.test.mjs"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.12",
+    "astro": "7.4.13",
+    "lightningcss": "1.33.0",
+    "typescript": "5.9.3"
   }
 }

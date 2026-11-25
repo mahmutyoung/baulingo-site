@@ -6,12 +6,12 @@ import { resolvePublicFile, isFingerprintedAsset, fingerprintOnlyAssets, legacyA
 import { createReviewHandler, injectReviewBridge, isLocalReviewRequest, rewriteReviewLinks } from './review-server.mjs';
 import { rebuildReviewPreview } from './review-rebuild.mjs';
 
-const root = fileURLToPath(new URL('../dist', import.meta.url));
+const legacyOutput = fileURLToPath(new URL('../dist', import.meta.url));
 const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.mp3': 'audio/mpeg', '.woff2': 'font/woff2', '.txt': 'text/plain; charset=utf-8', '.xml': 'application/xml; charset=utf-8' };
 
 // Preview emitted files, common headers and canonical slash redirects locally.
 // Cloudflare is authoritative for edge caching, TLS and hostname matching.
-export async function createPreviewServer({ review = false, reviewStore } = {}) {
+export async function createPreviewServer({ review = false, reviewStore, root = legacyOutput } = {}) {
   const rules = await readFile(path.join(root, '_headers'), 'utf8');
   const common = Object.fromEntries(rules.split(/\r?\n\r?\n/)[0].split(/\r?\n/).slice(1).filter(Boolean).map(line => {
     const colon = line.indexOf(':');

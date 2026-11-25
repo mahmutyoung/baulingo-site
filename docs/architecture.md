@@ -1,8 +1,8 @@
-# Baulingo website: shape and architecture
+# Baulingo website architecture
 
-Status: live static foundation with incremental development. The owner asked for the general shape and architecture, followed by small implementation steps. The latest supplied [homepage reference](design/homepage.md) is authoritative for layout and copy. Product experiments are embedded in the main website to understand visitor demand and preferences.
+The target is a static Astro site with strict TypeScript and browser-local learning. The production build still uses HTML, CSS, native JavaScript and a custom static builder. Phase 3 connected validated content and page metadata to the Astro candidate's homepages, lesson previews and sitemap. [Migration handoff](migration.md)
 
-The [long-term roadmap](roadmap.md) owns product stages, audience priorities and experiment decisions. This document describes how to support that direction with the current implementation.
+Turkish speakers learning German remain the primary audience. The roadmap governs product priorities and experiments, and the approved homepage reference governs the layout and Turkish copy. [Roadmap](roadmap.md) · [Homepage reference](design/homepage.md)
 
 ## Purpose
 
@@ -10,7 +10,64 @@ Serve Turkish speakers learning German. Help them find an explanation in Turkish
 
 Use embedded interactions to learn which needs and learning experiences matter to this audience. Keep each experiment small enough to assess before expanding the product.
 
-## Site shape
+## Target architecture
+
+| Responsibility | Target |
+| --- | --- |
+| Educational content | Strict TypeScript models and build-time validation. Use Astro content collections where they simplify authoring or validation. Reuse existing data and retain the schemas specific to mini-packs, examinations, writing and reference materials. |
+| Publishing | Astro generates static HTML, localized routes, shared layouts and SEO metadata. Pages remain readable with JavaScript disabled. |
+| Learning | Framework-independent rules own answers, scoring, timing and progress transitions. Native TypeScript enhances simple activities. A complex player can use a React island when its composition or state warrants it, with hydration scoped to the player. |
+| Persistence | Browser-local storage retains learner progress, drafts and attempts. Existing keys, record formats and recovery behavior are compatibility requirements. Activity state that currently lives in memory stays there until a product requirement changes it. |
+| Measurement | One typed learning event contract. Consented GA4 measures website behavior, Search Console reports organic discovery, and Looker Studio combines reporting views while retaining the meaning of each source. |
+| Delivery | Cloudflare serves an explicitly bounded static artifact on the existing free hosting. The site has no runtime server, database, authentication or global state framework. |
+
+### Content, collections, pages and players
+
+| Concept | Owns |
+| --- | --- |
+| Content | A stable identity, localized educational material, and shared classification where applicable. Format-specific fields carry exercises, exam tasks, examples or other material. |
+| Collection | An ordered set of content references for a course, product or learning path. The same item can appear in multiple collections without duplicating its material. |
+| Page | A stable page ID, independently specified public path, locale, title, H1, description, content association, canonical, language equivalents and indexing policy. |
+| Player | The presentation and interaction for a learning format, using the content's existing rules and state model. |
+
+For example, `DE-A1-G09` is one A1 item in the `mini_pack` format and the `grammar` category. Its Turkish page is `/konular/almanca-gramer/a1/akkusativ-einen-ve-den/` and its English page is `/en/german-grammar/a1/the-accusative/`. Each page has its own metadata and path. Both use the same mini-pack player as the everyday communication track. [Existing route map](../src/mini-packs/routes.js)
+
+### Publishing and SEO
+
+Page records drive static route generation, internal links, the sitemap and reciprocal language equivalents. Localized URLs may use any required path depth. Course order, navigation placement and URL structure can evolve independently. Emit language equivalents for substantially equivalent pages and keep contextual help links separately. Validate unique IDs and public paths, referenced content and equivalent page IDs at build time.
+
+Preserve existing public routes, linking behavior and indexing intent. Any route change requires owner approval and a permanent redirect. Keep explanations, examples and navigation in generated HTML. Interactive controls enhance that material. Use original localized editorial content where it exists and avoid extra pages for minor keyword variants.
+
+### Learning and measurement
+
+Retain the existing answer checks, exam deadlines and scoring, lazy audio, writing drafts, progress, keyboard behavior and local exports. Migrate each format through its normal entry points with stored-data fixtures and browser parity checks. Where content is shared with the Android app, use a controlled export and keep the website build and app release independent.
+
+Derive analytics context from the content and page records, including content ID, page ID, format, subject category, collection context, CEFR and content language. Define each event's trigger, required parameters, unit and deduplication scope. Distinguish direct exposure from explicit selection and active engagement, start from resume, and checked completion from self-review. Attribute outcomes and time to the right page, lesson and attempt through navigation and resume. Reading and reference material can be measured without a completion event.
+
+Keep GA4 measurement ID `G-R1YH6T64JM` and the existing consent behavior. Exclude raw searches, answers and drafts from event payloads, and keep unique attempt IDs out of reporting dimensions. Document metric changes and their release boundary before comparing historical and new data. Android analytics remains independent. [Analytics operations](analytics.md)
+
+### Source layout and migration
+
+```text
+src/
+  content/       Educational sources and format validation
+  publishing/    Validated page records and collection references
+  pages/         Static routes and page composition
+  layouts/       Shared HTML and SEO metadata
+  components/    Reusable presentation
+  learning/      Learning rules and players
+  analytics/     Event contracts and GA4 adapter
+  styles/        Shared styles
+public/          Explicitly published static assets
+tests/           Build, learning and publication checks
+docs/            Architecture and migration handoff
+```
+
+Create these directories as migrated code needs them. Keep the legacy production build during the Astro foundation phase. Once a route family switches, give it one production renderer and remove the corresponding legacy template or archive when its final consumer has migrated and parity is verified. Use both mini-pack tracks to test whether the structure improves maintenance without increasing visitor costs before migrating other formats.
+
+Publish only the verified static artifact. Preserve the Cloudflare apex and separate WWW redirect, security headers, cache rules, and public asset aliases. Keep the legacy Android privacy URL available. Measure deployment size separately from page transfers. The 2 MB core and 10 MB DTZ media caps remain in force. The baseline core overage is recorded in the handoff, which also carries the phase gates and exact next task. [Migration handoff](migration.md) · [Production operations](production.md)
+
+## Current site shape
 
 - Home: the supplied “Almancada aradığın cevap.” layout, topic search, a short phrase preview and three learning paths.
 - Grammar: articles, cases and word order, explained in Turkish.
@@ -36,37 +93,6 @@ Use the roadmap's question → experience → evidence → decision cycle for ea
 
 The existing short sentence activity provides an initial interaction pattern. Extend it incrementally while preserving the selected homepage layout and Turkish wording. Ship experiments with the main website. Aggregate website analytics does not collect exercise or preference events; native app telemetry remains a separate concern.
 
-## Current foundation and optional future architecture
-
-The current implementation uses static HTML/CSS and native JavaScript modules. Learning pages are generated from structured topic data; exercise rules are separate from DOM rendering. Continue with this foundation for embedded experiments. The earlier Astro + TypeScript direction remains an optional future content migration when justified by the content library. Render learning pages as static HTML and add browser interaction where an activity needs it. React islands remain an option for richer exercises later.
-
-The following tree is an optional future content structure, not the current repository layout:
-
-```text
-src/
-  pages/        Routes and page composition
-  layouts/      Shared page and learning-page layouts
-  components/   Header, navigation, topic links and resource previews
-  content/      Turkish explanations and reviewed page metadata
-  exercises/    Exercise data, answer rules and small browser players
-public/
-  assets/       Approved images, fonts and icons
-  downloads/    Retained source files; no longer published
-```
-
-Keep content, answer rules and presentation separate. A page selects an exercise; it does not define its answer logic. Keep one reviewed source for content shared with the app. Use a controlled export when sharing becomes necessary. Do not copy the private application into this public repository.
-
-Turkish remains the first audience. The owner also requested independently authored English content under `/en/`, with its own homepage and three lessons. `scripts/english-pages.mjs` generates those pages; `src/language.js` handles the initial browser preference and explicit language choices. The English header uses the same language chooser style as the Turkish homepage, showing the current language and a down arrow. English has no app information page.
-
-Build static output into `dist/` for the agreed Cloudflare hosting. The main site is live at `baulingo.app`; a dedicated WWW Worker redirects to the apex. Embedded experiments share the main site's build and deployment. Accounts, progress sync and server features can be added when a defined learner need requires them.
-
-## Implementation sequence
-
-1. Preserve the live shared layout, topic-page pattern, search, downloads and sentence activity as the starting foundation.
-2. Define the first embedded experiment brief and the evidence method described in the roadmap's immediate milestone.
-3. Implement that small interaction using the existing site modules, then review its feedback, accessibility and mobile use.
-4. Use the result to choose the next content or practice improvement. Add deeper exam preparation after its requirements are reviewed. Introduce accounts, backend services or a framework migration when the selected product work requires them.
-
 ## Current implementation
 
 The study page keeps basic level/content filters separate from a native advanced disclosure holding the existing four other filters. `src/dtz-study-filter.js` retains the original dependency/count rules, synchronizes per-level view buttons and updates sticky level/topic context using a throttled scroll handler. Writing phrase data is held in a hidden library rather than a visible sidebar; the builder moves that library into its inline toolbox when requested. Initial privacy notices are omitted, while real storage failures, corrupt data and failed resets explicitly reveal their feedback.
@@ -79,7 +105,7 @@ Local developer review uses `/dev/review/` with a maintained change catalog, the
 
 The DTZ simulation is implemented locally at `/dtz-deneme-sinavi/` as a new page within the main static build; publication is pending. `scripts/import-dtz.mjs` exports only the existing app's exam data and three media files. `src/dtz/content.js` holds that snapshot, `src/dtz/rules.js` owns pure state/scoring/deadline rules, `src/dtz/player.js` enhances the static output from `scripts/dtz-page.mjs`, and `dtz.css` extends the site's design. Normal builds do not read the app repository. The current attempt is stored only in localStorage; drafts and answers are never submitted. The core output retains its 2 MB budget, with the owner's separately approved 10 MB allowance for exact, lazy-loaded DTZ media. See [the port notes](content/dtz-web.md) for scope, provenance and verification. Other exam packages remain planned.
 
-The repository has static HTML/CSS, browser modules, generated topic and English pages, a production-output preview, an explicit public-file build and focused tests. The sentence activity, topic dialogs, recorded audio and text downloads work on the live site. Continue from these pieces rather than rebuilding the homepage. No Astro migration or native app changes have been made. See [production notes](production.md) for deployment verification.
+The repository has static HTML/CSS, browser modules, generated topic and English pages, a production-output preview, an explicit public-file build and focused tests. The Astro candidate reuses these site modules for its homepage. The native app and live website have independent release histories. [Migration handoff](migration.md) · [Production notes](production.md)
 
 ## Static asset optimization
 

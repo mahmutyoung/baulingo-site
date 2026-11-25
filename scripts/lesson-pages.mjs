@@ -4,8 +4,8 @@ import { escapeLearningText as e } from '../src/learning-text.js';
 export const englishLevelPaths = ['A1', 'A2', 'B1'].map(level => levelPath(level, 'en'));
 const languageScript = '<script type=module src="/src/language.js"></script>';
 
-function webPage(language, route, title, description, stylesheet, body, script = '') {
-  return `<!doctype html><html lang="${language}"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>${e(title)} · Baulingo</title><meta name=description content="${e(description)}"><link rel="canonical" href="https://baulingo.app${route}"><link rel=stylesheet href="/${stylesheet}">${script}</head>${body}`;
+function webPage(language, route, title, description, stylesheet, body, script = '', index = true) {
+  return `<!doctype html><html lang="${language}"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>${e(title)}</title><meta name=description content="${e(description)}"><link rel="canonical" href="https://baulingo.app${route}">${index ? '' : '<meta name="robots" content="noindex">'}<link rel=stylesheet href="/${stylesheet}">${script}</head>${body}`;
 }
 
 const englishDescriptions = {
@@ -26,7 +26,7 @@ function englishLevelPage(level, library) {
 <p><a class="button button-primary" href="${lessonPath(first.id, 'en')}">Start the first lesson →</a></p>
 <section class="exam-section"><h2>Sample exercise</h2><p>${e(example.prompt)}</p><ul lang="de">${example.options.map(option => `<li>${e(option)}</li>`).join('')}</ul><details><summary>See the answer</summary><p lang="de"><strong>${e(example.answers[0])}</strong></p><p>${e(example.explanation)}</p></details></section>
 <h2>${level} lessons</h2><ol class="topic-index">${records.map(({ pack, title = pack.title }) => `<li><a href="${lessonPath(pack.id, 'en')}">${e(title)}</a></li>`).join('')}</ol></main>`;
-  return [route.slice(1) + 'index.html', webPage('en', route, heading + ' – ' + records.length + ' Free Lessons', englishDescriptions[level], 'style.css', body, languageScript)];
+  return [route.slice(1) + 'index.html', webPage('en', route, heading + ' – ' + records.length + ' Free Lessons · Baulingo', englishDescriptions[level], 'style.css', body, languageScript)];
 }
 
 function grammarHome(language, library) {
@@ -43,10 +43,22 @@ function grammarHome(language, library) {
 <p><a href="${levelPath(level, language)}">${turkish ? 'Almanca ' + level + ' Kursu' : 'German ' + level + ' Course'}</a></p>
 <ol class="topic-index">${items.map(({ pack, title }) => `<li><a href="${lessonPath(pack.id, language)}">${e(title)}</a></li>`).join('')}</ol></section>`;
   }).join('');
-  return [route.slice(1) + 'index.html', webPage(language, route, title, intro, 'style.css', `<main class="reading-page">
+  return [route.slice(1) + 'index.html', webPage(language, route, title + ' · Baulingo', intro, 'style.css', `<main class="reading-page">
 <a class=language href="${grammarPath(other)}" lang=${other} hreflang=${other} data-language-choice=${other} data-match-language>${turkish ? 'English' : 'Türkçe'}</a>
 <h1>${title}</h1><p>${intro}</p><nav aria-label="${turkish ? 'Kurs düzeyi' : 'Course level'}"><a href="#a1">A1</a> · <a href="#a2">A2</a> · <a href="#b1">B1</a></nav>${groups}</main>`,
     languageScript + ['en','tr'].map(lang => `<link rel=alternate hreflang=${lang} href="https://baulingo.app${grammarPath(lang)}">`).join(''))];
+}
+
+/**
+ * @param {{ locale: string, path: string, title: string, heading: string, description: string, index?: boolean }} page
+ * @param {{ back: string, label: string, info: string, example: string, translation: string, related?: { path: string, title: string } }} preview
+ */
+export function renderLessonPreview(page, { back, label, info, example, translation, related }) {
+  const relatedLink = related ? `<p><a href="${related.path}">${e(related.title)}</a>` : '';
+  const body = `<main id=main-content class=lesson-preview><a href="${back}">← ${label}</a>
+<h1 id=lesson-title>${e(page.heading)}</h1><p>${e(info)}<p lang=de>${e(example)}<p>${e(translation)}${relatedLink}</main>`;
+  return webPage(page.locale, page.path, page.title, page.description,
+    'src/mini-packs/style.css', body, '<script type=module src="/src/mini-packs/player.js"></script>', page.index);
 }
 
 export function lessonPages(libraries, grammar) {
@@ -59,12 +71,14 @@ export function lessonPages(libraries, grammar) {
       const isGrammar = grammarLesson(pack.id);
       const example = isGrammar ? pack.grammar.example : pack.vocabulary[0].example;
       const back = isGrammar ? grammarPath(language) + '#' + pack.cefr.toLowerCase() : '../';
-      const relatedLink = isGrammar ? `<p><a href="${lessonPath(related[0].id, language)}">${e(related[0].title)}</a>` : '';
-      const info = isGrammar ? pack.grammar.explanation : pack.objective;
-      const body = `<main id=main-content class=lesson-preview><a href="${back}">← ${german} ${pack.cefr}</a>
-<h1 id=lesson-title>${e(pack.title)}</h1><p>${e(info)}<p lang=de>${e(example.de)}<p>${e(example[language])}${relatedLink}</main>`;
-      pages.set(route.slice(1) + 'index.html', webPage(language, route, `${pack.title} · ${german} ${pack.cefr}`, pack.objective,
-        'src/mini-packs/style.css', body, '<script type=module src="/src/mini-packs/player.js"></script>'));
+      pages.set(route.slice(1) + 'index.html', renderLessonPreview({
+        locale: language, path: route, title: `${pack.title} · ${german} ${pack.cefr} · Baulingo`,
+        heading: pack.title, description: pack.objective,
+      }, {
+        back, label: `${german} ${pack.cefr}`, info: isGrammar ? pack.grammar.explanation : pack.objective,
+        example: example.de, translation: example[language],
+        related: isGrammar ? { path: lessonPath(related[0].id, language), title: related[0].title } : undefined,
+      }));
     }
   }
   if (pages.size !== lessonPaths.length) throw Error('Lesson routes do not match the libraries');

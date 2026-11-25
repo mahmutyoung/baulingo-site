@@ -1,0 +1,27 @@
+---
+interface Props {
+  locale: string;
+  title: string;
+  description: string;
+  canonical: string;
+  index?: boolean;
+}
+
+const { locale, title, description, canonical, index = true } = Astro.props;
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{title}</title>
+    <meta name="description" content={description}>
+    <link rel="canonical" href={canonical}>
+    {!index && <meta name="robots" content="noindex">}
+    <slot name="head" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

@@ -1,4 +1,13 @@
 import { englishExercises } from '../src/english-exercises.js';
+import { escapeLearningText as escape } from '../src/learning-text.js';
+
+export const englishHome = {
+  path: '/en/',
+  title: 'Learn German for Beginners: Grammar & Everyday Phrases',
+  heading: ['Learn German.', 'Use it every day.'],
+  description: 'Learn German with clear English explanations, everyday phrases and short practice tasks. Start with articles, word order or making an appointment.',
+};
+const homeAlternates = '<link rel="alternate" hreflang="en" href="https://baulingo.app/en/"><link rel="alternate" hreflang="tr" href="https://baulingo.app/">';
 
 const lessons = [
   {
@@ -32,9 +41,9 @@ function practiceDialog() {
 </div></section></dialog>`;
 }
 
-function page(title, description, path, body) {
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title} · Baulingo</title><meta name="description" content="${description}"><link rel="canonical" href="https://baulingo.app${path}">
-${path === '/en/' ? '<link rel="alternate" hreflang="en" href="https://baulingo.app/en/"><link rel="alternate" hreflang="tr" href="https://baulingo.app/">' : ''}
+function page(title, description, path, { alternateLinks = '', canonicalPath = path, index = true }, body) {
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title} · Baulingo</title><meta name="description" content="${description}"><link rel="canonical" href="https://baulingo.app${canonicalPath}">${index ? '' : '<meta name="robots" content="noindex">'}
+${alternateLinks}
 <meta name="theme-color" content="#FAF7F0"><meta property="og:type" content="website"><meta property="og:site_name" content="Baulingo"><meta property="og:title" content="${title}"><meta property="og:description" content="${description}"><meta property="og:url" content="https://baulingo.app${path}"><meta property="og:locale" content="en_GB"><meta property="og:image" content="https://baulingo.app/assets/cafe-hero.webp"><meta property="og:image:alt" content="A café counter, a place to practise ordering in German"><meta name="twitter:card" content="summary_large_image"><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/style.css"><script type="module" src="/src/analytics.js"></script><script type="module" src="/src/navigation.js"></script><script type="module" src="/src/english-practice.js"></script></head><body><a class="skip" href="#main">Skip to content</a><div class="page"><header class="header"><a class="brand" href="/en/" aria-label="Baulingo home"><img src="/assets/logo.svg" alt="Baulingo" width="240" height="64"></a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-navigation" hidden>Menu <span aria-hidden="true">☰</span></button><nav id="main-navigation" class="navigation" aria-label="Main menu"><a href="/en/#lessons">Lessons</a><a href="/en/#everyday">Everyday German</a></nav>${path === '/en/' ? '<button class="language" type="button" data-language-open aria-haspopup="dialog">English <img src="/assets/icons/caret-down.svg" width="16" height="16" alt=""></button>' : ''}</header><main id="main" class="${path === "/en/" ? "english-home" : "reading-page"}">${body}</main><footer class="footer"><p>Baulingo</p><div><a href="/en/">Home</a><a href="mailto:mahmutyoung@gmail.com">Contact</a><a href="/impressum/" lang="de">Impressum</a><a href="/privacy/" lang="de">Datenschutz</a></div></footer></div>${practiceDialog()}${path === '/en/' ? `<dialog class="content-dialog" id="language-dialog" aria-labelledby="language-title">
 <div class="dialog-top"><span class="dialog-brand">Baulingo</span><button class="close-button" type="button" data-close>Close</button></div>
 <h2 id="language-title">Language / İçerik dili</h2>
@@ -42,11 +51,11 @@ ${path === '/en/' ? '<link rel="alternate" hreflang="en" href="https://baulingo.
 </dialog>` : ''}</body></html>`;
 }
 
-export function englishPages() {
+export function englishPages({ alternateLinks = homeAlternates, canonicalPath = englishHome.path, index = true } = {}) {
   const pages = new Map();
-  pages.set('en/index.html', page('Learn German for Beginners: Grammar &amp; Everyday Phrases', 'Learn German with clear English explanations, everyday phrases and short practice tasks. Start with articles, word order or making an appointment.', '/en/', `
+  pages.set(englishHome.path.slice(1) + 'index.html', page(escape(englishHome.title), englishHome.description, englishHome.path, { alternateLinks, canonicalPath, index }, `
 <section class="hero en-hero" aria-labelledby="intro">
-  <div class="hero-copy"><h1 id="intro">Learn German.<br>Use it every day.</h1><p class="hero-description">Make sense of German grammar.<br>Find the words for real conversations.</p><p class="en-intro">Short, free lessons for English speakers, with examples you can use straight away.</p><a class="button button-primary" href="#lessons">Find your first lesson</a><div class="quick-topics"><a href="/en/articles/"><span lang="de">Der, die, das</span></a><a href="/en/word-order/">German word order</a></div></div>
+  <div class="hero-copy"><h1 id="intro">${englishHome.heading.map(escape).join('<br>')}</h1><p class="hero-description">Make sense of German grammar.<br>Find the words for real conversations.</p><p class="en-intro">Short, free lessons for English speakers, with examples you can use straight away.</p><a class="button button-primary" href="#lessons">Find your first lesson</a><div class="quick-topics"><a href="/en/articles/"><span lang="de">Der, die, das</span></a><a href="/en/word-order/">German word order</a></div></div>
   <div class="hero-visual"><img class="hero-photo" src="/assets/cafe-hero.webp" srcset="/assets/cafe-hero-480.webp 480w, /assets/cafe-hero-800.webp 800w, /assets/cafe-hero.webp 1594w" sizes="(max-width:700px) 100vw, 54vw" width="1594" height="987" alt="A café counter with a server holding a cup of coffee" fetchpriority="high"><div class="en-phrase"><p>Start with a small conversation.</p><strong lang="de">Einen Kaffee, bitte.</strong><p>A coffee, please.</p><audio controls preload="none" src="/assets/audio/einen-kaffee-bitte.mp3" aria-label="Listen to Einen Kaffee, bitte"></audio><p class="en-phrase-action">${practiceLink('en-coffee')}</p></div></div>
 </section>
 <section class="needs en-lessons" id="lessons" aria-labelledby="lessons-title"><h2 id="lessons-title">What would you like to work on?</h2><p class="needs-description">Choose a question. Read an explanation. Try it yourself.</p><div class="path-grid">
@@ -56,6 +65,6 @@ export function englishPages() {
 </div></section>
 <section class="en-practice" aria-labelledby="practice-title"><div><h2 id="practice-title">Build your first German sentence</h2><p>English usually keeps the subject before the verb. In a German statement, a time expression can come first, followed by the verb.</p></div><div><p>Say “Today I’m learning German.”</p>${practiceLink('en-word-order', 'Build the sentence')}<noscript><p id="sentence-example">Example: <span lang="de" class="german-example">Heute lerne ich Deutsch.</span></p><p>Café request: <span lang="de" class="german-example">Einen Kaffee, bitte.</span></p></noscript></div></section>
 <section class="en-questions" aria-labelledby="questions-title"><h2 id="questions-title">Getting started with German</h2><details><summary>Where should I start as a beginner?</summary><p>Pick a situation you need, such as making an appointment, and learn a complete phrase. Then look at how it works: the noun’s article, the verb and the word order. Start with our <a href="/en/appointments/">German appointment phrases</a>.</p></details><details><summary>How can I remember der, die and das?</summary><p>Learn each noun together with its article: <i lang="de">der Tisch</i>, <i lang="de">die Lampe</i>, <i lang="de">das Fenster</i>. Say the pair aloud and use it in a short sentence. Our <a href="/en/articles/">guide to German articles</a> shows the basics.</p></details><details><summary>Are the lessons free?</summary><p>Yes. You can read every English lesson and try the short practice tasks without an account.</p></details></section>`));
-  for (const lesson of lessons) pages.set(`en/${lesson.slug}/index.html`, page(lesson.title, lesson.summary, `/en/${lesson.slug}/`, `<p><a href="/en/">← All English lessons</a></p><article><h1>${lesson.title}</h1><p class="dialog-subtitle">${lesson.summary}</p>${lesson.content.replace(/<details>[\s\S]*?<\/details>/g, '')}<p>${practiceLink(`en-${lesson.slug}`)}</p><noscript><p id="sentence-example">Example: <span lang="de" class="german-example">${englishExercises[`en-${lesson.slug}`].sentence}</span></p></noscript></article>`));
+  for (const lesson of lessons) pages.set(`en/${lesson.slug}/index.html`, page(lesson.title, lesson.summary, `/en/${lesson.slug}/`, {}, `<p><a href="/en/">← All English lessons</a></p><article><h1>${lesson.title}</h1><p class="dialog-subtitle">${lesson.summary}</p>${lesson.content.replace(/<details>[\s\S]*?<\/details>/g, '')}<p>${practiceLink(`en-${lesson.slug}`)}</p><noscript><p id="sentence-example">Example: <span lang="de" class="german-example">${englishExercises[`en-${lesson.slug}`].sentence}</span></p></noscript></article>`));
   return pages;
 }
