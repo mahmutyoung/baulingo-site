@@ -40,10 +40,10 @@ test('the site permits only necessary GA4 endpoints and discloses opt-in collect
 test('expanded analytics accepts only supported event parameters and values', async () => {
   const { sanitizeLearningEvent } = await import('../src/analytics.js');
   assert.deepEqual(sanitizeLearningEvent('exercise_answered', {
-    activity_id:'DE-A1-G09', activity_type:'grammar', exercise_id:'q-1', level:'A1',
+    activity_id:'DE-A1-G09', activity_type:'mini_pack', content_category:'grammar', exercise_id:'q-1', level:'A1',
     content_language:'tr', outcome:'correct', attempt_number:2,
     answer:'private answer', search_term:'private query', draft:'private text', user_id:'private ID',
-  }), { activity_type:'grammar', content_language:'tr', level:'A1', outcome:'correct',
+  }), { activity_type:'mini_pack', content_category:'grammar', content_language:'tr', level:'A1', outcome:'correct',
     activity_id:'DE-A1-G09', exercise_id:'q-1', attempt_number:2 });
   assert.deepEqual(sanitizeLearningEvent('study_time', { duration_seconds:30, activity_id:'bad/id', level:'unknown', result_count:-1 }), { duration_seconds:30 });
   assert.equal(sanitizeLearningEvent('arbitrary_event', {}), null);
@@ -52,4 +52,17 @@ test('expanded analytics accepts only supported event parameters and values', as
     'feedback_submitted','language_changed','download_clicked','app_store_clicked','learning_error']) {
     assert.notEqual(sanitizeLearningEvent(event, {}), null, event);
   }
+});
+
+test('mini-pack analytics separates format from content category', async () => {
+  const { miniPackEventContext, sanitizeLearningEvent } = await import('../src/analytics.js');
+  for (const [grammarTrack, category] of [[true, 'grammar'], [false, 'everyday_communication']]) {
+    const context = miniPackEventContext(grammarTrack, 'tr');
+    assert.deepEqual(context, {activity_type:'mini_pack', content_category:category, content_language:'tr'});
+    for (const event of ['topic_selected','learning_started','exercise_answered','section_completed','learning_completed','study_time','level_selected','learning_error']) {
+      assert.deepEqual(sanitizeLearningEvent(event, context), context, event);
+    }
+  }
+  assert.deepEqual(sanitizeLearningEvent('learning_started', {activity_type:'grammar'}), {});
+  assert.deepEqual(sanitizeLearningEvent('learning_started', {activity_type:'mini_pack',content_category:'arbitrary'}), {activity_type:'mini_pack'});
 });
