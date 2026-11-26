@@ -1,4 +1,5 @@
 import { createSentenceBuilder } from './sentence-builder.js';
+import { stopStudy } from './analytics.js';
 
 const dialog = document.querySelector('#practice-dialog');
 if (dialog) {
@@ -17,6 +18,7 @@ if (dialog) {
   }
   dialog.querySelector('[data-close]').addEventListener('click', () => dialog.close());
   dialog.addEventListener('close', () => {
+    if (!dialog.open) stopStudy();
     document.body.classList.remove('dialog-open');
     trigger?.focus({ preventScroll: true });
   });

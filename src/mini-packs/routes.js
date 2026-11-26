@@ -140,4 +140,5 @@ export function lessonPath(id, language) {
 }
 
 export const turkishLessonPath = id => lessonPath(id, 'tr');
+export const lessonIdForPath = (path, language) => Object.keys(slugs).find(id => lessonPath(id, language) === path);
 export const lessonPaths = Object.keys(slugs).flatMap(id => [lessonPath(id, 'tr'), lessonPath(id, 'en')]);

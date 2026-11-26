@@ -1,5 +1,15 @@
 # Baulingo architecture migration
 
+## Phase 6 unified analytics
+
+Both builds use the same consent-gated transport and event-specific validation. The catalog supplies stable page, content and collection IDs. Direct exposure, explicit mini-pack selection, starts, resumes and completion are distinct. The original activity dimensions and browser-local learning records remain compatible.
+
+Local Chrome exercised the transport on a synthetic HTTPS origin with the Google tag stubbed. Automated and browser checks covered duplicate and unknown tags, missing and synthetic referrers, locale and legacy mini-pack entry redirects, Back/Forward, visibility and idle time, A1 scoring, DTZ pause and resume, writing draft redaction and withdrawal. The local preview also kept the transport disabled after opt-in. [Measurement definitions and release boundary](analytics.md#unified-consented-analytics-and-attribution)
+
+`npm test` passed all 103 tests, `npm run build` and `npm run test:astro` passed, and `npm run check:astro` reported zero diagnostics. Both builds publish 374 files. Core output is 1,997,777 bytes in the candidate and 1,999,039 in the legacy build. DTZ media uses 8,913,392 bytes in each build.
+
+The next phase is release readiness. GA4 ingestion and account configuration remain release checks.
+
 ## Phase 5 remaining formats
 
 The Astro candidate renders all 297 indexed URLs and generates the sitemap from the validated catalog. Six English and Turkish A1–B1 overviews use level collections with 17, 22 and 28 lessons in their existing order. Their paired pages have reciprocal language links. The A1 test keeps its 12 questions, scoring and review links. The catalog also covers topics, the café phrase, exam guides, both mock tests, the study lists, both writing courses and the app information page. The static legal documents and 404 continue through the legacy allowlist.
@@ -17,7 +27,7 @@ Course and resource pages use [LearningResource microdata](https://schema.org/Le
 | Course transfers | The six overviews at 1440 and 390 px each transferred about 6.3–6.9 kB less than the legacy build using cold local Chrome loads. |
 | Other transfers | Against the Phase 4 candidate at both widths, Turkish DTZ mock transfer fell from 329,383 to 303,717 bytes. German writing grew from 228,918 to 238,527 bytes with the static excerpts. The A1 test, study lists and Turkish writing index each added at most 210 bytes. |
 
-Phase 6 covers the typed consented analytics contract and attribution in the [measurement guide](analytics.md#planned-ai-referral-and-campaign-attribution). The release workflow still uses `npm run build` and `dist/`. Phase 5 verification used local builds.
+Phase 6 covers the typed consented analytics contract and attribution in the [measurement guide](analytics.md#unified-consented-analytics-and-attribution). The release workflow still uses `npm run build` and `dist/`. Phase 5 verification used local builds.
 
 ## Phase 4 mini-pack pilot
 
@@ -44,7 +54,7 @@ AI search uses the existing publishing and analytics migration. These checks app
 | Phase | Acceptance evidence |
 | --- | --- |
 | 5. Remaining formats | Inspect rendered HTML with JavaScript disabled. Check logical headings, usable definitions, original examples and translations, and links to related material. Verify content identity, canonicals, locales and indexing. Generate and validate applicable structured data from the same records and compare it with visible content. Recheck both output budgets and representative page transfers. |
-| 6. Unified analytics | Verify consented AI-referral classification, allowlisted campaign attribution and engagement by landing page and content ID. Test missing referrers, unknown and duplicate tags, locale redirects, in-page navigation and consent withdrawal. Keep URL queries and fragments out of analytics URLs. Document reporting limits and the release boundary. [Measurement contract](analytics.md#planned-ai-referral-and-campaign-attribution) |
+| 6. Unified analytics | Verify consented AI-referral classification, allowlisted campaign attribution and engagement by landing page and content ID. Test missing referrers, unknown and duplicate tags, locale redirects, in-page navigation and consent withdrawal. Keep URL queries and fragments out of analytics URLs. Document reporting limits and the release boundary. [Measurement contract](analytics.md#unified-consented-analytics-and-attribution) |
 | 7. Release readiness | Check rendered HTML, ordinary links, structured data, sitemap, canonicals and indexing across representative routes and locales. Verify crawler policy in the candidate and record separate search and training decisions. Record any edge or analytics checks that require an authorized deployment. [Release verification](production.md#search-discoverability-release-checks) |
 
 ## Phase 3 content and publishing model

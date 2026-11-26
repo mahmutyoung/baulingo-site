@@ -15,7 +15,7 @@ export const dtzMediaFiles = [
 // Explicit publication boundary: adding a file under assets/ never publishes it by accident.
 export const publicFiles = [
   'index.html', 'style.css', 'app.js', 'src/learning-text.js', 'src/a1-test.js', '.nojekyll', 'privacy/index.html', 'impressum/index.html',
-  'src/analytics.js', 'src/exercise.js', 'src/english-exercises.js', 'src/sentence-builder.js', 'src/english-practice.js', 'src/topics.js', 'src/language.js', 'src/language-choice.js', 'src/navigation.js', 'src/dtz-study-filter.js',
+  'src/analytics.js', 'src/analytics-contract.js', 'src/analytics-attribution.js', 'src/exercise.js', 'src/english-exercises.js', 'src/sentence-builder.js', 'src/english-practice.js', 'src/topics.js', 'src/language.js', 'src/language-choice.js', 'src/navigation.js', 'src/dtz-study-filter.js',
   'en/mini-packs/index.html', 'konular/mini-paketler/index.html', 'src/mini-packs/style.css', 'src/mini-packs/answers.js',
   'src/mini-packs/icons.js', 'src/mini-packs/language.js', 'src/mini-packs/lesson.js', 'src/mini-packs/player.js', 'src/mini-packs/routes.js',
 

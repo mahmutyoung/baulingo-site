@@ -1,4 +1,4 @@
-import { trackLearningEvent } from './src/analytics.js';
+import { stopStudy, trackLearningEvent } from './src/analytics.js';
 import { createSentenceBuilder } from './src/sentence-builder.js';
 import { topics, searchTopics } from './src/topics.js';
 import { appendGermanText } from './src/learning-text.js';
@@ -23,12 +23,13 @@ function openDialog(dialog, trigger = document.activeElement) {
   document.body.classList.add('dialog-open');
 }
 
-function openPractice(trigger = $('#launch-practice'), id = 'coffee') {
-  builder.reset(id);
+function openPractice(trigger = $('#launch-practice'), id = 'coffee', explicit = true) {
+  builder.reset(id, explicit);
   openDialog($('#practice-dialog'), trigger);
 }
 for (const dialog of document.querySelectorAll('dialog')) {
   dialog.addEventListener('close', () => {
+    if (dialog.id === 'practice-dialog' && !dialog.open) stopStudy();
     if (document.querySelector('dialog[open]')) return;
     document.body.classList.remove('dialog-open');
     if (modalTrigger?.isConnected) modalTrigger.focus({ preventScroll: true });
@@ -172,4 +173,4 @@ $('#show-all-topics').addEventListener('click', () => {
   renderResults();
   $('#dialog-query').focus();
 });
-if (location.hash === '#alistirma') openPractice($('#launch-practice'), new URLSearchParams(location.search).get('practice') || 'coffee');
+if (location.hash === '#alistirma') openPractice($('#launch-practice'), new URLSearchParams(location.search).get('practice') || 'coffee', false);

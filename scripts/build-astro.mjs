@@ -46,7 +46,7 @@ await writeFile(path.join(candidate, 'sitemap.xml'), sitemapXml(catalogLocations
 
 // Compile only allowlisted browser assets, retaining their URLs and module boundaries.
 for (const file of [...publicFiles, ...generatedFiles].filter(name => /\.(?:js|css)$/.test(name))) {
-  const source = publicFiles.includes(file) && file !== 'src/dtz/content.js'
+  const source = publicFiles.includes(file) && !['src/dtz/content.js', 'src/analytics.js'].includes(file)
     ? new URL(`../${file}`, import.meta.url) : path.join(legacy, file);
   const text = await readFile(source, 'utf8');
   if (file.endsWith('.css')) {

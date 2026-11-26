@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { createCatalog, outputFile, sitemapXml } from '../src/publishing/model.ts';
 import { catalog, lessonPages } from '../src/publishing/catalog.ts';
+import { lessonIdForPath } from '../src/mini-packs/routes.js';
 
 const record = { id: 'pack', format: 'mini_pack', category: 'grammar', level: 'A1', locales: ['tr', 'en'], relatedIds: [] };
 const page = {
@@ -48,6 +49,10 @@ assert.equal([...catalog.content.values()].filter(content => content.format === 
 assert.equal(catalog.collections.get('grammar').contentIds.length, 53);
 assert.equal(catalog.collections.get('everyday-communication').contentIds.length, 67);
 assert.equal(lessonPages.length, 240);
+for (const page of lessonPages) {
+  assert.equal(lessonIdForPath(page.path, page.locale), page.contentId, page.path);
+  assert.equal(page.id, `${page.contentId}:${page.locale}`, page.path);
+}
 const accusative = catalog.pages.get('DE-A1-G09:tr');
 assert.equal(accusative.path, '/konular/almanca-gramer/a1/akkusativ-einen-ve-den/');
 assert.equal(catalog.alternates(accusative)[0].path, '/en/german-grammar/a1/the-accusative/');

@@ -1,4 +1,5 @@
-import { trackLearningEvent } from './analytics.js';
+import { redirectToLocale, trackLearningEvent } from './analytics.js';
+import { isAcquisitionQuery, localeEntryQuery } from './analytics-attribution.js';
 import { otherLanguagePath, preferredLanguage } from './language-choice.js';
 
 const key = 'baulingo-language';
@@ -22,10 +23,13 @@ function initialize() {
     }
     if (language === 'tr' && link.pathname === '/' && !link.search && !link.hash) link.search = '?lang=tr';
   });
-  if (location.pathname === '/' && !location.search && !location.hash) {
+  if (location.pathname === '/' && !location.hash && isAcquisitionQuery(location.search)) {
     let saved;
     try { saved = localStorage.getItem(key); } catch { /* Use the browser locale. */ }
-    if (preferredLanguage(saved, navigator.languages || [navigator.language]) === 'en') location.replace('/en/');
+    if (preferredLanguage(saved, navigator.languages || [navigator.language]) === 'en') {
+      redirectToLocale('/en/' + localeEntryQuery(location.search, document.referrer));
+      return;
+    }
   }
 
   // The Turkish homepage uses app.js to open its existing language dialog.

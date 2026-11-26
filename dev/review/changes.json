@@ -1,5 +1,28 @@
 [
   {
+    "id": "phase-6-analytics-consent",
+    "title": "Website analytics choice and privacy text",
+    "date": "2026-11-26",
+    "summary": "The GA4 notice explains cookies, referral measurement, exercise results and how to withdraw consent.",
+    "files": ["privacy/index.html", "src/analytics.js", "src/analytics-attribution.js"],
+    "steps": [
+      {
+        "id": "analytics-disclosure",
+        "title": "Freiwillige Website-Analyse",
+        "path": "/privacy/",
+        "focus": "section:nth-of-type(3)",
+        "check": "Read the website analytics section for acquisition categories, the entry stored in the current tab and withdrawal."
+      },
+      {
+        "id": "analytics-choice",
+        "title": "Analiz ayarları",
+        "path": "/?lang=tr",
+        "focus": ".analytics-settings",
+        "check": "Open analytics settings and read the cookie and measurement notice. Select Reddet and confirm that the banner closes."
+      }
+    ]
+  },
+  {
     "id": "phase-5-static-dtz-previews",
     "title": "DTZ-Leseprobe und Schreibkapitel",
     "date": "2026-11-25",

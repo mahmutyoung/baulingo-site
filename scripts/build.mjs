@@ -8,6 +8,7 @@ import { dtzGermanArchives } from './dtz-hub.mjs';
 import { writingBase, writingLessons } from './writing-content.mjs';
 import { writingCourseNavigation } from './writing-page.mjs';
 import { examData } from '../src/dtz/content.js';
+import { catalog as publishing, coursePages as courseOverviews } from '../src/publishing/catalog.ts';
 import { compactGeneratedHTML, fingerprintAssets, rewriteAssetURLs } from './assets.mjs';
 
 const root = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
@@ -65,7 +66,28 @@ export async function build() {
   await mkdir(output, { recursive: true });
   for (const file of [...publicFiles, '_headers', '_redirects']) {
     await mkdir(path.dirname(path.join(output, file)), { recursive: true });
-    if (compactModules.has(file)) {
+    if (file === 'src/analytics.js') {
+      const source = await readFile(path.join(root, file), 'utf8');
+      const writingContent = new Set(publishing.collections.get('dtz-writing-tr').contentIds);
+      const writingSlugs = [];
+      const pages = Object.fromEntries([...publishing.paths.values()].flatMap(page => {
+        const content = page.contentId && publishing.content.get(page.contentId);
+        if (content?.format === 'mini_pack') return [];
+        const slug = page.path.startsWith(writingBase) && page.path.slice(writingBase.length, -1);
+        if (slug && content?.format === 'writing' && writingContent.has(content.id) &&
+          content.id === 'dtz-writing-' + slug && page.locale === 'tr' && page.id === content.id + ':tr') {
+          writingSlugs.push(slug);
+          return [];
+        }
+        const level = content?.level ?? courseOverviews.find(course => course.id === page.id)?.level;
+        const row = [page.id, page.locale, page.contentId, content?.format, page.collectionId, level];
+        while (row.at(-1) === undefined) row.pop();
+        return [[page.path, row]];
+      }));
+      await writeFile(path.join(output, file), source
+        .replace('const publishedPages = {};', () => `const publishedPages = ${JSON.stringify(pages)};`)
+        .replace('const writingLessonSlugs = [];', () => `const writingLessonSlugs = ${JSON.stringify(writingSlugs)};`));
+    } else if (compactModules.has(file)) {
       const source = await readFile(path.join(root, file), 'utf8');
       await writeFile(path.join(output, file), compactModule(source));
     } else if (file.endsWith('.css')) {

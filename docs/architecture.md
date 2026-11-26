@@ -1,6 +1,6 @@
 # Baulingo website architecture
 
-The target is a static Astro site with strict TypeScript and browser-local learning. The production build uses HTML, CSS, native JavaScript and a custom static builder. The Phase 5 candidate renders every indexed route from the validated catalog and generates its sitemap directly from those records. It shares the existing browser modules and learning rules. The candidate build still takes allowlisted assets, legal pages and the 404 from the legacy build. [Migration handoff](migration.md)
+The target is a static Astro site with strict TypeScript and browser-local learning. The production build uses HTML, CSS, native JavaScript and a custom static builder. The Astro candidate renders every indexed route and the sitemap from the validated catalog. Both builds derive reporting metadata from that catalog and share the browser modules and learning rules. The candidate build still takes allowlisted assets, legal pages and the 404 from the legacy build. [Migration handoff](migration.md)
 
 Turkish speakers learning German remain the primary audience. The roadmap governs product priorities and experiments, and the approved homepage reference governs the layout and Turkish copy. [Roadmap](roadmap.md) · [Homepage reference](design/homepage.md)
 
@@ -54,7 +54,7 @@ Derive analytics context from the content and page records, including content ID
 
 Keep GA4 measurement ID `G-R1YH6T64JM` and the existing consent behavior. Exclude raw searches, answers and drafts from event payloads, and keep unique attempt IDs out of reporting dimensions. Document metric changes and their release boundary before comparing historical and new data. Android analytics remains independent. [Analytics operations](analytics.md)
 
-Measure identifiable AI referrals and their later content engagement through the same consented GA4 contract. Keep campaign attribution separate from clean page URLs by mapping approved signals to controlled fields. [Attribution requirements](analytics.md#planned-ai-referral-and-campaign-attribution)
+Measure identifiable AI referrals and their later content engagement through the same consented GA4 contract. Keep campaign attribution separate from clean page URLs by mapping approved signals to controlled fields. [Attribution requirements](analytics.md#unified-consented-analytics-and-attribution)
 
 ### Source layout and migration
 

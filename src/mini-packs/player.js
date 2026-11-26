@@ -1,11 +1,11 @@
-import { trackLearningEvent, beginStudy, stopStudy, trackPageView, analyticsEnabled, miniPackEventContext } from '../analytics.js';
+import { trackLearningEvent, beginStudy, stopStudy, deferMiniPackPage, setMiniPackPage, analyticsEnabled, miniPackEventContext } from '../analytics.js';
 import { escapeLearningText as escape } from '../learning-text.js';
 import '../language.js';
 import { icon } from './icons.js';
 import { sectionsFor, lessonMarkup, progressMarkup, lessonNumber } from './lesson.js';
 import { matchesAnswer } from './answers.js';
 import { label, language } from './language.js';
-import { grammarPath, lessonPath, lessonTitle, readerPath } from './routes.js';
+import { grammarLesson, grammarPath, lessonIdForPath, lessonPath, lessonTitle, readerPath } from './routes.js';
 
 const levels = ['A1', 'A2', 'B1'];
 const main = document.querySelector('#main-content');
@@ -18,6 +18,13 @@ const publishedReader = main.hasAttribute('data-reader') ||
   (main.classList.contains('lesson-preview') && alternates.length > 0);
 const grammarTrack = publishedReader ? main.hasAttribute('data-grammar') : location.pathname.startsWith(grammarPath(language));
 const trackContext = miniPackEventContext(grammarTrack, language);
+const initialLesson = lessonIdForPath(location.pathname, language);
+const legacyTopic = new URLSearchParams(location.search).get('topic');
+const legacyEntry = location.pathname === libraryPath && legacyTopic && lessonPath(legacyTopic, language) &&
+  grammarLesson(legacyTopic) === grammarTrack;
+function lessonContext(id, level) { return { ...trackContext, activity_id: id, level }; }
+if (initialLesson) setMiniPackPage(lessonContext(initialLesson, initialLesson.slice(3, 5)), true);
+else if (legacyEntry) deferMiniPackPage();
 const initialTitle = document.title;
 const progress = new Map();
 let sidebar, picker, alternateLanguage, topics, outline;
@@ -179,8 +186,7 @@ function render(record) {
   if (active?.pack.cefr !== pack.cefr) renderTopics(pack.cefr);
   stopStudy();
   active = record;
-  const context = { ...trackContext, activity_id: pack.id, level: pack.cefr };
-  trackLearningEvent('topic_selected', context);
+  const context = lessonContext(pack.id, pack.cefr);
   for (const button of picker.children) button.setAttribute('aria-pressed', String(button.textContent === pack.cefr));
   for (const button of buttons) {
     if (button.dataset.topic === pack.id) button.setAttribute('aria-current', 'true');
@@ -287,7 +293,7 @@ function canonicalize(record) {
 function showLocation() {
   const record = fromLocation();
   canonicalize(record);
-  trackPageView();
+  setMiniPackPage(lessonContext(record.pack.id, record.pack.cefr), location.pathname !== libraryPath);
   render(record);
   updateLanguageLink();
   if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
@@ -312,6 +318,7 @@ function select(record) {
   url.hash = '';
   history.pushState(null, '', url);
   showLocation();
+  trackLearningEvent('topic_selected', lessonContext(record.pack.id, record.pack.cefr));
   const selected = topics.querySelector('[aria-current]');
   selected.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'instant' });
 }
@@ -329,6 +336,7 @@ async function loadLibrary() {
     if (!sidebar) connectReader(shell);
     showLocation();
   } catch {
+    if (legacyEntry) setMiniPackPage();
     trackLearningEvent('learning_error', { ...trackContext, error_code: 'library_failed' });
     if (!main.classList.contains('lesson-preview')) main.replaceChildren();
     main.insertAdjacentHTML('beforeend', `<section class="panel loading" data-load-error>

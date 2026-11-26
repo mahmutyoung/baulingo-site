@@ -14,7 +14,7 @@ test('GA4 consent module is present on learning pages, not loaded directly from 
   assert.doesNotMatch(asset, /G-3XSNDN7FE4/);
   assert.match(asset, /choice === 'granted'/);
   assert.match(asset, /location\.hostname !== 'baulingo\.app'/);
-  assert.match(asset, /allowedEvents = new Set/);
+  assert.match(asset, /sanitizeLearningEvent/);
   assert.doesNotMatch(asset, /localStorage\.setItem\([^,]+,\s*JSON\.stringify\(attempt\)/);
 });
 
@@ -45,12 +45,12 @@ test('expanded analytics accepts only supported event parameters and values', as
     answer:'private answer', search_term:'private query', draft:'private text', user_id:'private ID',
   }), { activity_type:'mini_pack', content_category:'grammar', content_language:'tr', level:'A1', outcome:'correct',
     activity_id:'DE-A1-G09', exercise_id:'q-1', attempt_number:2 });
-  assert.deepEqual(sanitizeLearningEvent('study_time', { duration_seconds:30, activity_id:'bad/id', level:'unknown', result_count:-1 }), { duration_seconds:30 });
+  assert.equal(sanitizeLearningEvent('study_time', { duration_seconds:30, activity_id:'bad/id', level:'unknown', result_count:-1 }), null);
   assert.equal(sanitizeLearningEvent('arbitrary_event', {}), null);
   for (const event of ['topic_selected','level_selected','search_performed','search_no_results','hint_used',
     'answer_revealed','exercise_retried','audio_played','audio_completed','section_completed','study_time',
     'feedback_submitted','language_changed','download_clicked','app_store_clicked','learning_error']) {
-    assert.notEqual(sanitizeLearningEvent(event, {}), null, event);
+    assert.equal(sanitizeLearningEvent(event, {}), null, event);
   }
 });
 
@@ -59,10 +59,11 @@ test('mini-pack analytics separates format from content category', async () => {
   for (const [grammarTrack, category] of [[true, 'grammar'], [false, 'everyday_communication']]) {
     const context = miniPackEventContext(grammarTrack, 'tr');
     assert.deepEqual(context, {activity_type:'mini_pack', content_category:category, content_language:'tr'});
-    for (const event of ['topic_selected','learning_started','exercise_answered','section_completed','learning_completed','study_time','level_selected','learning_error']) {
-      assert.deepEqual(sanitizeLearningEvent(event, context), context, event);
-    }
+    const lesson = { ...context, activity_id:'DE-A1-001' };
+    assert.deepEqual(sanitizeLearningEvent('topic_selected', lesson), lesson);
+    assert.deepEqual(sanitizeLearningEvent('learning_started', lesson), lesson);
+    assert.deepEqual(sanitizeLearningEvent('level_selected', { ...context, level:'A2' }), { ...context, level:'A2' });
   }
-  assert.deepEqual(sanitizeLearningEvent('learning_started', {activity_type:'grammar'}), {});
-  assert.deepEqual(sanitizeLearningEvent('learning_started', {activity_type:'mini_pack',content_category:'arbitrary'}), {activity_type:'mini_pack'});
+  assert.equal(sanitizeLearningEvent('learning_started', {activity_type:'grammar'}), null);
+  assert.equal(sanitizeLearningEvent('learning_started', {activity_type:'mini_pack',content_category:'arbitrary'}), null);
 });

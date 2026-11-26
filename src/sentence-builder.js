@@ -127,5 +127,9 @@ export function createSentenceBuilder(root, { language = 'tr', initialId = 'coff
 
   root.addEventListener('close', () => { if (!finished) stopStudy(); });
   renderExercise();
-  return { reset(id = initialId) { stopStudy(); state = newExercise(id); hintVisible = false; attempts = 0; finished = false; renderExercise(); beginStudy(eventContext()); } };
+  return { reset(id = initialId, explicit = true) {
+    stopStudy(); state = newExercise(id); hintVisible = false; attempts = 0; finished = false;
+    renderExercise();
+    if (explicit) beginStudy(eventContext());
+  } };
 }

@@ -25,10 +25,13 @@ export function rewriteAssetURLs(text, mapping) {
 export function compactGeneratedHTML(file, html) {
   return file === 'dtz-kelime-kalip-cumle/index.html'
     ? html.replace(/(\s(?:class|lang|scope|type|data-[a-z-]+))="([A-Za-z0-9_-]+)"/g, '$1=$2')
+      .replace(/(<(?:tr|li) id)="([A-Za-z0-9_-]+)"(?= data-i)/g, '$1=$2')
       .replace(/<\/(?:td|th)>(?=<(?:td|th)(?:[ >])|<\/tr>)/g, '')
+      .replace(/<\/tr>(?=<tr[ >]|<\/t(?:head|body)>)/g, '')
       .replace(/<\/li>(?=<li[ >]|<\/[ou]l>)/g, '')
     : file === 'dtz-deneme-sinavi/index.html'
-      ? html.replace(/(\s(?:class|lang|scope|type))="([A-Za-z0-9_-]+)"/g, '$1=$2')
+      ? html.replace(/(\s(?:class|lang|scope|type|name|value|data-review))="([A-Za-z0-9_-]+)"/g, '$1=$2')
+        .replace(/<\/li>(?=<li[ >]|<\/[ou]l>)/g, '')
       : file.startsWith('dtz-mektup-yazma/')
         ? html.replace(/(\s(?:class|scope|type|data-(?!(?:task|task-kind)=)[a-z-]+))="([A-Za-z0-9_-]+)"/g, '$1=$2')
           .replace(/ lang="de"/g, ' lang=de')

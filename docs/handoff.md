@@ -1,8 +1,12 @@
 # Website implementation handoff
 
+## Phase 6 unified analytics
+
+Both builds use the typed learning event contract and publish stable page and content IDs with consented analytics. Synthetic local verification covers ChatGPT referrals, the registered campaign, locale redirects, practice engagement and withdrawal. The next migration phase is release readiness. Live GA4 ingestion and account settings are pending the authorized release. [Measurement contract](analytics.md#unified-consented-analytics-and-attribution)
+
 ## Phase 5 Astro candidate
 
-The candidate publishes all indexed pages through the catalog. The latest slice includes the six course overviews, the A1 practice test, topic and phrase pages, DTZ guides and practice formats, and app information. German mock-test and writing pages have static previews with the existing full interactive exercises. The next migration phase covers unified analytics. The current production workflow builds `dist/`, and the Astro candidate can be inspected locally with `npm run preview:astro`. [Phase 5 verification](migration.md#phase-5-remaining-formats)
+The candidate publishes all indexed pages through the catalog. Phase 5 includes the six course overviews, the A1 practice test, topic and phrase pages, DTZ guides and practice formats, and app information. German mock-test and writing pages have static previews with the existing full interactive exercises. The production workflow builds `dist/`, and the Astro candidate can be inspected locally with `npm run preview:astro`. [Phase 5 verification](migration.md#phase-5-remaining-formats)
 
 ## Site-wide language preference
 

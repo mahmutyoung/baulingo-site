@@ -157,7 +157,15 @@ function startWriting(root) {
   const quick=root.querySelector('[data-activity]');if(quick)activateExercise(quick,[],()=>{},{...context,section_id:'quick-practice'});
   const note=root.querySelector('[data-note]');
   if(note){note.value=savedLesson().note||'';note.addEventListener('input',()=>{savedLesson().note=note.value;save(note.closest('section'),['note']);});}
-  root.querySelector('[data-complete]')?.addEventListener('click',()=>{savedLesson().complete=!savedLesson().complete;save(null,['complete']);updateProgress();if(savedLesson().complete&&!completionRecorded){start();completionRecorded=true;trackLearningEvent('learning_completed',{...context,completion_type:'self_review'});stopStudy();}});
+  root.querySelector('[data-complete]')?.addEventListener('click',()=>{
+    savedLesson().complete=!savedLesson().complete;
+    save(null,['complete']);updateProgress();
+    if(savedLesson().complete&&!completionRecorded){
+      start();completionRecorded=true;
+      if(!lesson.reference)trackLearningEvent('learning_completed',{...context,completion_type:'self_review'});
+      stopStudy();
+    }
+  });
 
   const showChoice=(id,remember=false)=>{
     taskSections.filter(task=>task.hasAttribute('data-choice')).forEach(task=>{

@@ -11,7 +11,6 @@ const storageKey = 'baulingo.dtz.mock-01.v1';
 const dtzEvent = () => ({ activity_id: 'dtz-mock-01', activity_type: 'dtz', content_language: language });
 function trackResultTransition(phase) {
   if (phase === attempt?.phase || phase === 'result' || !active) return;
-  beginStudy(dtzEvent(), 'learning_resumed');
   if (phase === 'listening' || phase === 'reading') {
     const tasks = phase === 'listening' ? examData.listeningTasks : examData.readingTasks;
     for (const question of tasks.filter(task => !task.isExample).flatMap(task => task.questions)) {
