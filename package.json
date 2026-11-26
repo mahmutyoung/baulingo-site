@@ -13,7 +13,13 @@
     "analytics:sync": "node scripts/sync-ga4.ts sync",
     "analytics:verify": "node scripts/sync-ga4.ts verify",
     "check:astro": "astro check",
-    "test": "node --test --test-isolation=none tests/*.test.mjs"
+    "test": "node --test --test-isolation=none tests/*.test.mjs",
+    "seo:performance": "node scripts/seo-performance.ts",
+    "seo:indexing": "node scripts/seo-indexing.ts",
+    "seo:map": "node scripts/seo-content.ts",
+    "seo:combined": "node scripts/seo-ga4.ts",
+    "seo:opportunities": "node scripts/seo-opportunities.ts",
+    "seo:check": "node scripts/seo-check.ts"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.12",

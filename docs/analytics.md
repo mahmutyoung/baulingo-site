@@ -227,3 +227,75 @@ On 26 November, the Search Console page and query calls returned finalized rows 
 3. In **Acquisition**, create separate Search Console tables by Query and Landing Page, with clicks, impressions, CTR and average position. Add GA4 tables by Session source / medium and Landing page with Sessions, and a separate AI referral table filtered to `visit_started` by AI Source and Landing Page ID. In **Content**, use separate charts for exposure, starts and study time with the event filters above. Add controls for Content Format, Content Category and Collection ID, with Content ID in the lesson table.
 4. In **Learning**, use GA4 event tables split by Completion Type, Section ID, Outcome and Feedback as applicable. Link to the saved GA4 exploration for ordered, distinct-user funnel rates. In **Retention**, use a Browser Visit table filtered to `visit_started` and link to the cohort exploration for week-by-week retention. In **Technical quality**, chart Learning Error Code with Event count and add a link to Search Console Core Web Vitals. Keep source availability visible for missing-parameter and field-data checks that are unavailable in the connector.
 5. If a custom field is absent, use **Resource → Manage added data sources → Edit → Refresh fields → Apply** and confirm that the chart uses the intended scope and units. Preview the report and compare a complete date range against the API queries. Keep Search Console and GA4 charts separate unless a later comparison specifies a shared canonical URL and matching grain. [Refresh data source fields](https://docs.cloud.google.com/data-studio/refresh-data-source-fields)
+
+## Search Console performance extraction
+
+The read-only `seo:performance` command writes JSON and CSV pairs in a timestamped directory under ignored `.dev/seo/`. Each JSON file contains its request metadata and limitations; the CSV alongside it contains the corresponding rows. Obtain a short-lived ADC token with both `analytics.readonly` and `webmasters.readonly` as described above, and set `BAULINGO_GA4_ACCESS_TOKEN` and `BAULINGO_GA4_QUOTA_PROJECT`. The existing desktop client and GA4 credentials are shared; no token is saved by the command.
+
+```powershell
+npm run seo:performance -- --range 28 --compare true
+npm run seo:performance -- --range custom --start 2026-11-01 --end 2026-11-23
+```
+
+Ranges are `7`, `28`, `90`, `max` (starting before the 16-month availability window), and `custom`. Optional `--property`, `--type`, and `--output` select the property, search type, and local output directory. The default end date is three days before the current UTC date; Search Console reports dates in Pacific time, and a recent day may not yet be finalized. The default property is the discovered domain property; override it if property access changes. Use `--compare true` for an equal preceding period.
+
+The total report is queried independently from date, query, page, query/page, country, device, query/date, page/date and search-appearance reports. Google may anonymize queries or omit rows, and property- and page-level aggregation differ. Do not sum these reports to reconstruct property totals or average their CTR or positions. The API supplies finalized data only; an empty row set does not establish zero search demand. Review weekly, and retain selected exports outside the production build if a longer history is needed. No indexing or GA4-joining command is implemented by this phase.
+
+## Search Console indexing checks
+
+`npm run seo:indexing` reads the submitted sitemap list, compares the production sitemap with the current catalog, and inspects up to four representative URLs by default. It uses the same short-lived credentials and quota project as `seo:performance`. It makes only read requests; it does not submit sitemaps or request indexing.
+
+```powershell
+npm run seo:indexing
+npm run seo:indexing -- --urls "https://baulingo.app/,https://baulingo.app/en/" --limit 2
+npm run seo:indexing -- --performance .dev/seo/<run>/current-page.json
+```
+
+The optional page-performance JSON must be an unfiltered `page` report for the same property. Its missing rows are candidates for review, not proof of zero impressions; unmatched reported URLs are not necessarily removed. Use the same reporting dates when making comparisons. The JSON output in `.dev/seo-indexing/<run>/indexing.json` preserves the sitemap status, comparison, selected inspection fields, HTTP status, redirect location and canonical checks. `--property` and `--output` override defaults. URL selection accepts exact catalog sitemap URLs, limits each run to 100, and defaults to at most five. Prioritize important or newly changed pages; do not inspect the entire catalog routinely.
+
+Responses are cached by property and URL in `.dev/seo-indexing/cache` for seven days. Use `--cache-days 0` to refresh and `--limit` to bound the request count; the cache reports its original inspection timestamp. Google quotas still apply, and cached data may be stale. A failed inspection stops the run; prior cached successful responses remain available.
+
+URL Inspection reports Google's indexed information, not a live indexing test. HTTP and canonical checks apply only to selected URLs and do not establish indexability or visibility. The catalog has no publication dates, so the command cannot identify newly published pages without external evidence. Compare the Search Console interface and investigate unexpected exclusions, canonical changes and redirects before treating them as faults. Review sitemap status weekly and inspect only important changes or anomalies.
+
+## Map Search Console pages to content
+
+Run `npm run seo:map -- .dev/seo/<run>/current-page.json` (or use a query/page or page/date JSON report). The command writes a new JSON and CSV pair under `.dev/seo-mapped/`, preserving each original URL, normalized URL, search metrics and dimension values alongside catalog `page_id`, `content_id`, `content_format`, `content_category`, `collection_id`, `level` and `content_language`. Filter the CSV by these fields to compare catalog-defined levels, languages, formats, collections and categories. Empty fields mean the catalog does not define that classification; they are not inferred.
+
+Only exact catalog URLs on the production origin map after standard URL parsing. Query strings, alternate hosts and unknown paths remain unmatched for review; this includes legal routes outside the publishing catalog. Localized pages retain distinct page IDs. No clicks or impressions are reassigned between URL variants. Detailed Search Console rows may be omitted and cannot reconstruct property totals. Request totals at the required grain where possible; do not average row CTR or position. Search and learning metrics are not joined by this command.
+
+## Combined page evidence
+
+After the first full clean GA4 day has passed and finalized Search Console data exists for the same dates, run `npm run seo:combined -- .dev/seo/<run>/current-page.json`. The input must be an unfiltered finalized web page report for `sc-domain:baulingo.app`, starting no earlier than 27 November 2026. Reports are written to `.dev/seo-combined/<run>/`. The command reads GA4 property `565704627` with the existing read-only token and quota project.
+
+The page CSV combines Google Search page rows with Google organic landing-page sessions and page-ID event measures. The JSON retains separate content-ID event rows, response metadata, unmatched GA4 identities and canonical aliases excluded from the join. Catalog pages with GA4 evidence but no Search Console row are included with search metrics unavailable. Empty measures mean no corresponding reported row; they are not asserted to be zero. Search Console and GA4 use Pacific and Berlin dates respectively, and differ in attribution, aggregation, and consent coverage. Counts of starts and completions are events, not user conversion rates. Returning learner sequences and conversion funnels are unavailable here; they require suitable cohort or funnel analysis. Do not join search queries to learning events or sum distinct users across content or pages. Inspect GA4 response metadata for thresholding or other quality restrictions before interpreting results.
+## Search opportunity review
+
+Run `npm run seo:opportunities -- .dev/seo/<run>/current-query_page.json`. Optionally add the matching adjacent `previous-query_page.json`, and then a same-period `.dev/seo-combined/<run>/combined.json`. Use `-` in place of the previous report if only GA4 evidence is supplied. JSON and a short Markdown review are written under `.dev/seo-opportunities/`.
+
+The first rules flag low-CTR query/page rows with at least 100 impressions and average position at most 20, and query overlap where at least two catalog pages each have 30 impressions. These are conservative review thresholds, not statistical significance tests, evidence of causation or ranking guarantees. All candidates are low confidence and require checking search intent, actual page content and the search results. The report makes no recommendations from unmatched URLs. Search Console does not disclose every query, and its impressions are not keyword search volume. Do not attribute GA4 engagement to a search query.
+
+An empty opportunity list means the rules found insufficient evidence, not that no opportunities exist. Content-gap recommendations still require manual research; no absence of disclosed query rows is treated as a content gap. `futureKeywordPlanner` is a placeholder only; no Google Ads integration is enabled.
+
+## SEO command workflow
+
+Run `npm run seo:check` after setting the same read-only ADC token and quota-project environment variables used by GA4. It lists accessible properties and permission levels, checks the selected property and requests a finalized 28-day total. `--property <property>` selects another property. A successful empty report verifies connectivity, not traffic. The command reports whether it sent the quota-project header; it does not independently establish billing or quota attribution.
+
+Use `seo:performance` for Search Console JSON/CSV extraction, `seo:indexing` for sitemap and selected URL inspection, `seo:map` for catalog mapping, `seo:combined` for clean-period GA4 page evidence, and `seo:opportunities` for the currently implemented review rules. These are local read-only tools. Their timestamped outputs and inspection cache default to ignored `.dev/` directories and are not production assets. Follow the individual sections above for options, definitions and limitations.
+
+## SEO integration verification — 26 November 2026
+
+The read-only property discovery returned `sc-domain:baulingo.app` with owner access. A fresh direct API request for 1–23 November matched the saved unfiltered total: 3 clicks, 28 impressions, CTR 10.7%, and average position 16.4. This is an API-to-export comparison, not a comparison with the Search Console interface. A live URL Inspection sample reported the DTZ mock test as crawled but currently unindexed; three sampled index pages were indexed. The live sitemap matched all 297 catalog sitemap locations, while Search Console's sitemap status still reported its older download.
+
+The first opportunity report found no candidates under its thresholds. GA4's first clean full day begins 27 November; no clean-period combined report could be validated on 26 November. Search Console UI comparison, full GA4 join validation after that date, and the unimplemented recommendation types above remain outstanding. Automated tests cover date validation, missing dimensions, pagination, empty rows, token/permission/quota error handling, URL mapping, basic GA4 joins and CSV escaping; they do not prove the complete live GA4 workflow or every API quota behavior.
+
+On the following local verification, 140 Node tests, the build and Astro check passed (Astro telemetry was disabled for the check). All ten saved Search Console CSVs matched their corresponding JSON rows. The clean GA4 baseline day of 27 November was still in progress; a full-day report cannot be validated until it finishes and both services have processed the period.
+
+### Search Console interface comparison
+
+On 27 November 2026, the signed-in Search Console interface for the domain property showed Web search results for 29 October–24 November: 3 clicks, 34 impressions, 8.8% CTR and position 18.9. A separate finalized, unfiltered API request for the same dates returned 3 clicks, 34 impressions, CTR 0.0882352941 and position 18.9117647. The interface values match the API after rounding. This completes the previously outstanding interface-to-API comparison for that property, search type and date range; it does not verify every dimension report or the pending GA4 join.
+
+### Additional opportunity evidence
+
+Pass `--indexing .dev/seo-indexing/<run>/indexing.json` to include selected recent (at most 30-day-old) inspection results for the same property. An exclusion, unexpected status or canonical mismatch produces a review item, not a live indexing verdict. Pass both `--page-current .dev/seo/<run>/current-page.json` and `--page-previous .dev/seo/<run>/previous-page.json` for adjacent equivalent page periods. The current period must match the query/page input. A fall of at least 40% requires at least 100 previous and 50 current reported impressions; an improvement of at least three position places requires 100 impressions in both periods. Query mix and search appearance can change position, and no causality is implied.
+
+With matching combined GA4 data, at least 20 learning-start events and fewer than 50 explicitly reported search impressions prompt a review of relevant internal links. At least 50 Google organic landing sessions and an explicitly reported zero starts prompt an instrumentation and page-purpose review. The existing combined extractor represents absent rows as unknown, so it does not manufacture zero starts; the latter rule cannot fire from missing event rows. Landing sessions and page events have different scopes, and their comparison is not a conversion rate. All thresholds are review heuristics and do not establish learner demand.
