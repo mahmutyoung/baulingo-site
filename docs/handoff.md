@@ -1,36 +1,50 @@
 # Website implementation handoff
 
+## Current status — 26 November 2026
+
+The Astro and TypeScript site is live at `https://baulingo.app`. The main Cloudflare Worker serves the allowlisted static build in `dist/`. The separate WWW Worker preserves paths and queries when redirecting to the apex. Browser-local progress, drafts and exam attempts stay on the device. [Production release](production.md#release--26-november-2026) · [Current architecture](architecture.md)
+
+The website's opt-in GA4 property, `baulingo-web`, passed the configuration check with 19 dimensions, five metrics and three managed key events. Search Console is linked to the correct web stream and the apex sitemap is submitted. Production browser and Realtime checks established dispatch and some ingestion. Use complete dates from 27 November onward for unified reporting. [Schema and operating guide](analytics.md#reproducible-ga4-configuration) · [Live search audit](production.md#production-search-audit--26-november-2026)
+
+### Remaining work
+
+The Google-tag page-view fix is deployed and verified in production Chrome. [Release and checks](production.md#page-view-fix--26-november-2026)
+
+1. Rerun the GA4 attribution and learning reports after complete post-release days have processed. Confirm the expanded sitemap is picked up on Google's next read.
+2. Create the saved GA4 Explorations and native Looker Studio report, check whether the Search Console reports collection is published, and inspect Core Web Vitals field coverage. [Reporting setup](analytics.md#reporting-setup)
+3. Continue the roadmap's next product milestone with one embedded demand or preference experiment and a defined evidence method. [Roadmap](roadmap.md)
+
 ## Site-wide cookie settings
 
 The localized cookie dialog is live on `baulingo.app`. It offers equal access to rejection, configuration and acceptance. The existing opt-in storage key and browser-local learning data remain compatible. Privacy and Imprint stay readable on entry and expose the footer control. [Release verification](production.md#release--26-november-2026) · [Analytics behavior](analytics.md#cookie-settings)
 
 ## Phase 7 release readiness
 
-`npm run build` now produces the Astro release artifact in `dist/`. Use `npm ci` on Node 24 and `npm run preview` to inspect it locally. CI checks and packages the same artifact. The next external step is an authorized release, followed by apex, crawler-policy and live GA4 checks. [Migration verification](migration.md#phase-7-release-readiness) · [Release and rollback](production.md#astro-release-and-rollback)
+`npm run build` produces the Astro release artifact in `dist/`. Use `npm ci` on Node 24 and `npm run preview` to inspect it locally. CI checks and packages the same artifact. [Migration verification](migration.md#phase-7-release-readiness) · [Release and rollback](production.md#astro-release-and-rollback)
 
 ## Phase 6 unified analytics
 
-Phase 6 added the typed learning event contract and stable page and content IDs with consented analytics. Synthetic local verification covered ChatGPT referrals, the registered campaign, locale redirects, practice engagement and withdrawal. The same specification now drives local GA4 check, sync and verify commands. Live configuration checks require property access. Ingestion checks follow an authorized release. [GA4 configuration runbook](analytics.md#reproducible-ga4-configuration)
+The deployed contract uses stable page and content IDs and consented analytics. The same specification drives local GA4 check, sync and verify commands. [GA4 configuration runbook](analytics.md#reproducible-ga4-configuration) · [Production measurement audit](analytics.md#production-measurement-audit--26-november-2026)
 
-## Phase 5 Astro candidate
+## Published formats
 
 Phase 5 moved all indexed pages to the catalog, including six course overviews, the A1 practice test, topic and phrase pages, DTZ guides and practice formats, and app information. German mock-test and writing pages have static previews with the existing full interactive exercises. [Phase 5 verification](migration.md#phase-5-remaining-formats)
 
 ## Site-wide language preference
 
-The English and Turkish controls share the same browser preference across homepages, topic pages, course levels, grammar hubs and lesson readers. Lesson switches open the matching lesson; grammar and everyday links stay in the selected edition. The German DTZ materials retain their separate English and Turkish help links. The bare homepage respects the saved choice, and direct localized URLs remain shareable. Publication is pending.
+The English and Turkish controls share the same browser preference across homepages, topic pages, course levels, grammar hubs and lesson readers. Lesson switches open the matching lesson; grammar and everyday links stay in the selected edition. The German DTZ materials retain their separate English and Turkish help links. The bare homepage respects the saved choice, and direct localized URLs remain shareable.
 
 ## Grammar course
 
-The Turkish and English homepages now link to separate grammar courses at `/konular/almanca-gramer/` and `/en/german-grammar/`. Each edition imports 21 A1, 16 A2 and 16 B1 samples from `GermanPacks/pack1a/data/samples/` in the source's teaching order. The course level pages and grammar hubs link in both directions. Grammar lessons expose the rule and a bilingual example in initial HTML and link to an everyday lesson for practice. The interactive reader links back to the relevant grammar lessons. Publication is pending.
+The Turkish and English homepages now link to separate grammar courses at `/konular/almanca-gramer/` and `/en/german-grammar/`. Each edition imports 21 A1, 16 A2 and 16 B1 samples from `GermanPacks/pack1a/data/samples/` in the source's teaching order. The course level pages and grammar hubs link in both directions. Grammar lessons expose the rule and a bilingual example in initial HTML and link to an everyday lesson for practice. The interactive reader links back to the relevant grammar lessons.
 
 ## Readable lesson URLs
 
-All 67 lessons have separate English and Turkish lesson URLs. The published HTML includes the lesson title, objective and a bilingual example. Course lists, the Turkish A1 practice test and the reader use these URLs. The previous `?topic=` links open the same lesson and update to its readable address in the browser. The static build and preview now include all 134 lesson routes and the three English course pages. Publication is pending.
+All 67 lessons have separate English and Turkish lesson URLs. The published HTML includes the lesson title, objective and a bilingual example. Course lists, the Turkish A1 practice test and the reader use these URLs. The previous `?topic=` links open the same lesson and update to its readable address in the browser. The static build and preview now include all 134 lesson routes and the three English course pages.
 
 ## A1–B1 course pages and A1 practice test
 
-The homepage links to static A1, A2 and B1 course pages at `/konular/almanca-a1/`, `/konular/almanca-a2/` and `/konular/almanca-b1/`. Each lists every lesson at that level and includes an authored sample exercise. The 12-question `/konular/almanca-a1-test/` checks vocabulary, sentence structure and short reading prompts. Results include Turkish explanations and links to relevant lessons. The test does not store answers or assign a CEFR level. Publication is pending.
+The homepage links to static A1, A2 and B1 course pages at `/konular/almanca-a1/`, `/konular/almanca-a2/` and `/konular/almanca-b1/`. Each lists every lesson at that level and includes an authored sample exercise. The 12-question `/konular/almanca-a1-test/` checks vocabulary, sentence structure and short reading prompts. Results include Turkish explanations and links to relevant lessons. The test does not store answers or assign a CEFR level.
 
 ## Almanca Kursu navigation
 
@@ -38,17 +52,21 @@ The Turkish menu links directly to the 67-lesson course as **Almanca Kursu**. Th
 
 ## DTZ-Prüfung hub
 
-The German hub at `/de/dtz-pruefung/` links to the complete German Modelltest and the original 15-chapter German writing course, with its 47 activities and model answers. `/en/dtz-exam/` gives English test and writing guidance. `/dtz-sinavi/` links to the existing test and course with Turkish help. The build publishes the two German learning experiences as on-demand compressed fragments and keeps the hub and help content in static HTML. Publication is pending.
+The German hub at `/de/dtz-pruefung/` links to the complete German Modelltest and the original 15-chapter German writing course, with its 47 activities and model answers. `/en/dtz-exam/` gives English test and writing guidance. `/dtz-sinavi/` links to the existing test and course with Turkish help. The build publishes the two German learning experiences as on-demand compressed fragments and keeps the hub and help content in static HTML.
 
 ## Turkish and English mini-packs — 21 November 2026
 
-Konular links to `/konular/mini-paketler/` and English Topics links to `/en/mini-packs/`. Each library contains 17 A1, 22 A2 and 28 B1 authored samples from `GermanPacks/pack1a/data/samples/`, with the Turkish collection taken from its `tr/` directory. The shared reader uses the original layout, catalog order and language picker with Baulingo colors. Each library loads only its selected language. Publication is pending.
+Konular links to `/konular/mini-paketler/` and English Topics links to `/en/mini-packs/`. Each library contains 17 A1, 22 A2 and 28 B1 authored samples from `GermanPacks/pack1a/data/samples/`, with the Turkish collection taken from its `tr/` directory. The shared reader uses the original layout, catalog order and language picker with Baulingo colors. Each library loads only its selected language.
 
-## Writing audit fixed — 3 November 2026
+## Historical implementation notes
+
+The entries below record development and verification at the dates indicated. Local test counts, review sessions and publication status in those entries describe the work at that time. The current release and remaining tasks are above.
+
+### Writing audit fixed — 3 November 2026
 
 The owner requested all Product Design audit fixes and will perform the final review. The course now has 22 learning lessons plus two reference pages, 47 tasks in six appropriate formats, visible required choices, point-linked letter plans/checks/annotated models and 64 translated phrase entries. Resume targets unfinished work; save status is beside editors. Prior text/plan data remains accessible; old generic checks are kept separately. Multi-tab saves merge changed fields and failed-storage export includes later memory edits. See [the final review checklist](content/dtz-writing-review.md). No deployment or push is authorized by this request. The LAN preview remains on port 4173.
 
-## DTZ letter-writing update — 2 November 2026
+### DTZ letter-writing update — 2 November 2026
 
 The owner chose the Turkish short-lesson adaptation of their `dtz-writing-book-web`. It is prepared locally at `/dtz-mektup-yazma/`: 24 lessons, 11 letter types and all 47 original answer/model activities, plus short interactive checks. Drafts, plans, self-checks, revisions, notes, explicit completion and optional clocks remain in this browser. Export and scoped reset are available. See [content and boundaries](content/dtz-writing.md). Review is the newest entry at `/dev/review/`. Publication remains pending authorization.
 
@@ -60,7 +78,7 @@ Live status: the owner deployed the static site at `https://baulingo.app`. The a
 
 Read [the roadmap](roadmap.md), [the setup](setup.md), [the approved visual reference](design/homepage.md) and [the architecture](architecture.md). The roadmap owns product sequencing; this handoff identifies the next implementation work. Continue in this website repository. Keep native app work in its separate repository.
 
-## Current live foundation
+### Current live foundation
 
 The owner selected Turkish speakers as the first audience and supplied the final homepage screenshot. Its layout and visible wording are authoritative. Further development should proceed in small steps.
 
@@ -73,19 +91,19 @@ The site uses static HTML/CSS and browser JavaScript modules. Pure exercise and 
 - `npm run build` writes an explicit public allowlist to `dist/`.
 - `.dev/`, `dist/`, local environment files and dependencies are ignored by Git.
 
-## Verification
+### Verification
 
 The tests and static build pass. Chrome checks cover the primary interactions, audio, downloads, focus return and console errors. Responsive checks cover eleven widths from 320 to 1440 px, including intermediate tablet widths. Topic/resource navigation also works without JavaScript. The owner supplied the postal address for the new Impressum; privacy edits update publisher contact and website hosting only. Native app telemetry paragraphs are unchanged. Build output excludes docs, tests, scripts, Git metadata, source artwork, raw fonts and local browser files.
 
 [Design QA](../design-qa.md) records the visual comparisons, fixes and remaining minor differences. Local screenshots and browser logs are in the ignored `.dev/` directory. They are not deployed assets.
 
-## DTZ simulation prepared locally
+### DTZ simulation prepared locally
 
 The owner requested the existing full simulation from `german-exam-app`. It is implemented at `/dtz-deneme-sinavi/` in the main site's static build, linked from the existing homepage exam column, exam topic/search dialog and resources. It includes the original 20 listening + 25 reading items, continuous audio, writing A/B, speaking A/B images, local resume and a receptive score/review. Writing/speaking are not automatically graded. The app repository is unchanged. [Port notes](content/dtz-web.md) record source hashes, limits and local verification. The owner approved a separate 10 MB DTZ media allowance alongside the existing 2 MB core limit. The owner has authorized a local commit of all reviewed changes. Deployment still requires separate authorization.
 
 The current suite has 44 passing tests, including local review and performance tooling. Full browser flow, audio playback/end, timer expiry, reload/resume, local writing, error/retry, denied storage, corrupt-state reset, keyboard selection and no-JavaScript fallback passed locally. A fresh read-only review found no important bugs and independently ran the five pure DTZ tests. Publish only after authorization, then recheck live audio byte ranges, routing, exercise behavior, privacy and analytics.
 
-## Next steps
+### Historical next steps
 
 The owner can review recent changes and walk through the website at `http://127.0.0.1:4173/dev/review/` in the current local session. **Refresh changes** rebuilds current source; DTZ shortcuts use isolated sample progress. Notes/decisions stay in ignored `.dev/website-review.json` and never trigger agent work or publication. See [local review instructions](development/review.md). Development-only review tools are not part of the pending public release.
 
@@ -101,21 +119,21 @@ Keep old GitHub Pages privacy access during migration. The app's policy URL is a
 
 The app repository still has a public-site export script. Do not use an older export to overwrite this independent website source.
 
-## Limits
+### Limits
 
 The main site, HTTPS custom domain and WWW redirects have now been verified live; account billing settings and the full DNS configuration have not been audited. The WWW setup added only its dedicated Worker route, with no DNS edits or paid-plan changes. Native app code and telemetry remain unchanged. Recheck live behavior after future deployments.
 
-## Local performance changes
+### Local performance changes
 
 The performance review entry is **Faster homepage, same design** at `http://127.0.0.1:4173/dev/review/`. It covers responsive hero copies, Turkish/German font subsets (Lato-derived Baulingo Sans), and content-hashed immutable core assets. These changes are not deployed; baseline PageSpeed scores remain mobile 97 / desktop 99. See [performance notes](performance.md).
 
 The initial review follow-up applied three saved comments: a collapsible phone menu, removal of the free-resource header link, and removal of the last DTZ pre-start sentence. Component **+** buttons now attach local feedback to main sections and dialogs; saved notes can be edited or deleted. Original notes and approvals remain local. The owner confirmed approval of all changes in chat on 1 November; saved notes have not been rewritten. See [review instructions](development/review.md).
 
-## Local resources removal
+### Local resources removal
 
 The owner requested removal of the free resources section. The local website no longer publishes its page or downloads; the original source files remain in the repository. This does not change the independent Android app. This change is not deployed.
 
-## Local review follow-up
+### Local review follow-up
 
 The latest saved-comment changes are **Sade filtreler, sabit başlık ve temiz yazma alanı**. Study pages default to level/content filters; the four remaining controls are inside Gelişmiş filtreler. Each sticky level row includes synchronized Liste / Tablo controls and the current topic while scrolling, on desktop and mobile. Writing pages no longer show the standalone phrase rail or initial browser-only notices. Inline phrase help, the full reference, the actual letter preview and relevant storage-failure feedback remain. Original notes/approvals are preserved; publication remains pending.
 
@@ -129,17 +147,17 @@ The combined simple-format design is merged locally into `main`. **Birlikte yaza
 
 The local homepage now links grammar and daily-life topics directly to their static pages; topic practice uses topic-specific sentences. The app information page links to the owner-provided Google Play open-alpha listing. The DTZ result no longer offers a new-attempt button. These changes await publication. A locally prepared English section now offers independently written lessons on appointments, word order and articles, with English browser-language detection and a manual switch. The English app page was removed at the owner’s request. DTZ instructions and other Turkish pages have not been translated; the English section is limited to its published lessons.
 
-## English homepage SEO preparation
+### English homepage SEO preparation
 
 The local English homepage now leads with beginner German, original English explanations, three existing lesson destinations, recorded café audio, a sentence task and getting-started questions. It uses the approved Baulingo artwork, colours and type. Metadata includes a descriptive title/description, canonical URL, social previews and reciprocal English/Turkish homepage language links. No keyword-volume, ranking or traffic results have been measured. The English app page remains removed.
 
-## Shared English sentence builder
+### Shared English sentence builder
 
 English homepage and lesson practice now use the same DOM controller and pure selection/checking rules as Turkish. Independent English task data supplies coffee/tea, word order, articles and appointment sentences with contextual hints. English tasks have three to five words; longer tasks wrap into two columns on phones. Readable examples remain available without JavaScript. The Turkish café flow is preserved.
 
 The full saved-comment audit is recorded in [review follow-up](development/review-followup.md). The remaining B1 letter shortcut now leads to the available DTZ simulation. Turkish practice meanings were checked against their German sentences.
 
-## Local exam overview and saved review
+### Local exam overview and saved review
 
 The Sınavlar header link now opens `/sinavlar/`. This static overview has DTZ mock-test and study-list links plus a brief Turkish guide to DTZ, Goethe/telc, DTB and TestDaF/DSH audiences, linked to official sources. Only DTZ preparation is offered. The mock test and study page link back to the overview. The single saved comment requesting removal of the printer example was applied; the original local feedback is retained. These changes are prepared locally and are not deployed.
 

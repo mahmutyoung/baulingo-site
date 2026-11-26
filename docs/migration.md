@@ -1,5 +1,7 @@
 # Baulingo architecture migration
 
+The Astro build and unified analytics went live on **26 November 2026**. This document retains the local phase and baseline evidence. Current operations and post-release verification are in the [handoff](handoff.md#current-status--26-november-2026), [production notes](production.md#release--26-november-2026) and [analytics guide](analytics.md#production-measurement-audit--26-november-2026).
+
 ## Phase 7 release readiness
 
 `npm run build` now uses Astro to render the indexed pages and packages the static release in `dist/`. The build validates Astro's rendered file set against the catalog, then packages the allowlisted assets, 404, legal pages, crawler policy and Cloudflare files. It stages the complete artifact before replacing `dist/`. Local development, review refresh, preview and CI use the same build. The parallel builder, duplicate homepage and reader shells, and separate Astro preview commands are retired. Phase 2–6 command examples below are historical.
@@ -8,7 +10,7 @@ The local artifact preserves the Phase 6 Astro candidate's 374 files byte for by
 
 `npm test` passed all 108 tests. The production build, strict Astro check and Wrangler 4.156.0 dry run passed locally. Chrome sampled 15 routes at 1440 and 390 px and checked sentence practice, mini-pack navigation, A1 scoring, lazy DTZ audio, attempt resume and writing draft recovery. With JavaScript disabled, the browser could read lesson examples, test explanations, study lists and German DTZ previews. Loopback cold transfer for the Turkish homepage was 270,713 bytes at 1440 px and 231,750 at 390 px. The German DTZ mock transferred 255,786 bytes at both widths before learner-started audio. Synthetic Chrome checks with the Google tag stubbed covered consent, attribution, study time and withdrawal.
 
-Cloudflare deployment, effective crawler controls and live GA4 ingestion remain pending an authorized release. The candidate retains the existing wildcard crawler policy. The [release and rollback runbook](production.md#astro-release-and-rollback) and [crawler policy and post-release checks](production.md#search-discoverability-release-checks) record the separate decisions and checks.
+The production deployment followed these local checks. The release retained the wildcard crawler policy. [Release and rollback](production.md#astro-release-and-rollback) · [Production search audit](production.md#production-search-audit--26-november-2026)
 
 ## Phase 6 unified analytics
 
@@ -18,7 +20,7 @@ Local Chrome exercised the transport on a synthetic HTTPS origin with the Google
 
 `npm test` passed all 103 tests, `npm run build` and `npm run test:astro` passed, and `npm run check:astro` reported zero diagnostics. Both builds publish 374 files. Core output is 1,997,777 bytes in the candidate and 1,999,039 in the legacy build. DTZ media uses 8,913,392 bytes in each build.
 
-GA4 ingestion and account configuration remain release checks.
+Post-release verification confirmed Admin and Data API access, GA4 Realtime ingestion and browser dispatch. The [production measurement audit](analytics.md#production-measurement-audit--26-november-2026) records the duplicate page-view defect and processed reporting limits.
 
 ### Reproducible GA4 configuration
 
@@ -121,7 +123,7 @@ The legacy budget failure remains recorded. The Astro candidate has 352 bytes of
 
 ## Phase 1 baseline
 
-Recorded 25 November 2026 from local `main` at `f844e2a`, with Node 24.19.0 and npm 9.4.1 on Windows. Scope covers the candidate static build and its local preview. The latest release identified in the [production notes](production.md) is `73d2647` from 15 November. The deployed revision, analytics ingestion and Cloudflare account settings were outside this baseline's verification.
+Recorded 25 November 2026 from local `main` at `f844e2a`, with Node 24.19.0 and npm 9.4.1 on Windows. Scope covers the candidate static build and its local preview. At that time the live release was `73d2647` from 15 November. The deployed revision, analytics ingestion and Cloudflare account settings were outside this baseline's verification. [Subsequent production release](production.md#release--26-november-2026)
 
 **Baseline status:** The legacy core payload check was red at the end of Phase 1.
 
