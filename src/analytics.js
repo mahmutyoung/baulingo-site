@@ -147,6 +147,8 @@ function enable() {
   enabled = true;
   window.dataLayer = window.dataLayer || [];
   window.gtag = function () { window.dataLayer.push(arguments); };
+  // The Google tag can send a page view during initialization, before stream config.
+  window.gtag('set', 'send_page_view', false);
   window.gtag('js', new Date());
   window.gtag('config', MEASUREMENT_ID, {
     send_page_view: false, page_location: cleanPage(), page_referrer: cleanReferrer(),
