@@ -1,5 +1,6 @@
 import { entryAttribution, measurementId as MEASUREMENT_ID, sanitizeLearningEvent } from './analytics-contract.js';
 import { classifyEntry, referrerURL, resumeVisit, visitWindow } from './analytics-attribution.js';
+import { mountCookieConsent } from './cookie-consent.js';
 export { sanitizeLearningEvent } from './analytics-contract.js';
 
 // Optional website analytics. Google code is loaded only after a visitor opts in.
@@ -15,7 +16,8 @@ export function miniPackEventContext(grammarTrack, content_language) {
   return { activity_type: 'mini_pack', content_category: grammarTrack ? 'grammar' : 'everyday_communication', content_language };
 }
 let enabled = false;
-let banner;
+let cookieConsent;
+let consentChoice;
 let localeRedirect = false;
 let miniPack;
 let waitForReader = false;
@@ -25,6 +27,9 @@ let persistedAt = 0;
 
 const inBrowser = typeof document !== 'undefined';
 const entry = inBrowser ? classifyEntry(location.search, document.referrer) : {};
+const legalPage = inBrowser && ['/privacy/', '/impressum/'].includes(location.pathname);
+const reviewPage = inBrowser && new URLSearchParams(location.search).has('__review');
+const promptForConsent = () => !legalPage && !reviewPage && !localeRedirect;
 
 export function redirectToLocale(url) {
   localeRedirect = true;
@@ -119,13 +124,9 @@ function recordVisit(path, identity, attribution = {}) {
 }
 
 function storedConsent() {
-  try { return localStorage.getItem(CONSENT_KEY) || (localStorage.getItem(PREVIOUS_CONSENT_KEY) === 'denied' ? 'denied' : null); }
-  catch { return null; }
-}
-
-function saveConsent(choice) {
-  try { localStorage.setItem(CONSENT_KEY, choice); }
-  catch { /* Do not enable tracking on later page loads without renewed consent. */ }
+  const choice = readStorage('localStorage', CONSENT_KEY);
+  if (choice === 'granted' || choice === 'denied') return choice;
+  return readStorage('localStorage', PREVIOUS_CONSENT_KEY) === 'denied' ? 'denied' : null;
 }
 
 function clearAnalyticsCookies() {
@@ -139,8 +140,7 @@ function clearAnalyticsCookies() {
 }
 
 function enable() {
-  if (enabled || localeRedirect || location.hostname !== 'baulingo.app' || location.protocol !== 'https:'
-    || new URLSearchParams(location.search).has('__review')
+  if (enabled || !promptForConsent() || location.hostname !== 'baulingo.app' || location.protocol !== 'https:'
     || document.querySelector('meta[name="robots"][content*="noindex"]')) return;
   pendingEnable = waitForReader;
   if (pendingEnable) return;
@@ -280,14 +280,17 @@ function installInteractionTracking() {
   window.addEventListener('pagehide', flushStudy);
   window.addEventListener('pageshow', event => {
     if (!event.persisted) return;
-    if (enabled && storedConsent() !== 'granted') setConsent('denied');
+    const choice = storedConsent();
+    if (choice !== consentChoice) setConsent(choice, false);
     else if (enabled) {
       lastPage = '';
       openVisit(true);
     }
   });
   window.addEventListener('storage', event => {
-    if (event.key === CONSENT_KEY && event.newValue === 'denied' && enabled) setConsent('denied');
+    if (event.key !== CONSENT_KEY && event.key !== null) return;
+    const choice = storedConsent();
+    if (choice !== consentChoice) setConsent(choice, false);
   });
   const linkClick = event => {
     const link = event.target.closest?.('a[href]');
@@ -304,11 +307,12 @@ function installInteractionTracking() {
   document.addEventListener('click', linkClick);
   document.addEventListener('auxclick', linkClick);
 }
-function setConsent(choice) {
-  saveConsent(choice);
+function setConsent(choice, persist = true) {
+  if (persist) writeStorage('localStorage', CONSENT_KEY, choice);
+  consentChoice = choice;
   if (choice === 'granted') {
     enable();
-    banner.hidden = true;
+    cookieConsent.close();
     return;
   }
   const wasEnabled = enabled;
@@ -325,59 +329,17 @@ function setConsent(choice) {
     location.reload();
     return;
   }
-  banner.hidden = true;
+  if (!choice && promptForConsent()) cookieConsent.open();
+  else cookieConsent.close();
 }
 
 function initialize() {
-  if (document.getElementById('ga4-consent')) return;
-  const footer = document.querySelector('footer');
+  if (cookieConsent) return;
+  consentChoice = storedConsent();
+  cookieConsent = mountCookieConsent(() => consentChoice, setConsent);
   installInteractionTracking();
-  const english = document.documentElement.lang === 'en';
-  const german = document.documentElement.lang === 'de';
-  const settings = document.createElement('button');
-  settings.type = 'button';
-  settings.className = 'analytics-settings';
-  settings.textContent = german ? 'Analyse-Einstellungen' : english ? 'Analytics settings' : 'Analiz ayarları';
-  (footer || document.body).append(settings);
-  if (!footer && document.querySelector('.lesson-preview') && typeof MutationObserver !== 'undefined') {
-    // Direct lesson URLs insert their shared footer asynchronously.
-    const observer = new MutationObserver(() => {
-      const destination = document.querySelector('footer');
-      if (destination) { destination.append(settings); observer.disconnect(); }
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-  }
-
-  banner = document.createElement('section');
-  banner.id = 'ga4-consent';
-  banner.className = 'ga4-consent';
-  banner.setAttribute('role', 'region');
-  banner.setAttribute('aria-label', german ? 'Einwilligung zur Analyse' : english ? 'Analytics choice' : 'Analiz tercihi');
-  const message = document.createElement('p');
-  message.textContent = german
-    ? 'Google Analytics kann Cookies setzen. Darf Google Seitenaufrufe, Herkunft, Übungsresultate und ungefähre Lernzeit messen? Du kannst deine Einwilligung in den Analyse-Einstellungen widerrufen.'
-    : english
-    ? 'Google Analytics may use cookies. May Google measure page visits, referral sources, exercise outcomes and approximate study time? You can withdraw consent in Analytics settings.'
-    : 'Google Analytics çerez kullanabilir. Google’ın sayfa ziyaretlerini, yönlendirme kaynaklarını, alıştırma sonuçlarını ve yaklaşık çalışma süresini ölçmesine izin verir misin? İznini Analiz ayarlarından geri alabilirsin.';
-  const actions = document.createElement('div');
-  actions.className = 'ga4-consent-actions';
-  const reject = document.createElement('button');
-  reject.type = 'button';
-  reject.textContent = german ? 'Ablehnen' : english ? 'Decline' : 'Reddet';
-  const accept = document.createElement('button');
-  accept.type = 'button';
-  accept.textContent = german ? 'Analyse erlauben' : english ? 'Allow analytics' : 'Analize izin ver';
-  actions.append(reject, accept);
-  banner.append(message, actions);
-  document.body.append(banner);
-
-  reject.addEventListener('click', () => setConsent('denied'));
-  accept.addEventListener('click', () => setConsent('granted'));
-  settings.addEventListener('click', () => { banner.hidden = false; reject.focus(); });
-
-  const choice = storedConsent();
-  banner.hidden = choice === 'granted' || choice === 'denied';
-  if (choice === 'granted') enable();
+  if (consentChoice === 'granted') enable();
+  if (!consentChoice && promptForConsent()) cookieConsent.open();
 }
 
 if (inBrowser) {

@@ -1,5 +1,28 @@
 [
   {
+    "id": "site-wide-cookie-settings",
+    "title": "Çerez ayarları",
+    "date": "2026-11-26",
+    "summary": "The shared cookie dialog provides equally styled choices and a footer control in Turkish, English and German.",
+    "files": ["src/cookie-consent.js", "src/cookie-consent.css", "src/analytics.js", "privacy/index.html", "impressum/index.html"],
+    "steps": [
+      {
+        "id": "choices",
+        "title": "Çerez tercihlerini aç",
+        "path": "/?lang=tr",
+        "focus": ".cookie-settings",
+        "check": "Open the footer settings. Confirm essential storage stays on and optional analytics starts unchecked. Use Geri to see the three equal actions. Review mode uses isolated preferences and sends no GA4 events."
+      },
+      {
+        "id": "legal-links",
+        "title": "Cookie-Einstellungen",
+        "path": "/privacy/",
+        "focus": ".cookie-settings",
+        "check": "Read the privacy page, open the German settings, then follow the Impressum link from the dialog."
+      }
+    ]
+  },
+  {
     "id": "phase-6-analytics-consent",
     "title": "Website analytics choice and privacy text",
     "date": "2026-11-26",
@@ -15,10 +38,10 @@
       },
       {
         "id": "analytics-choice",
-        "title": "Analiz ayarları",
+        "title": "Çerez ayarları",
         "path": "/?lang=tr",
-        "focus": ".analytics-settings",
-        "check": "Open analytics settings and read the cookie and measurement notice. Select Reddet and confirm that the banner closes."
+        "focus": ".cookie-settings",
+        "check": "Open the cookie settings and read the analytics description. Use Geri, then Tümünü reddet to close the dialog."
       }
     ]
   },

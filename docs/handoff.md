@@ -1,5 +1,9 @@
 # Website implementation handoff
 
+## Site-wide cookie settings
+
+The localized cookie dialog offers equal access to rejection, configuration and acceptance. The existing opt-in storage key and browser-local learning data remain compatible. Privacy and Imprint stay readable on entry and expose the footer control. Preview this change in `/dev/review/`. [Analytics behavior](analytics.md#cookie-settings)
+
 ## Phase 7 release readiness
 
 `npm run build` now produces the Astro release artifact in `dist/`. Use `npm ci` on Node 24 and `npm run preview` to inspect it locally. CI checks and packages the same artifact. The next external step is an authorized release, followed by apex, crawler-policy and live GA4 checks. [Migration verification](migration.md#phase-7-release-readiness) · [Release and rollback](production.md#astro-release-and-rollback)

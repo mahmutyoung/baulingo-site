@@ -4,7 +4,7 @@ import { escapeLearningText as e } from '../src/learning-text.js';
 const languageScript = '<script type=module src="/src/language.js"></script>';
 
 function webPage(language, route, title, description, stylesheet, body, script = '', index = true, alternateLinks = '') {
-  return `<!doctype html><html lang="${language}"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>${e(title)}</title><meta name=description content="${e(description)}"><link rel="canonical" href="https://baulingo.app${route}">${alternateLinks}${index ? '' : '<meta name="robots" content="noindex">'}<link rel=stylesheet href="/${stylesheet}">${script}</head>${body}`;
+  return `<!doctype html><html lang="${language}"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>${e(title)}</title><meta name=description content="${e(description)}"><link rel="canonical" href="https://baulingo.app${route}">${alternateLinks}${index ? '' : '<meta name="robots" content="noindex">'}<link rel=stylesheet href=/${stylesheet}>${script}</head>${body}`;
 }
 
 const englishDescriptions = {
@@ -62,8 +62,8 @@ ${other ? `<a class=language href="${other.path}" lang=${other.locale} hreflang=
  */
 export function renderLessonPreview(page, { back, label, info, example, translation, grammar, related }, alternateLinks) {
   const relatedLink = related ? `<p><a href="${related.path}">${e(related.title)}</a>` : '';
-  const body = `<main id=main-content class=lesson-preview${grammar ? ' data-grammar' : ''}><a href="${back}">← ${label}</a>
+  const body = `<main id=main-content class=lesson-preview${grammar ? ' data-grammar' : ''}><a href=${back}>← ${label}</a>
 <h1 id=lesson-title>${e(page.heading)}</h1><p>${e(info)}<p lang=de>${e(example)}<p>${e(translation)}${relatedLink}</main>`;
   return webPage(page.locale, page.path, page.title, page.description,
-    'src/mini-packs/style.css', body, '<script type=module src="/src/mini-packs/player.js"></script>', page.index, alternateLinks);
+    'src/mini-packs/style.css', body, '<script type=module src=/src/mini-packs/player.js></script>', page.index, alternateLinks);
 }

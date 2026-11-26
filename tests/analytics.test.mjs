@@ -35,6 +35,15 @@ test('the site permits only necessary GA4 endpoints and discloses opt-in collect
   assert.match(privacy, /Einwilligung/);
 });
 
+test('the shared cookie settings are available from both legal pages', async () => {
+  for (const file of ['privacy/index.html', 'impressum/index.html']) {
+    const html = await readFile(`dist/${file}`, 'utf8');
+    assert.match(html, /<script type="module" src="\/src\/analytics\.js"><\/script>/, file);
+  }
+  assert.ok(await readFile('dist/src/cookie-consent.js', 'utf8'));
+  assert.ok(await readFile('dist/src/cookie-consent.css', 'utf8'));
+});
+
 
 test('expanded analytics accepts only supported event parameters and values', async () => {
   const { sanitizeLearningEvent } = await import('../dist/src/analytics.js');
