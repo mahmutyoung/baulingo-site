@@ -39,7 +39,7 @@ Recommendation: Delete the sentence; retain the phrase, audio and Cümleyi kur a
 
 ### R02 — Konuları bağlantılardan okuyabilir, çalışma notlarını indirebilirsin.
 
-Original audit source: [index.html:67](../../index.html). Context: no-JavaScript only.
+Original audit source: `index.html:67` in the legacy homepage template. Context: no-JavaScript only.
 
 Why: Outdated: the website no longer publishes the resource downloads promised here.
 
@@ -79,7 +79,7 @@ Recommendation: Remove the caption from individual lesson/reference endings; kee
 
 ### R07 — Açıklamaları aşağıda okuyabilirsin.
 
-Original audit source: [index.html:151](../../index.html). Context: no-JavaScript inside practice dialog.
+Original audit source: `index.html:151` in the legacy homepage template. Context: no-JavaScript inside practice dialog.
 
 Why: The dialog does not contain the promised lesson explanations below this note.
 
@@ -225,7 +225,7 @@ Recommendation: Görevleri ve cevapları okuyabilir, ses kaydını dinleyebilirs
 
 ### S09 — Alıştırma için JavaScript'i aç. Bu cümlenin Almancası:
 
-Original audit source: [index.html:151](../../index.html). Context: no-JavaScript inside practice dialog.
+Original audit source: `index.html:151` in the legacy homepage template. Context: no-JavaScript inside practice dialog.
 
 Why: The fallback already supplies the answer; focus on the German rather than setup instructions.
 

@@ -29,15 +29,24 @@ test('every topic is readable without JavaScript and has its own canonical URL',
 });
 
 test('deployment includes discovery, real 404 handling and security headers', async () => {
-  assert.match(await read('robots.txt'), /Sitemap: https:\/\/baulingo.app\/sitemap.xml/);
+  assert.equal((await read('robots.txt')).replaceAll('\r\n', '\n'),
+    'User-agent: *\nAllow: /\nSitemap: https://baulingo.app/sitemap.xml\n');
   const sitemap = await read('sitemap.xml');
   for (const topic of topics) assert.ok(sitemap.includes(`/konular/${topic.id}/`));
-  assert.match(await read('404.html'), /Sayfa bulunamadı/);
+  const notFound = await read('404.html');
+  assert.match(notFound, /Sayfa bulunamadı/);
+  assert.match(notFound, /<meta name="robots" content="noindex">/);
   const headers = await read('_headers');
   for (const header of ['Content-Security-Policy', 'X-Content-Type-Options', 'Referrer-Policy', 'Permissions-Policy', 'frame-ancestors']) assert.ok(headers.includes(header));
   const config = JSON.parse(await readFile('wrangler.json', 'utf8'));
   assert.equal(config.assets.directory, './dist');
   assert.equal(config.assets.not_found_handling, '404-page');
+});
+
+test('the deployment artifact includes the readable German mock-test preview', async () => {
+  const html = await read('de/dtz-pruefung/modelltest/index.html');
+  assert.match(html, /Beispielantwort:/);
+  assert.match(html, /itemtype="https:\/\/schema.org\/WebPage https:\/\/schema.org\/LearningResource"/);
 });
 
 test('public build excludes private files and retains separate core and lazy DTZ media budgets', async () => {
@@ -58,12 +67,13 @@ test('all built HTML references resolve to public output, including nested pages
   for (const file of files.filter(file => file.endsWith('.html'))) {
     const html = await read(file);
     const base = new URL(file.replaceAll('\\', '/'), 'https://baulingo.app/');
-    for (const match of html.matchAll(/(?:href|src|action)="([^"]+)"/g)) {
-      const url = new URL(match[1], base);
+    for (const [, quoted, singleQuoted, unquoted] of html.matchAll(/\s(?:href|src|action)=(?:"([^"]+)"|'([^']+)'|([^\s>]+))/g)) {
+      const reference = quoted ?? singleQuoted ?? unquoted;
+      const url = new URL(reference, base);
       if (url.origin !== base.origin) continue;
       const relative = decodeURIComponent(url.pathname).replace(/^\//, '') || 'index.html';
       const target = relative.endsWith('/') ? `${relative}index.html` : relative;
-      assert.ok((await stat(path.join('dist', target))).isFile(), `${file}: ${match[1]}`);
+      assert.ok((await stat(path.join('dist', target))).isFile(), `${file}: ${reference}`);
     }
   }
 });

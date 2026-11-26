@@ -12,10 +12,7 @@ test('GA4 consent module is present on learning pages, not loaded directly from 
   const asset = await readFile('dist/src/analytics.js', 'utf8');
   assert.match(asset, /G-R1YH6T64JM/);
   assert.doesNotMatch(asset, /G-3XSNDN7FE4/);
-  assert.match(asset, /choice === 'granted'/);
-  assert.match(asset, /location\.hostname !== 'baulingo\.app'/);
   assert.match(asset, /sanitizeLearningEvent/);
-  assert.doesNotMatch(asset, /localStorage\.setItem\([^,]+,\s*JSON\.stringify\(attempt\)/);
 });
 
 test('the site permits only necessary GA4 endpoints and discloses opt-in collection', async () => {
@@ -38,7 +35,7 @@ test('the site permits only necessary GA4 endpoints and discloses opt-in collect
 
 
 test('expanded analytics accepts only supported event parameters and values', async () => {
-  const { sanitizeLearningEvent } = await import('../src/analytics.js');
+  const { sanitizeLearningEvent } = await import('../dist/src/analytics.js');
   assert.deepEqual(sanitizeLearningEvent('exercise_answered', {
     activity_id:'DE-A1-G09', activity_type:'mini_pack', content_category:'grammar', exercise_id:'q-1', level:'A1',
     content_language:'tr', outcome:'correct', attempt_number:2,

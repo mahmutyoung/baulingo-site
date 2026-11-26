@@ -28,27 +28,28 @@ Historical documents under `docs/superpowers/` record earlier work. Use the curr
 
 ## Implementation map
 
-- `index.html`, `style.css`, `app.js`: approved homepage and browser interactions.
+- `src/pages/index.astro`, `style.css`, `app.js`: approved homepage and browser interactions.
 - `src/topics.js`: topic content and Turkish-aware search rules.
 - `src/exercise.js`: exercise data and pure answer/state rules.
-- `scripts/pages.mjs`: generated topic/resource pages, discovery files and 404.
-- `scripts/public-files.mjs`: explicit publication allowlist and public path resolution.
-- `scripts/build.mjs`: static output builder; `scripts/dev.mjs` and `scripts/server.mjs`: local output preview.
+- `src/publishing/`, `src/pages/`, `scripts/pages.mjs`: catalog, static routes and page rendering.
+- `scripts/public-files.mjs`: explicit asset allowlist and public path resolution.
+- `scripts/build.mjs`: Astro static rendering, discovery files and asset packaging. `scripts/dev.mjs` and `scripts/server.mjs` serve the build locally.
 - `assets/`, `downloads/`: artwork, local fonts/audio/icons and study files.
 - `privacy/`, `impressum/`: public legal pages.
 - Root `wrangler.json`, `_headers`, `_redirects`: main static site's Cloudflare configuration.
 - `cloudflare/www-redirect/`: separately deployed infrastructure Worker for WWW redirects only.
 - `tests/`: Node tests for learning, build boundaries, HTTP behavior and redirects.
 
-Continue with static HTML/CSS and native JavaScript modules. Keep content, learning rules and DOM rendering separate. Astro, TypeScript, React, accounts, databases and synchronisation are optional future choices requiring a concrete product need, not current prerequisites.
+Use Astro and TypeScript at build time and serve static HTML/CSS and native JavaScript modules. Keep content, learning rules and DOM rendering separate. React, accounts, databases and synchronisation require a concrete product need.
 
 ## Local workflow
 
-Use Node 24. Normal builds require no installed npm or Python dependencies.
+Use Node 24 and install the locked npm dependencies with `npm ci`. Python is optional for asset re-encoding.
 
 ```powershell
 npm run dev
 npm test
+npm run check:astro
 npm run build
 npm run preview
 ```

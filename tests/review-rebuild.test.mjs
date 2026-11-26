@@ -1,17 +1,20 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, copyFile, readFile, writeFile, rm } from 'node:fs/promises';
-import os from 'node:os';
+import { mkdtemp, mkdir, cp, copyFile, readFile, writeFile, rm } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { publicFiles } from '../scripts/public-files.mjs';
 import { rebuildReviewPreview } from '../scripts/review-rebuild.mjs';
 
 test('review refresh uses fresh generator modules and fresh DTZ sample answers', async () => {
-  const scratch = await mkdtemp(path.join(os.tmpdir(), 'baulingo-review-build-'));
+  await mkdir('.dev', { recursive: true });
+  const scratch = await mkdtemp(path.resolve('.dev', 'review-build-'));
   try {
-    const files = [...publicFiles, 'src/mini-packs/library.json', 'src/mini-packs/library-tr.json', 'src/mini-packs/grammar.json', 'src/mini-packs/grammar-tr.json', 'scripts/data/dtz-writing-book.json', 'src/dtz-study.js', ...['catalog', 'model', 'resources'].map(name => `src/publishing/${name}.ts`), '_headers', '_redirects', 'package.json', ...['build', 'assets', 'public-files', 'pages', 'english-pages', 'study-page', 'sentence-meanings', 'dtz-page', 'dtz-hub', 'course-pages', 'lesson-pages', 'writing-content', 'writing-guidance', 'writing-phrases', 'writing-format', 'writing-task-page', 'writing-page', 'review-build', 'review-server'].map(name => `scripts/${name}.mjs`)];
+    const files = [...publicFiles, 'src/mini-packs/library.json', 'src/mini-packs/library-tr.json', 'src/mini-packs/grammar.json', 'src/mini-packs/grammar-tr.json', 'scripts/data/dtz-writing-book.json', 'src/dtz-study.js', ...['catalog', 'model', 'resources'].map(name => `src/publishing/${name}.ts`), '_headers', '_redirects', 'package.json', 'astro.config.mjs', 'tsconfig.json', ...['build', 'assets', 'public-files', 'pages', 'english-pages', 'study-page', 'sentence-meanings', 'dtz-page', 'dtz-hub', 'course-pages', 'lesson-pages', 'writing-content', 'writing-guidance', 'writing-phrases', 'writing-format', 'writing-task-page', 'writing-page', 'review-build', 'review-server'].map(name => `scripts/${name}.mjs`)];
     for (const file of files) { await mkdir(path.dirname(path.join(scratch, file)), { recursive: true }); await copyFile(file, path.join(scratch, file)); }
+    for (const directory of ['src/pages', 'src/layouts']) {
+      await cp(directory, path.join(scratch, directory), { recursive: true });
+    }
     const worker = pathToFileURL(path.join(scratch, 'scripts/review-build.mjs'));
     const before = await rebuildReviewPreview(worker);
     const source = path.join(scratch, 'src/topics.js');

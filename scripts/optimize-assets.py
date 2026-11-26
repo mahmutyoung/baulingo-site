@@ -31,10 +31,10 @@ for name in ([] if "--fonts-only" in sys.argv else ["cafe-hero", "resources-bann
 # site and learning content, including accented names and combining marks.
 codepoints = set(range(32, 127)) | set(range(0x0300, 0x0370))
 codepoints.update(map(ord, "ÄÖÜäöüßẞÇĞİÖŞÜçğıöşüÂÎÛâîûÀÉÈàéèñÑáó€"))
-sources = [root / "index.html"]
-for folder in ["scripts", "src", "en", "konular", "privacy", "impressum"]:
+sources = []
+for folder in ["scripts", "src", "privacy", "impressum"]:
     sources.extend(path for path in (root / folder).rglob("*")
-                   if path.suffix in {".mjs", ".js", ".json", ".html"})
+                   if path.suffix in {".astro", ".ts", ".mjs", ".js", ".json", ".html"})
 for source in sources:
     codepoints.update(map(ord, source.read_text(encoding="utf-8")))
 codepoints.update([0x1E9E, 0x20AC, 0x2212, 0x2713, 0xFFFD])

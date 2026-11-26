@@ -7,7 +7,6 @@ const routes = { de: '/de/dtz-pruefung/', en: '/en/dtz-exam/', tr: '/dtz-sinavi/
 const test = routes.de + 'modelltest/';
 const writing = routes.de + 'schreiben/';
 const source = 'https://www.gast.de/de/forschung-entwicklung/entwicklung/auftraege/deutsch-test-fuer-zuwanderer-dtz/der-dtz-auf-einen-blick';
-export const dtzHubRoutes = [...Object.values(routes), test, writing];
 
 const guide = {
   de: {
@@ -121,17 +120,6 @@ export function dtzResources() {
 <nav aria-label="Kapitel">${chapterNav}</nav><div class="writing-body" data-dtz-fragment="schreiben">${germanWritingPreview()}</div>
 <noscript><p>Für alle Übungen und die Schreibfelder brauchst du JavaScript. <a href="/dtz-mektup-yazma/">Deutsche Aufgaben und Mustertexte mit türkischer Erklärung lesen</a>.</p></noscript>`, {css: 'writing.css', fragment:true});
   return [...guides, mock, course];
-}
-
-export function dtzHubPages() {
-  const alternateLinks = entries => entries.map(([locale, path]) => `<link rel="alternate" hreflang="${locale}" href="${origin}${path}">`).join('');
-  const groups = {
-    'dtz-guide': alternateLinks(Object.entries(routes)),
-    'dtz-mock': alternateLinks([['de', test], ['tr', '/dtz-deneme-sinavi/']]),
-  };
-  return new Map(dtzResources().map(resource => [
-    resource.path.slice(1) + 'index.html', resource.render(resource, groups[resource.translationGroup] ?? ''),
-  ]));
 }
 
 function bookText(markdown) {

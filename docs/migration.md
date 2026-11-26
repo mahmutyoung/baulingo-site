@@ -1,5 +1,15 @@
 # Baulingo architecture migration
 
+## Phase 7 release readiness
+
+`npm run build` now uses Astro to render the indexed pages and packages the static release in `dist/`. The build validates Astro's rendered file set against the catalog, then packages the allowlisted assets, 404, legal pages, crawler policy and Cloudflare files. It stages the complete artifact before replacing `dist/`. Local development, review refresh, preview and CI use the same build. The parallel builder, duplicate homepage and reader shells, and separate Astro preview commands are retired. Phase 2–6 command examples below are historical.
+
+The local artifact preserves the Phase 6 Astro candidate's 374 files byte for byte, including 297 sitemap URLs. Core output is 1,997,848 bytes and DTZ media is 8,913,392 bytes, within their separate 2 MB and 10 MB caps. Release tests cover canonical and locale metadata, reciprocal language links, indexing directives, ordinary links, visible learning content and the allowed file set.
+
+`npm test` passed all 108 tests. The production build, strict Astro check and Wrangler 4.156.0 dry run passed locally. Chrome sampled 15 routes at 1440 and 390 px and checked sentence practice, mini-pack navigation, A1 scoring, lazy DTZ audio, attempt resume and writing draft recovery. With JavaScript disabled, the browser could read lesson examples, test explanations, study lists and German DTZ previews. Loopback cold transfer for the Turkish homepage was 270,713 bytes at 1440 px and 231,750 at 390 px. The German DTZ mock transferred 255,786 bytes at both widths before learner-started audio. Synthetic Chrome checks with the Google tag stubbed covered consent, attribution, study time and withdrawal.
+
+Cloudflare deployment, effective crawler controls and live GA4 ingestion remain pending an authorized release. The candidate retains the existing wildcard crawler policy. The [release and rollback runbook](production.md#astro-release-and-rollback) and [crawler policy and post-release checks](production.md#search-discoverability-release-checks) record the separate decisions and checks.
+
 ## Phase 6 unified analytics
 
 Both builds use the same consent-gated transport and event-specific validation. The catalog supplies stable page, content and collection IDs. Direct exposure, explicit mini-pack selection, starts, resumes and completion are distinct. The original activity dimensions and browser-local learning records remain compatible.
@@ -8,7 +18,7 @@ Local Chrome exercised the transport on a synthetic HTTPS origin with the Google
 
 `npm test` passed all 103 tests, `npm run build` and `npm run test:astro` passed, and `npm run check:astro` reported zero diagnostics. Both builds publish 374 files. Core output is 1,997,777 bytes in the candidate and 1,999,039 in the legacy build. DTZ media uses 8,913,392 bytes in each build.
 
-The next phase is release readiness. GA4 ingestion and account configuration remain release checks.
+GA4 ingestion and account configuration remain release checks.
 
 ## Phase 5 remaining formats
 

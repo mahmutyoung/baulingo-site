@@ -1,6 +1,6 @@
 # Baulingo website architecture
 
-The target is a static Astro site with strict TypeScript and browser-local learning. The production build uses HTML, CSS, native JavaScript and a custom static builder. The Astro candidate renders every indexed route and the sitemap from the validated catalog. Both builds derive reporting metadata from that catalog and share the browser modules and learning rules. The candidate build still takes allowlisted assets, legal pages and the 404 from the legacy build. [Migration handoff](migration.md)
+Astro and strict TypeScript build the static site. The publishing catalog drives the indexed pages, sitemap, language equivalents and browser analytics metadata. A single build packages those pages with the allowlisted assets, legal pages and 404 in `dist/`. Native browser modules handle learning interactions and browser-local state. [Migration handoff](migration.md)
 
 Turkish speakers learning German remain the primary audience. The roadmap governs product priorities and experiments, and the approved homepage reference governs the layout and Turkish copy. [Roadmap](roadmap.md) · [Homepage reference](design/homepage.md)
 
@@ -82,7 +82,7 @@ Publish only the verified static artifact. Preserve the Cloudflare apex and sepa
 - Home: the supplied “Almancada aradığın cevap.” layout, topic search, a short phrase preview and three learning paths.
 - Grammar: articles, cases and word order, explained in Turkish.
 - Everyday German: situations such as appointments, shopping and speaking to a doctor.
-- Mini-packs: [Turkish Topics](../konular/mini-paketler/index.html) and [English Topics](../en/mini-packs/index.html) each link to 67 authored A1–B1 lessons. The shared reader fetches one gzip archive for the selected language. Progress stays in page memory.
+- The [shared mini-pack reader](../src/pages/[...reader].astro) serves the Turkish and English entry pages. Each links to 67 authored A1–B1 lessons and fetches one gzip archive for the selected language. Progress stays in page memory.
 - Turkish course pages at `/konular/almanca-a1/`, `/konular/almanca-a2/` and `/konular/almanca-b1/` render course links and a sample exercise from the same mini-pack data. The A1 practice test uses original questions, client-side scoring and lesson recommendations.
 - English course pages at `/en/german-a1/`, `/en/german-a2/` and `/en/german-b1/` link to all the English packs. Both languages have stable lesson slugs, matching canonicals in their static previews and sitemap entries. The shared reader opens the full lesson from a clean URL or a legacy topic query.
 - Gramer Kursu and German Grammar Course are separate 53-lesson tracks. They use the same reader in teaching order, separate gzip archives by language, and readable topic URLs. Each grammar pack links to the source-designated everyday lesson, which links back to the grammar packs that use it.
@@ -115,7 +115,7 @@ Local developer review uses `/dev/review/` with a maintained change catalog, the
 
 The DTZ simulation is implemented locally at `/dtz-deneme-sinavi/` as a new page within the main static build; publication is pending. `scripts/import-dtz.mjs` exports only the existing app's exam data and three media files. `src/dtz/content.js` holds that snapshot, `src/dtz/rules.js` owns pure state/scoring/deadline rules, `src/dtz/player.js` enhances the static output from `scripts/dtz-page.mjs`, and `dtz.css` extends the site's design. Normal builds do not read the app repository. The current attempt is stored only in localStorage; drafts and answers are never submitted. The core output retains its 2 MB budget, with the owner's separately approved 10 MB allowance for exact, lazy-loaded DTZ media. See [the port notes](content/dtz-web.md) for scope, provenance and verification. Other exam packages remain planned.
 
-The repository has static HTML/CSS, browser modules, generated topic and English pages, a production-output preview, an explicit public-file build and focused tests. The Astro candidate reuses these site modules for its homepage. The native app and live website have independent release histories. [Migration handoff](migration.md) · [Production notes](production.md)
+The repository has a static production-output preview, an explicit public-file build and focused tests. The native app and live website have independent release histories. [Migration handoff](migration.md) · [Production notes](production.md)
 
 ## Static asset optimization
 

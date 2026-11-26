@@ -54,10 +54,12 @@ The owner requested the app's original full DTZ simulation on the website and ap
 
 On 30 October 2026 the owner authorized publication of Cloudflare analytics support and the website privacy disclosure. The zone API confirms the Free Website plan. Final main-site version: `f08cba0f-c32c-4a16-aaa8-df1a22d063f0`, deployed from working-tree changes based on `57d04316378916291ac92765ca78b4ec74411440` (no commit or push requested). Initial version `22138c30-76a8-4dbf-9f1b-21f8dcbe8bc1` allowed only the unversioned beacon; a live browser revealed Cloudflare's versioned script path, so both CSP policies were corrected and redeployed. Live Chrome checks now confirm the automatically injected script loads (HTTP 200) and homepage/topic-index RUM POSTs succeed (HTTP 204) without CSP or network errors. A network trace locates this check in Germany. Non-browser fetches did not receive an injected beacon, so raw HTML checks alone are insufficient. The refreshed Wrangler login can access the zone and Worker, but Web Analytics inspection returns HTTP 403 because the login lacks account-settings permissions. A subsequently supplied read-only token in the ignored local `.env` permits RUM configuration and GraphQL reporting checks. Automatic collection and the ruleset are enabled, with one active inclusive host `*` / paths `["*"]` rule. The reporting API confirms four page views (two homepage, two topic index) on 30 October 2026, consistent with verification traffic. No account settings were changed; narrower hostname/path exclusions remain proposed and regional options were not established. The dashboard UI was not inspected. No manual beacon was added. [Analytics configuration](analytics.md) records the remaining account checks and useful review views.
 
-Use Node 24; normal builds need no installed packages.
+Use Node 24 and install the locked build dependencies.
 
 ```powershell
+npm ci
 npm test
+npm run check:astro
 npm run build
 npm run preview
 ```
@@ -95,9 +97,21 @@ Deployment and maintenance checklist (the owner's initial deployment is already 
 5. Keep the existing GitHub Pages privacy URL reachable for the Android app. Its link and the sibling app's export script are separate app work. Do not overwrite the independent site with an older app export.
 6. Record the deployed Git revision and smoke-test it. Retain the previous Cloudflare deployment for rollback if necessary; do not assume local validation proves public DNS or TLS.
 
-The GitHub workflow runs tests, builds and saves an artifact; it does not deploy automatically. Product experiments are embedded in the main website and ship with its normal deployment to understand visitor demand and preferences. They do not need a separate experiment page, project or subdomain. The WWW redirect Worker is hosting infrastructure.
+The GitHub workflow installs the locked dependencies, checks Astro and TypeScript, runs the suite and uploads `dist/` as `baulingo-static-site`. Deployment is a separate operation. Product experiments ship inside the existing site. The WWW redirect Worker is hosting infrastructure.
+
+### Astro release and rollback
+
+1. Build from the exact revision intended for release. Record the revision, CI run or local verification, artifact and both payload totals. Keep the verified artifact available beyond CI retention. Preview it with `npm run preview` and, after the build completes, run the Wrangler dry run against the root `wrangler.json`.
+2. Once publication is authorized, confirm the Cloudflare account and `baulingo-site` Worker in Wrangler. Record the active deployment and version IDs before running `npx --yes wrangler@4.156.0 deploy --config wrangler.json` from the checkout containing the verified `dist/`. Record the new version and run the live checks below. The apex Worker serves the static release and the WWW redirect keeps its separate deployment.
+3. If live smoke checks find a release-blocking regression, restore the recorded previously active version of `baulingo-site` in the Cloudflare dashboard or run `npx --yes wrangler@4.156.0 rollback <PREVIOUS_VERSION_ID> --config wrangler.json` with the owner's rollback authorization. If that version is unavailable, deploy the retained prior artifact with its matching main Worker configuration. Recheck apex and WWW routing, legal pages, crawler headers, representative learning routes and lazy audio. Record the rollback and its reason. [Cloudflare rollback operations](https://developers.cloudflare.com/workers/versions-and-deployments/rollbacks/)
 
 ### Search discoverability release checks
+
+| Crawler purpose | Phase 7 artifact policy |
+| --- | --- |
+| Conventional and AI search | Public content is crawlable through the wildcard rule, including `OAI-SearchBot`. Indexable routes are in the sitemap. The 404 and workers.dev preview responses have noindex directives. Confirm how Cloudflare applies these rules before sign-off. |
+| Model training | Preserve the existing wildcard behavior, which permits `GPTBot` at the artifact level. The owner's separate training policy and any Cloudflare override remain to be confirmed before applying a training-specific rule. |
+| User-initiated retrieval and other crawlers | The wildcard permits public paths. Confirm the effective edge rules independently of the artifact policy. |
 
 1. Inspect representative built pages across languages and learning formats with JavaScript disabled. Confirm readable educational content, ordinary related links, correct canonicals and reciprocal language equivalents, expected indexing and sitemap membership, and applicable structured data that matches visible content. Keep noindex on review and nonpublic previews. Record both payload budgets and the relevant page-transfer checks.
 2. Compare the intended search, training and other crawler policies with the built `robots.txt` and the effective Cloudflare policy. Review managed robots settings, AI Crawl Control, WAF and bot rules for conflicts. Check the apex `robots.txt`, response status and indexing headers after an authorized deployment. Where verified crawler logs are available, confirm intended crawlers can reach representative public pages. A user-agent-only probe can test routing but cannot establish the result for a verified crawler. Record missing edge evidence separately. [Cloudflare crawler rules](https://developers.cloudflare.com/ai-crawl-control/configuration/ai-crawl-control-with-waf/) · [OpenAI crawler roles](https://developers.openai.com/api/docs/bots)

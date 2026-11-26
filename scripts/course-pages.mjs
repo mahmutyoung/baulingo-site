@@ -1,5 +1,5 @@
 import { escapeLearningText as e } from '../src/learning-text.js';
-import { grammarPath, levelPath, turkishLessonPath as lessonURL } from '../src/mini-packs/routes.js';
+import { grammarPath, levelPath } from '../src/mini-packs/routes.js';
 
 const testRoute = '/konular/almanca-a1-test/';
 export const a1TestMetadata = {
@@ -13,7 +13,6 @@ const levels = {
   B1: 'Deneyimlerini anlat, bir seçimi gerekçelendir ve günlük sorunlara yazılı yanıt ver. Her derste bir senaryo üzerinde çalış.',
 };
 const levelRoute = level => levelPath(level, 'tr');
-export const courseRoutes = [...Object.keys(levels).map(levelRoute), testRoute];
 
 export function turkishCourseMetadata(level, count) {
   return {
@@ -39,9 +38,7 @@ const questions = [
   ['İlandaki daireyi hangisi doğru anlatıyor?', 'Meine Wohnung hat zwei Zimmer, aber keinen Balkon.', ['Ein Zimmer und ein Balkon.', 'Zwei Zimmer und ein Balkon.', 'Zwei Zimmer, kein Balkon.'], 2, 'Zwei Zimmer iki oda demektir. Keinen Balkon, balkonu olmadığını söyler.', 'DE-A1-015'],
 ];
 
-export function turkishCourseContent(level, entries, { heading, description, lessonLink, levelLink } = {
-  ...turkishCourseMetadata(level, entries.length), lessonLink: lessonURL, levelLink: levelRoute,
-}) {
+export function turkishCourseContent(level, entries, { heading, description, lessonLink, levelLink }) {
   const { pack } = entries[0];
   const sample = pack.exercises.find(exercise => exercise.options.length);
   const browse = Object.keys(levels).map(other => other === level
@@ -74,20 +71,7 @@ ${german ? `<p lang="de">${e(german)}</p>` : ''}${choices.map((choice, i) => `<l
 </form>`;
 }
 
-export function renderA1Test(entries, page, metadata = a1TestMetadata, lessonLink = lessonURL, a1Link = levelRoute('A1'), index = true) {
+export function renderA1Test(entries, page, metadata, lessonLink, a1Link, index) {
   return page(metadata.title, metadata.description, metadata.path, testContent(entries, metadata.heading, lessonLink, a1Link), !index)
     .replace('</body>', '<script type="module" src="/src/a1-test.js"></script></body>');
-}
-
-export function coursePages(library, page) {
-  const pages = new Map();
-  for (const level of Object.keys(levels)) {
-    const route = levelRoute(level);
-    const entries = library.filter(({ pack }) => pack.cefr === level);
-    const metadata = turkishCourseMetadata(level, entries.length);
-    pages.set(`${route.slice(1)}index.html`, page(metadata.title.slice(0, -' · Baulingo'.length), metadata.description, route, turkishCourseContent(level, entries)));
-  }
-  const a1 = library.filter(({ pack }) => pack.cefr === 'A1');
-  pages.set(`${testRoute.slice(1)}index.html`, renderA1Test(a1, page));
-  return pages;
 }

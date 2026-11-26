@@ -11,7 +11,7 @@ test('Turkish course levels expose their complete lesson lists and a sample exer
     const route = `/konular/almanca-${level.toLowerCase()}/`;
     const html = await readFile('dist' + route + 'index.html', 'utf8');
     const lessons = source.filter(({ pack }) => pack.cefr === level);
-    assert.ok(html.includes(`<h1>Almanca ${level} Kursu</h1>`));
+    assert.ok(html.includes(`<h1 itemprop=name>Almanca ${level} Kursu</h1>`));
     assert.ok(sitemap.includes('https://baulingo.app' + route + '</loc>'));
     const list = html.match(/<ol class="topic-index">([\s\S]+?)<\/ol>/)[1];
     assert.deepEqual([...list.matchAll(/href="([^"]+)"/g)].map(match => match[1]), lessons.map(({ pack }) => turkishLessonPath(pack.id)));

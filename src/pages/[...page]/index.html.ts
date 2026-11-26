@@ -1,11 +1,11 @@
 import type { APIRoute, GetStaticPaths } from 'astro';
-import { englishPages } from '../../../scripts/english-pages.mjs';
+import { renderEnglishHome } from '../../../scripts/english-pages.mjs';
 import { renderEnglishCourse, renderGrammarIndex, renderLessonPreview } from '../../../scripts/lesson-pages.mjs';
 import { renderA1Test, turkishCourseContent } from '../../../scripts/course-pages.mjs';
 import { turkishPage } from '../../../scripts/pages.mjs';
 import { escapeLearningText } from '../../learning-text.js';
 import { a1TestPage, catalog, courseLessons, coursePages, grammarIndexLessons, grammarIndexPages, homeEn, lessonPages, lessonPreview } from '../../publishing/catalog.ts';
-import { outputFile, siteOrigin } from '../../publishing/model.ts';
+import { siteOrigin } from '../../publishing/model.ts';
 import type { PageRecord } from '../../publishing/model.ts';
 import { resourcePages, resourceRenderers } from '../../publishing/resources.ts';
 
@@ -29,12 +29,12 @@ export const GET: APIRoute<{ page: PageRecord }> = ({ props: { page } }) => {
   const renderResource = resourceRenderers.get(page.path);
   let html;
   if (page.id === homeEn.id) {
-    html = englishPages({
+    html = renderEnglishHome({
       canonicalPath,
       index: page.index,
       alternateLinks: alternates.map(other =>
         `<link rel="alternate" hreflang="${other.locale}" href="${siteOrigin}${other.path}">`).join(''),
-    }).get(outputFile(page.path));
+    });
   } else if (page.id === a1TestPage.id) {
     const a1Course = coursePages.find(other => other.level === 'A1' && other.locale === 'tr')!;
     html = renderA1Test(courseLessons(a1Course), turkishPage, {

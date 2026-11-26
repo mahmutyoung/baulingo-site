@@ -8,8 +8,8 @@ Original decisions recorded: 29 October 2026. Updated: 30 October 2026. See the 
 - Local folder: `C:\Users\90505\Documents\POS\german-app\baulingo-site`
 - Working branch: `main`.
 - Starting revision: `dff7162` (Sync public privacy policy with current in-app notice).
-- Local source: `index.html`, `style.css`, `app.js`, `src/`, `assets/`, `downloads/`, `privacy/` and `impressum/`. The owner supplied the public postal address; the privacy page now describes Cloudflare website hosting without changing native app telemetry wording.
-- Local tooling: `npm run dev`, `npm test` and `npm run build`. The build writes public files to `dist/`.
+- Local source: `src/pages/index.astro`, `style.css`, `app.js`, `src/`, `assets/`, `downloads/`, `privacy/` and `impressum/`. The owner supplied the public postal address; the privacy page now describes Cloudflare website hosting without changing native app telemetry wording.
+- Local tooling: Node 24, `npm ci`, `npm run dev`, `npm test`, `npm run check:astro` and `npm run build`. Astro renders the indexed pages and the build packages public files in `dist/`.
 - Live homepage: https://baulingo.app/
 - Live policy: https://baulingo.app/privacy/
 - Legacy policy used by the Android app: https://mahmutyoung.github.io/baulingo-site/privacy/

@@ -1,7 +1,6 @@
-import { grammarPath, grammarLesson, lessonPath, lessonPaths, lessonTitle, levelPath } from '../src/mini-packs/routes.js';
+import { grammarPath, levelPath } from '../src/mini-packs/routes.js';
 import { escapeLearningText as e } from '../src/learning-text.js';
 
-export const englishLevelPaths = ['A1', 'A2', 'B1'].map(level => levelPath(level, 'en'));
 const languageScript = '<script type=module src="/src/language.js"></script>';
 
 function webPage(language, route, title, description, stylesheet, body, script = '', index = true, alternateLinks = '') {
@@ -19,9 +18,7 @@ export function englishCourseMetadata(level, count) {
   return { path: levelPath(level, 'en'), heading, title: `${heading} – ${count} Free Lessons · Baulingo`, description: englishDescriptions[level] };
 }
 
-export function renderEnglishCourse(level, records, { path, title, heading, description, index, lessonLink, levelLink } = {
-  ...englishCourseMetadata(level, records.length), lessonLink: id => lessonPath(id, 'en'), levelLink: code => levelPath(code, 'en'),
-}) {
+export function renderEnglishCourse(level, records, { path, title, heading, description, index, lessonLink, levelLink }) {
   const first = records[0].pack;
   const example = first.exercises.find(exercise => exercise.options.length);
   const links = Object.keys(englishDescriptions).map(code => code === level ? `<strong aria-current="page">${code}</strong>` : `<a href="${levelLink(code)}">${code}</a>`).join(' · ');
@@ -42,8 +39,7 @@ export function grammarIndexMetadata(language) {
   return { path: grammarPath(language), title: heading + ' · Baulingo', heading, description };
 }
 
-export function renderGrammarIndex(page, library, urlFor = lessonPath,
-  alternates = ['en', 'tr'].map(locale => ({ locale, path: grammarPath(locale) }))) {
+export function renderGrammarIndex(page, library, urlFor, alternates) {
   const language = page.locale;
   const turkish = language === 'tr';
   const other = alternates.find(({ locale }) => locale !== language);
@@ -70,36 +66,4 @@ export function renderLessonPreview(page, { back, label, info, example, translat
 <h1 id=lesson-title>${e(page.heading)}</h1><p>${e(info)}<p lang=de>${e(example)}<p>${e(translation)}${relatedLink}</main>`;
   return webPage(page.locale, page.path, page.title, page.description,
     'src/mini-packs/style.css', body, '<script type=module src="/src/mini-packs/player.js"></script>', page.index, alternateLinks);
-}
-
-export function lessonPages(libraries, grammar) {
-  const pages = new Map();
-  for (const [language, library] of Object.entries(libraries)) {
-    const german = language === 'tr' ? 'Almanca' : 'German';
-    for (const { pack, related } of [...library, ...grammar[language]]) {
-      const route = lessonPath(pack.id, language);
-      if (!route || pages.has(route.slice(1) + 'index.html')) throw Error('Invalid lesson route: ' + pack.id);
-      const isGrammar = grammarLesson(pack.id);
-      const example = isGrammar ? pack.grammar.example : pack.vocabulary[0].example;
-      const back = isGrammar ? grammarPath(language) + '#' + pack.cefr.toLowerCase() : '../';
-      pages.set(route.slice(1) + 'index.html', renderLessonPreview({
-        locale: language, path: route, title: lessonTitle(pack, language),
-        heading: pack.title, description: pack.objective,
-      }, {
-        back, label: `${german} ${pack.cefr}`, info: isGrammar ? pack.grammar.explanation : pack.objective,
-        example: example.de, translation: example[language],
-        related: isGrammar ? { path: lessonPath(related[0].id, language), title: related[0].title } : undefined,
-      }));
-    }
-  }
-  if (pages.size !== lessonPaths.length) throw Error('Lesson routes do not match the libraries');
-  for (const level of Object.keys(englishDescriptions)) {
-    const records = libraries.en.filter(({ pack }) => pack.cefr === level);
-    pages.set(levelPath(level, 'en').slice(1) + 'index.html', renderEnglishCourse(level, records));
-  }
-  for (const locale of Object.keys(grammar)) {
-    const page = { ...grammarIndexMetadata(locale), locale, index: true };
-    pages.set(page.path.slice(1) + 'index.html', renderGrammarIndex(page, grammar[locale]));
-  }
-  return pages;
 }

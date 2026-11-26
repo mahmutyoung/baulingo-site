@@ -1,12 +1,16 @@
 # Website implementation handoff
 
+## Phase 7 release readiness
+
+`npm run build` now produces the Astro release artifact in `dist/`. Use `npm ci` on Node 24 and `npm run preview` to inspect it locally. CI checks and packages the same artifact. The next external step is an authorized release, followed by apex, crawler-policy and live GA4 checks. [Migration verification](migration.md#phase-7-release-readiness) · [Release and rollback](production.md#astro-release-and-rollback)
+
 ## Phase 6 unified analytics
 
-Both builds use the typed learning event contract and publish stable page and content IDs with consented analytics. Synthetic local verification covers ChatGPT referrals, the registered campaign, locale redirects, practice engagement and withdrawal. The next migration phase is release readiness. Live GA4 ingestion and account settings are pending the authorized release. [Measurement contract](analytics.md#unified-consented-analytics-and-attribution)
+Phase 6 added the typed learning event contract and stable page and content IDs with consented analytics. Synthetic local verification covered ChatGPT referrals, the registered campaign, locale redirects, practice engagement and withdrawal. Live GA4 ingestion and account settings are pending the authorized release. [Measurement contract](analytics.md#unified-consented-analytics-and-attribution)
 
 ## Phase 5 Astro candidate
 
-The candidate publishes all indexed pages through the catalog. Phase 5 includes the six course overviews, the A1 practice test, topic and phrase pages, DTZ guides and practice formats, and app information. German mock-test and writing pages have static previews with the existing full interactive exercises. The production workflow builds `dist/`, and the Astro candidate can be inspected locally with `npm run preview:astro`. [Phase 5 verification](migration.md#phase-5-remaining-formats)
+Phase 5 moved all indexed pages to the catalog, including six course overviews, the A1 practice test, topic and phrase pages, DTZ guides and practice formats, and app information. German mock-test and writing pages have static previews with the existing full interactive exercises. [Phase 5 verification](migration.md#phase-5-remaining-formats)
 
 ## Site-wide language preference
 

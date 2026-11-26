@@ -7,7 +7,6 @@ export const englishHome = {
   heading: ['Learn German.', 'Use it every day.'],
   description: 'Learn German with clear English explanations, everyday phrases and short practice tasks. Start with articles, word order or making an appointment.',
 };
-const homeAlternates = '<link rel="alternate" hreflang="en" href="https://baulingo.app/en/"><link rel="alternate" hreflang="tr" href="https://baulingo.app/">';
 
 const lessons = [
   {
@@ -51,9 +50,8 @@ ${alternateLinks}
 </dialog>` : ''}</body></html>`;
 }
 
-export function englishPages({ alternateLinks = homeAlternates, canonicalPath = englishHome.path, index = true } = {}) {
-  const pages = new Map();
-  pages.set(englishHome.path.slice(1) + 'index.html', page(escape(englishHome.title), englishHome.description, englishHome.path, { alternateLinks, canonicalPath, index }, `
+export function renderEnglishHome({ alternateLinks, canonicalPath, index }) {
+  return page(escape(englishHome.title), englishHome.description, englishHome.path, { alternateLinks, canonicalPath, index }, `
 <section class="hero en-hero" aria-labelledby="intro">
   <div class="hero-copy"><h1 id="intro">${englishHome.heading.map(escape).join('<br>')}</h1><p class="hero-description">Make sense of German grammar.<br>Find the words for real conversations.</p><p class="en-intro">Short, free lessons for English speakers, with examples you can use straight away.</p><a class="button button-primary" href="#lessons">Find your first lesson</a><div class="quick-topics"><a href="/en/articles/"><span lang="de">Der, die, das</span></a><a href="/en/word-order/">German word order</a></div></div>
   <div class="hero-visual"><img class="hero-photo" src="/assets/cafe-hero.webp" srcset="/assets/cafe-hero-480.webp 480w, /assets/cafe-hero-800.webp 800w, /assets/cafe-hero.webp 1594w" sizes="(max-width:700px) 100vw, 54vw" width="1594" height="987" alt="A café counter with a server holding a cup of coffee" fetchpriority="high"><div class="en-phrase"><p>Start with a small conversation.</p><strong lang="de">Einen Kaffee, bitte.</strong><p>A coffee, please.</p><audio controls preload="none" src="/assets/audio/einen-kaffee-bitte.mp3" aria-label="Listen to Einen Kaffee, bitte"></audio><p class="en-phrase-action">${practiceLink('en-coffee')}</p></div></div>
@@ -64,9 +62,7 @@ export function englishPages({ alternateLinks = homeAlternates, canonicalPath = 
 <article class="learning-path" id="everyday"><div class="path-icon"><img src="/assets/icons/chat-circle.svg" width="34" height="34" alt=""></div><div class="path-content"><h3>Everyday conversations</h3><p>Ask for an appointment, explain when you’re free and ask someone to repeat.</p><ul class="path-links"><li><a href="/en/appointments/">Make an appointment in German →</a></li><li><a href="/en/mini-packs/">Explore 67 A1–B1 mini-packs →</a></li><li><a href="/en/german-a1/">A1 course</a> · <a href="/en/german-a2/">A2 course</a> · <a href="/en/german-b1/">B1 course</a></li><li><a href="/en/dtz-exam/">DTZ exam help →</a></li></ul></div></article>
 </div></section>
 <section class="en-practice" aria-labelledby="practice-title"><div><h2 id="practice-title">Build your first German sentence</h2><p>English usually keeps the subject before the verb. In a German statement, a time expression can come first, followed by the verb.</p></div><div><p>Say “Today I’m learning German.”</p>${practiceLink('en-word-order', 'Build the sentence')}<noscript><p id="sentence-example">Example: <span lang="de" class="german-example">Heute lerne ich Deutsch.</span></p><p>Café request: <span lang="de" class="german-example">Einen Kaffee, bitte.</span></p></noscript></div></section>
-<section class="en-questions" aria-labelledby="questions-title"><h2 id="questions-title">Getting started with German</h2><details><summary>Where should I start as a beginner?</summary><p>Pick a situation you need, such as making an appointment, and learn a complete phrase. Then look at how it works: the noun’s article, the verb and the word order. Start with our <a href="/en/appointments/">German appointment phrases</a>.</p></details><details><summary>How can I remember der, die and das?</summary><p>Learn each noun together with its article: <i lang="de">der Tisch</i>, <i lang="de">die Lampe</i>, <i lang="de">das Fenster</i>. Say the pair aloud and use it in a short sentence. Our <a href="/en/articles/">guide to German articles</a> shows the basics.</p></details><details><summary>Are the lessons free?</summary><p>Yes. You can read every English lesson and try the short practice tasks without an account.</p></details></section>`));
-  for (const resource of englishResources()) pages.set(resource.path.slice(1) + 'index.html', resource.render(resource));
-  return pages;
+<section class="en-questions" aria-labelledby="questions-title"><h2 id="questions-title">Getting started with German</h2><details><summary>Where should I start as a beginner?</summary><p>Pick a situation you need, such as making an appointment, and learn a complete phrase. Then look at how it works: the noun’s article, the verb and the word order. Start with our <a href="/en/appointments/">German appointment phrases</a>.</p></details><details><summary>How can I remember der, die and das?</summary><p>Learn each noun together with its article: <i lang="de">der Tisch</i>, <i lang="de">die Lampe</i>, <i lang="de">das Fenster</i>. Say the pair aloud and use it in a short sentence. Our <a href="/en/articles/">guide to German articles</a> shows the basics.</p></details><details><summary>Are the lessons free?</summary><p>Yes. You can read every English lesson and try the short practice tasks without an account.</p></details></section>`);
 }
 
 /** @returns {import('../src/publishing/resources.ts').ResourceDefinition[]} */

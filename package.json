@@ -8,11 +8,8 @@
   "scripts": {
     "dev": "node scripts/dev.mjs",
     "preview": "node scripts/dev.mjs --production",
-    "preview:astro": "node scripts/dev.mjs --astro",
     "build": "node scripts/build.mjs",
-    "build:astro": "node scripts/build-astro.mjs",
     "check:astro": "astro check",
-    "test:astro": "node tests/publishing.mjs && npm run build:astro && node tests/astro-foundation.mjs",
     "test": "node --test --test-isolation=none tests/*.test.mjs"
   },
   "devDependencies": {

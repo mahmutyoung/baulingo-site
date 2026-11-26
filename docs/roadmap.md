@@ -56,7 +56,7 @@ Once relevant visitors arrive, define one embedded experiment brief before expan
 ## Delivery constraints
 
 - Keep Turkish explanations and the selected visual design central.
-- Continue with the current static HTML/CSS and native JavaScript foundation. Framework migration, backend services and accounts need a concrete product reason.
+- Serve static HTML/CSS with native JavaScript learning interactions. Astro renders the HTML at build time. Backend services and accounts need a concrete product reason.
 - Ship embedded experiments with the website's normal build and deployment. Native Android releases remain independent.
 - Keep resources and downloads free and usable without an account or email capture.
 - Use the agreed free hosting plans; do not enable paid infrastructure to pursue an unvalidated idea.

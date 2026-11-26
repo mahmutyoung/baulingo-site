@@ -73,7 +73,7 @@
     "title": "Almanca Gramer Kursu · German Grammar Course",
     "date": "2026-11-22",
     "summary": "Turkish and English each offer 53 grammar lessons with readable URLs and links between grammar and everyday practice.",
-    "files": ["index.html", "scripts/lesson-pages.mjs", "scripts/english-pages.mjs", "scripts/course-pages.mjs", "scripts/build.mjs", "src/mini-packs/grammar.json", "src/mini-packs/grammar-tr.json", "src/mini-packs/routes.js", "src/mini-packs/lesson.js", "src/mini-packs/player.js"],
+    "files": ["src/pages/index.astro", "scripts/lesson-pages.mjs", "scripts/english-pages.mjs", "scripts/course-pages.mjs", "scripts/build.mjs", "src/mini-packs/grammar.json", "src/mini-packs/grammar-tr.json", "src/mini-packs/routes.js", "src/mini-packs/lesson.js", "src/mini-packs/player.js"],
     "steps": [
       {
         "id": "grammar-course-levels",
@@ -126,7 +126,7 @@
     "title": "Almanca Kursu · Seviye sayfaları ve A1 testi",
     "date": "2026-11-21",
     "summary": "A1, A2 and B1 have dedicated course pages with an exercise and every lesson. A 12-question A1 test shows Turkish explanations and recommends lessons for missed answers.",
-    "files": ["index.html", "scripts/course-pages.mjs", "scripts/pages.mjs", "scripts/build.mjs", "src/a1-test.js", "style.css"],
+    "files": ["src/pages/index.astro", "scripts/course-pages.mjs", "scripts/pages.mjs", "scripts/build.mjs", "src/a1-test.js", "style.css"],
     "steps": [
       {
         "id": "level-pages",
@@ -149,7 +149,7 @@
     "title": "Almanca Kursu · A1, A2 ve B1",
     "date": "2026-11-21",
     "summary": "The Turkish menu opens the existing course directly. The homepage card offers a start at each CEFR level.",
-    "files": ["index.html", "scripts/pages.mjs", "konular/mini-paketler/index.html", "src/mini-packs/lesson.js"],
+    "files": ["src/pages/index.astro", "scripts/pages.mjs", "src/pages/[...reader].astro", "src/mini-packs/lesson.js"],
     "steps": [
       {
         "id": "course-entry",
@@ -224,8 +224,7 @@
     "date": "2026-11-21",
     "summary": "Konular links to all 67 authored Turkish samples from pack1a. The reader uses the original lesson layout and Baulingo colors, with a link to the same topic in English.",
     "files": [
-      "konular/mini-paketler/index.html",
-      "en/mini-packs/index.html",
+      "src/pages/[...reader].astro",
       "src/mini-packs/library-tr.json",
       "src/mini-packs/language.js",
       "src/mini-packs/lesson.js",
@@ -263,7 +262,7 @@
     "date": "2026-11-21",
     "summary": "The English topics section links to the imported Wortwerk samples. The lesson reader keeps the source layout and uses Baulingo colors.",
     "files": [
-      "en/mini-packs/index.html",
+      "src/pages/[...reader].astro",
       "src/mini-packs/library.json",
       "src/mini-packs/style.css",
       "src/mini-packs/lesson.js",
@@ -307,7 +306,7 @@
       "ca8aee87-acef-4f4a-9fe2-7ac432ded34d"
     ],
     "files": [
-      "index.html",
+      "src/pages/index.astro",
       "scripts/pages.mjs",
       "scripts/study-page.mjs",
       "scripts/writing-page.mjs",
@@ -735,7 +734,7 @@
       "writing.css",
       "scripts/pages.mjs",
       "scripts/public-files.mjs",
-      "index.html",
+      "src/pages/index.astro",
       "src/topics.js",
       "scripts/build.mjs",
       "scripts/server.mjs"
@@ -836,7 +835,7 @@
     "before": "The Sınavlar navigation went directly to the DTZ player; no exam overview existed. One unwanted printer example remained under a different template.",
     "after": "The overview groups the available DTZ test and study lists, and explains DTZ, Goethe/telc, DTB and TestDaF/DSH with official sources. Only DTZ preparation is offered.",
     "files": [
-      "index.html",
+      "src/pages/index.astro",
       "scripts/pages.mjs",
       "scripts/public-files.mjs",
       "src/topics.js",
@@ -913,7 +912,7 @@
       "src/dtz-study.js",
       "scripts/study-page.mjs",
       "src/dtz-study-filter.js",
-      "index.html",
+      "src/pages/index.astro",
       "scripts/pages.mjs",
       "style.css"
     ],
@@ -1055,7 +1054,7 @@
     "before": "The quick link still said B1 mektup; one Turkish practice meaning did not match its German sentence. Long Turkish words could overflow small-phone tiles.",
     "after": "The shortcut opens the available DTZ simulation, practice meanings match the sentences and long exercise words fit in full-width phone tiles. Documentation records the completed comment audit.",
     "files": [
-      "index.html",
+      "src/pages/index.astro",
       "src/exercise.js",
       "src/sentence-builder.js",
       "style.css",
@@ -1130,7 +1129,7 @@
     "after": "The homepage uses the Baulingo café artwork and typography, links directly to the three available lessons, and includes descriptive search/share metadata and reciprocal homepage language links.",
     "files": [
       "scripts/english-pages.mjs",
-      "index.html",
+      "src/pages/index.astro",
       "style.css"
     ],
     "steps": [
@@ -1157,7 +1156,7 @@
       "scripts/english-pages.mjs",
       "src/language.js",
       "src/language-choice.js",
-      "index.html",
+      "src/pages/index.astro",
       "scripts/pages.mjs",
       "scripts/public-files.mjs"
     ],
@@ -1196,7 +1195,7 @@
       "cb22bc7f-873f-4a46-8a6a-672e755bb743"
     ],
     "files": [
-      "index.html",
+      "src/pages/index.astro",
       "app.js",
       "src/exercise.js",
       "src/topics.js",
@@ -1267,7 +1266,7 @@
     "before": "Sınav bölümünde yalnızca DTZ denemesi vardı.",
     "after": "Temel işlev sözcükleri dışında tüm kelime biçimleri, 3.627 otomatik kalıp adayı ve 260 örnek cümle listelenir; kaynak sınırları belirtilir.",
     "files": [
-      "index.html",
+      "src/pages/index.astro",
       "src/topics.js",
       "src/dtz-study.js",
       "scripts/pages.mjs",
@@ -1372,7 +1371,7 @@
       "3dafd4d8-c2e0-42e4-8713-e87692982cd2"
     ],
     "files": [
-      "index.html",
+      "src/pages/index.astro",
       "style.css",
       "scripts/pages.mjs",
       "scripts/public-files.mjs"
@@ -1406,7 +1405,7 @@
       "c2bc4801-1d50-42f6-a0a2-31c910fcd8b2"
     ],
     "files": [
-      "index.html",
+      "src/pages/index.astro",
       "style.css",
       "src/navigation.js",
       "scripts/pages.mjs",
@@ -1458,7 +1457,7 @@
     "before": "The 215 KB café image was sent to all screens. The two main Lato fonts totaled 425 KB. Mutable asset URLs required browser revalidation.",
     "after": "Phones can request a 38 KB or 76 KB hero variant. The two Lato-derived faces (renamed Baulingo Sans) total 92 KB. Built image/font URLs include content hashes and receive immutable caching; normal HTML still revalidates.",
     "files": [
-      "index.html",
+      "src/pages/index.astro",
       "style.css",
       "_headers",
       "scripts/build.mjs",
@@ -1523,7 +1522,7 @@
     "before": "The top menu had no exam entry. The exam column included the unfinished A1 family reunification link.",
     "after": "Konular → Günlük Almanca → Sınavlar → Ücretsiz kaynaklar. Sınavlar opens the DTZ simulation. The A1 link is gone.",
     "files": [
-      "index.html",
+      "src/pages/index.astro",
       "style.css",
       "scripts/pages.mjs",
       "src/topics.js",

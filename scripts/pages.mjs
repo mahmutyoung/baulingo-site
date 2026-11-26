@@ -1,13 +1,8 @@
 import { studyPageContent } from './study-page.mjs';
-import { englishPages } from './english-pages.mjs';
 import { topics } from '../src/topics.js';
 import { germanHTML, exampleHTML } from '../src/learning-text.js';
 import { dtzWords, dtzPhrases, dtzSentences } from '../src/dtz-study.js';
 import { dtzPageContent } from './dtz-page.mjs';
-import { dtzHubRoutes, dtzHubPages } from './dtz-hub.mjs';
-import { courseRoutes, coursePages } from './course-pages.mjs';
-import { englishLevelPaths, lessonPages } from './lesson-pages.mjs';
-import { grammarPaths, lessonPaths } from '../src/mini-packs/routes.js';
 import { writingLessons, writingBase } from './writing-content.mjs';
 import { writingIndexContent, writingLessonContent } from './writing-page.mjs';
 
@@ -83,13 +78,6 @@ export function turkishResources() {
   return resources;
 }
 
-export function generatePages(libraries, grammar) {
-  const resources = turkishResources();
-  const output = new Map([...englishPages(), ...dtzHubPages(), ...coursePages(libraries.tr, turkishPage), ...lessonPages(libraries, grammar)]);
-  for (const resource of resources) output.set(resource.path.slice(1) + 'index.html', resource.render(resource));
-  output.set('404.html', turkishPage('Sayfa bulunamadı', 'Aradığın sayfa bulunamadı.', '/404.html', '<h1>Sayfa bulunamadı</h1><p>Aradığın sayfa taşınmış veya kaldırılmış olabilir.</p><p><a class="button button-primary" href="/">Ana sayfaya dön</a></p><p><a href="/konular/">Konulara göz at</a></p>', true));
-  const urls = ['/', ...dtzHubRoutes, ...courseRoutes, ...englishLevelPaths, ...grammarPaths, ...lessonPaths, '/en/', '/en/mini-packs/', '/en/word-order/', '/en/articles/', '/en/appointments/', '/konular/mini-paketler/', ...resources.map(resource => resource.path)];
-  output.set('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.map(url => `<url><loc>${origin}${url}</loc></url>`).join('')}</urlset>\n`);
-  output.set('robots.txt', `User-agent: *\nAllow: /\nSitemap: ${origin}/sitemap.xml\n`);
-  return output;
+export function renderNotFound() {
+  return turkishPage('Sayfa bulunamadı', 'Aradığın sayfa bulunamadı.', '/404.html', '<h1>Sayfa bulunamadı</h1><p>Aradığın sayfa taşınmış veya kaldırılmış olabilir.</p><p><a class="button button-primary" href="/">Ana sayfaya dön</a></p><p><a href="/konular/">Konulara göz at</a></p>', true);
 }
