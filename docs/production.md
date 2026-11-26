@@ -6,6 +6,14 @@ The [long-term roadmap](roadmap.md) owns product priorities. The next product mi
 
 ## Live deployment
 
+### Release — 26 November 2026
+
+The owner authorized pushing and deploying `main`. Source revision `776f723` is live on `baulingo.app` through the existing `baulingo-site` Worker. Active deployment `0defc701-92ac-4116-aabb-9faa50e5820f` serves version `ddb4d13d-cd05-4b3a-8e40-d5cbede508e5`. The previously active version was `4a47e873-6fb3-4945-8408-09a39caa07cd`. This releases the Astro build, unified analytics and the shared cookie settings. The WWW redirect Worker remains a separate deployment.
+
+All 112 Node tests, the Astro check, the production build and the Wrangler dry run passed. The live cookie assets, analytics module and sitemap matched the build. HTTP checks covered public and legal routes, private-path 404s, security headers, robots discovery, the WWW query-preserving redirect and the workers.dev noindex response. Chrome on the live site checked all three languages, keyboard focus, legal links, persistent choices, cross-tab withdrawal and lazy DTZ audio playback. The Google tag was stubbed for the browser checks, so these checks establish gating and interaction rather than live GA4 ingestion.
+
+The live DTZ MP3 played on demand and matched the release bytes. The static-assets endpoint returned the full file with HTTP 200 when sent a Range request, consistent with the documented static-assets limitation. [Cloudflare range behavior](https://developers.cloudflare.com/workers/static-assets/billing-and-limitations/#range-requests)
+
 ### Release — 15 November 2026
 
 The owner authorized pushing and deploying the merged main branch. Source revision `73d2647` is pushed to GitHub and deployed to the existing `baulingo-site` Worker, version `97ce523c-acf4-49d5-adee-615c6b71cad7`. This publishes the local learning UI, writing-course and consent-based GA4 changes described in earlier entries; their previous unpublished status is historical. The separate WWW Worker was not redeployed.

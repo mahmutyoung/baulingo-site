@@ -2,7 +2,7 @@
 
 ## Site-wide cookie settings
 
-The localized cookie dialog offers equal access to rejection, configuration and acceptance. The existing opt-in storage key and browser-local learning data remain compatible. Privacy and Imprint stay readable on entry and expose the footer control. Preview this change in `/dev/review/`. [Analytics behavior](analytics.md#cookie-settings)
+The localized cookie dialog is live on `baulingo.app`. It offers equal access to rejection, configuration and acceptance. The existing opt-in storage key and browser-local learning data remain compatible. Privacy and Imprint stay readable on entry and expose the footer control. [Release verification](production.md#release--26-november-2026) · [Analytics behavior](analytics.md#cookie-settings)
 
 ## Phase 7 release readiness
 
