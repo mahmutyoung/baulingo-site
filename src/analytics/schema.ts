@@ -155,5 +155,5 @@ export const ga4Definitions = {
     metric('questions_answered', 'Questions Answered', 'Count of questions answered for a scored completion.'),
     metric('correct_answers', 'Correct Answers', 'Count of correct answers for a scored completion.'),
   ],
-  keyEvents: [keyEvent('learning_started'), keyEvent('learning_completed')],
+  keyEvents: [keyEvent('learning_started'), keyEvent('learning_completed'), keyEvent('app_store_clicked')],
 };
