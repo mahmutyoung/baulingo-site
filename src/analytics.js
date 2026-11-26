@@ -1,9 +1,8 @@
-import { sanitizeLearningEvent } from './analytics-contract.js';
+import { entryAttribution, measurementId as MEASUREMENT_ID, sanitizeLearningEvent } from './analytics-contract.js';
 import { classifyEntry, referrerURL, resumeVisit, visitWindow } from './analytics-attribution.js';
 export { sanitizeLearningEvent } from './analytics-contract.js';
 
 // Optional website analytics. Google code is loaded only after a visitor opts in.
-const MEASUREMENT_ID = 'G-R1YH6T64JM';
 const CONSENT_KEY = 'baulingo.ga4-consent.v2';
 const PREVIOUS_CONSENT_KEY = 'baulingo.ga4-consent.v1';
 // Filled by the static build from the publishing catalog.
@@ -109,7 +108,7 @@ function recordVisit(path, identity, attribution = {}) {
     if (started) {
       const previous = Number(readStorage('localStorage', RETURN_KEY));
       const seen = remembered && writeStorage('localStorage', RETURN_KEY, String(time));
-      const returning = previous > 0 && time >= previous && time - previous <= 90 * 86400_000;
+      const returning = previous > 0 && time >= previous && time - previous <= entryAttribution.returningWindow;
       window.gtag('event', 'visit_started', {
         ...fields, ...identity, page_location: location.origin + path,
         ...(seen && { browser_visit: returning ? 'returning' : 'first' }),
@@ -191,8 +190,8 @@ export function trackPageView(attribution) {
 }
 export function analyticsEnabled() { return enabled; }
 
-/** @template {import('./analytics-contract.js').LearningEvent} N
- * @param {N} name @param {import('./analytics-contract.js').EventInput<N>} values */
+/** @template {import('./analytics/schema.ts').LearningEvent} N
+ * @param {N} name @param {import('./analytics/schema.ts').EventInput<N>} values */
 export function trackLearningEvent(name, values) {
   if (!enabled) return;
   const path = location.pathname;
@@ -247,7 +246,7 @@ export function stopStudy() {
   if (studyTimer !== null) clearInterval(studyTimer);
   studyTimer = null;
 }
-/** @param {import('./analytics-contract.js').ActivityContext} context
+/** @param {import('./analytics/schema.ts').ActivityContext} context
  * @param {'learning_started' | 'learning_resumed'} [eventName] */
 export function beginStudy(context, eventName = 'learning_started') {
   const cleanContext = enabled && sanitizeLearningEvent(eventName, context);

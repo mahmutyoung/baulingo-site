@@ -1,6 +1,6 @@
 {
   "extends": "astro/tsconfigs/strict",
-  "include": [".astro/types.d.ts", "src/**/*.astro", "src/**/*.ts", "src/analytics-contract.js"],
+  "include": [".astro/types.d.ts", "src/**/*.astro", "src/**/*.ts"],
   "exclude": ["dist", ".dev"],
   "compilerOptions": {
     "strict": true,

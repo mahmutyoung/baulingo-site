@@ -20,6 +20,12 @@ Local Chrome exercised the transport on a synthetic HTTPS origin with the Google
 
 GA4 ingestion and account configuration remain release checks.
 
+### Reproducible GA4 configuration
+
+The [TypeScript analytics specification](../src/analytics/schema.ts) owns the event contract, attribution values, measurement semantics and managed GA4 definitions. The browser build publishes the client-side exports. The [local Admin and Data API utility](../scripts/sync-ga4.ts) targets the existing `baulingo-web` property `565704627` and web measurement ID `G-R1YH6T64JM`.
+
+Use `npm run analytics:check` to compare definitions. Use `npm run analytics:sync` to preview and append `-- --apply` after approving the proposed additions. The command checks standard property limits and creates missing custom dimensions, metrics and key events. Existing definitions, historical data and integrations are preserved. Conflicts, outdated labels and unmanaged definitions are reported for review. Use `npm run analytics:verify` to check relevant stream settings and Data API reporting availability. Authentication, property permissions, saved Explorations, User Explorer and Looker Studio setup remain operator steps. [Analytics runbook](analytics.md#reproducible-ga4-configuration)
+
 ## Phase 5 remaining formats
 
 The Astro candidate renders all 297 indexed URLs and generates the sitemap from the validated catalog. Six English and Turkish A1–B1 overviews use level collections with 17, 22 and 28 lessons in their existing order. Their paired pages have reciprocal language links. The A1 test keeps its 12 questions, scoring and review links. The catalog also covers topics, the café phrase, exam guides, both mock tests, the study lists, both writing courses and the app information page. The static legal documents and 404 continue through the legacy allowlist.

@@ -1,7 +1,8 @@
-const source = 'chatgpt.com';
-const campaign = 'german-courses';
+import { entryAttribution } from './analytics-contract.js';
+
+const { ai, campaign, visitWindow } = entryAttribution;
 const parameters = ['utm_source', 'utm_medium', 'utm_campaign'];
-export const visitWindow = 30 * 60_000;
+export { visitWindow };
 
 export function referrerURL(referrer) {
   try {
@@ -14,13 +15,13 @@ export function referrerURL(referrer) {
 export function classifyEntry(search, referrer) {
   const query = new URLSearchParams(search);
   const [sources, media, names] = parameters.map(name => query.getAll(name));
-  const byHost = referrerURL(referrer)?.origin === 'https://' + source;
-  const byTag = sources.length === 1 && sources[0] === source;
-  const named = sources.length === 1 && sources[0] === 'baulingo' &&
-    media.length === 1 && media[0] === 'referral' && names.length === 1 && names[0] === campaign;
+  const byHost = referrerURL(referrer)?.origin === 'https://' + ai.campaign_source;
+  const byTag = sources.length === 1 && sources[0] === ai.campaign_source;
+  const named = sources.length === 1 && sources[0] === campaign.campaign_source &&
+    media.length === 1 && media[0] === campaign.campaign_medium && names.length === 1 && names[0] === campaign.campaign_name;
   if (byHost && named) return {};
-  if (byHost || byTag) return { campaign_source: source, campaign_medium: 'referral', ai_source: 'chatgpt' };
-  if (named) return { campaign_source: 'baulingo', campaign_medium: 'referral', campaign_name: campaign };
+  if (byHost || byTag) return { ...ai };
+  if (named) return { ...campaign };
   return {};
 }
 

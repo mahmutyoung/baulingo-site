@@ -108,7 +108,7 @@ Source-side instrumentation, pending build, deployment and GA4 verification. The
 | download_clicked / app_store_clicked | Public resource and local export clicks, Android store link clicks |
 | learning_error | Fixed error categories, no message/stack contents |
 
-GA4 Admin: register event-scoped custom dimensions activity_id, activity_type, content_category, exercise_id, section_id, level, content_language, target_language, outcome, completion_type, feedback and error_code; register custom metrics duration_seconds, result_count, attempt_number, questions_answered, correct_answers. Mark learning_started and learning_completed as key events if desired. Disable enhanced measurement automatic page views based on browser history, site search, form interactions, outbound clicks and file downloads (the site sends its own sanitized events; prevent duplication and URL/query/draft leakage). Review URL data redaction, Google Signals and ads settings in the new property; code disables ads signals and personalization. Page URLs omit queries and fragments, so campaign attribution from UTM parameters is limited. Use Search Console landing-page reporting. Do not treat consented GA4 users as all visitors.
+The [repository specification](#reproducible-ga4-configuration) defines the reporting fields and key events for this instrumentation. Review enhanced measurement, URL data redaction, Google Signals and ads settings on the website stream. The site sends sanitized events, removes query strings and fragments from page URLs and disables ads signals and personalization. Use Search Console for organic landing-page reporting and interpret GA4 counts as activity from consenting browsers.
 
 Acceptance checks: no Google script/events before consent, after rejection/withdrawal, or in review. Test a Turkish and English mini-pack, grammar lesson, sentence builder, A1 test, DTZ test and writing course. Check one event per meaningful action, correct vs incorrect, no raw answer/search/draft text, clean page URLs and no duplicate SPA page views. Verify 30-second study-time deltas, visibility/idle cutoff and optional feedback. Keep the property separate from Android. No historical backfill.
 
@@ -117,7 +117,7 @@ Acceptance checks: no Google script/events before consent, after rejection/withd
 
 Both everyday communication and grammar lessons use the same learning format: `activity_type = mini_pack`. The separate event-scoped dimension `content_category` identifies the subject: `everyday_communication` or `grammar`. All mini-pack player events, including progress, answer checks, time, level selection and library errors, inherit the category from the selected track. Existing lesson IDs, levels, languages and other activity types are unchanged.
 
-In GA4, create the event-scoped custom dimension **Content Category**, parameter `content_category`. For the unified mini-pack funnel, use `activity_type exactly matches mini_pack` on each step and break down by Content Category (or CEFR Level). For a grammar-only funnel, additionally require `content_category exactly matches grammar`. Previously collected events are not rewritten: the former `activity_type = grammar` remains in historical data and previous everyday mini-pack events have no content_category. Compare post-release periods when using the new schema.
+The [repository specification](#reproducible-ga4-configuration) includes **Content Category** as the event-scoped dimension `content_category`. For the unified mini-pack funnel, use `activity_type exactly matches mini_pack` on each step and break down by Content Category (or CEFR Level). For a grammar-only funnel, additionally require `content_category exactly matches grammar`. The former `activity_type = grammar` remains in historical data, and previous everyday mini-pack events have no content_category. Compare post-release periods when using the new schema.
 
 ## Unified consented analytics and attribution
 
@@ -143,6 +143,30 @@ An automatic homepage locale redirect carries only normalized acquisition tags t
 
 ### GA4 definitions and report boundary
 
-Register event-scoped dimensions for `page_id`, `content_id`, `content_format`, `collection_id`, `landing_page_id`, `ai_source` and `browser_visit` alongside applicable [existing definitions](#expanded-learning-analytics--24-november-2026). Use native campaign fields for the registered campaigns. Before release, confirm the stream's enhanced measurement settings disable automatic history page views, site search, outbound clicks, form interactions and file downloads where they overlap the custom implementation or would include raw URLs. Verify Realtime or DebugView after an authorized deployment and annotate the actual release boundary. Historic events are retained in their original schema.
+Manage the Phase 6 and earlier reporting definitions through the [repository specification](#reproducible-ga4-configuration). Use native campaign fields for the registered campaigns. Before release, verify the stream's enhanced measurement settings, then check Realtime or DebugView after an authorized deployment and annotate the actual release boundary. Historic events are retained in their original schema.
 
 Use the count of `visit_started` with `ai_source=chatgpt` as the observable referral denominator. Compare exposed content and applicable starts or completions by `landing_page_id` and `content_id`. For conversion, count qualifying visits in a GA4 session segment where the tool supports that scope. Raw event totals include repeat views, repeated practice and multiple lessons. A Baulingo tab window can differ from GA4's session definition. Keep checked completions, self-review completions and exam results separate. Counts describe consenting browsers, and the returning flag measures browser storage rather than people. Use Search Console for organic landing-page discovery and Cloudflare for aggregate traffic.
+
+### Reproducible GA4 configuration
+
+The [analytics specification](../src/analytics/schema.ts) declares the website event contract and GA4 reporting definitions. It retains `activity_type` for historical reports, includes the existing Phase 6 catalog and attribution dimensions, and defines Active Study Time in seconds. `learning_started` and `learning_completed` are configured to count each event instance. Use completion type to distinguish checks, self-review and exam results. [Google’s key event reference](https://developers.google.com/analytics/devguides/config/admin/v1/rest/v1alpha/properties.keyEvents)
+
+1. In Google Cloud, enable **Google Analytics Admin API** (`analyticsadmin.googleapis.com`) and **Google Analytics Data API** (`analyticsdata.googleapis.com`) in the project used for quota.
+2. In Google Analytics, an Administrator for `baulingo-web` (`565704627`) grants the Google identity **Viewer** access for checks or **Editor** access for approved creation. Confirm the website stream's measurement ID is `G-R1YH6T64JM`. [Google Analytics access management](https://support.google.com/analytics/answer/9305788)
+3. With the Google Cloud CLI installed, authenticate as that identity. Use the read-only scope for an audit, and use `https://www.googleapis.com/auth/analytics.edit` in place of `analytics.readonly` when you intend to apply approved changes. Pass the short-lived token through the local environment. [Google Analytics API quickstart](https://developers.google.com/analytics/devguides/config/admin/v1/quickstart)
+
+```powershell
+gcloud auth application-default login --scopes="https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/analytics.readonly"
+$env:BAULINGO_GA4_QUOTA_PROJECT = '<google-cloud-project-id>'
+$env:BAULINGO_GA4_ACCESS_TOKEN = (gcloud auth application-default print-access-token)
+npm run analytics:check
+npm run analytics:sync
+npm run analytics:verify
+Remove-Item Env:BAULINGO_GA4_ACCESS_TOKEN
+```
+
+- **Check** reads the target property, web stream and complete paginated lists of custom dimensions, metrics and key events. It reports missing, outdated, conflicting and unmanaged definitions. Unmanaged definitions warrant review and can coexist with a healthy check.
+- **Sync** previews by default. After reviewing the plan and approving its additions, use `npm run analytics:sync -- --apply` with an Editor token. Sync creates missing definitions within the standard limits. It rechecks after creation. Existing definitions and integrations stay in place, including entries with a different display name, scope, metric unit or counting method. [Google’s configuration limits](https://support.google.com/analytics/answer/12229528)
+- **Verify** checks the website stream URL, overlapping enhanced measurement options, the custom fields in Data API metadata and access to a small standard report. An empty report can pass the availability probe. Recent definitions can take time to appear in reporting. The probe does not establish ingestion, and Realtime or DebugView remains part of release verification. Pending managed definitions, drift or API failures return a nonzero exit code. [Data API metadata](https://developers.google.com/analytics/devguides/reporting/data/v1/rest/v1beta/properties/getMetadata)
+
+Use GA4 Explore to save start-to-completion funnels and configure User Explorer manually. In Looker Studio, connect the existing GA4 property, refresh its fields when definitions arrive, and configure reports and sharing separately. Use Data API results for programmatic reporting. Audiences and integrations remain managed in GA4 for this initial utility. Keep tokens and credentials outside the repository and public build.

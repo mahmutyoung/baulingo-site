@@ -31,6 +31,7 @@ Historical documents under `docs/superpowers/` record earlier work. Use the curr
 - `src/pages/index.astro`, `style.css`, `app.js`: approved homepage and browser interactions.
 - `src/topics.js`: topic content and Turkish-aware search rules.
 - `src/exercise.js`: exercise data and pure answer/state rules.
+- `src/analytics/schema.ts` and `scripts/sync-ga4.ts`: shared analytics specification and local GA4 configuration commands. Apply live GA4 changes only after explicit approval.
 - `src/publishing/`, `src/pages/`, `scripts/pages.mjs`: catalog, static routes and page rendering.
 - `scripts/public-files.mjs`: explicit asset allowlist and public path resolution.
 - `scripts/build.mjs`: Astro static rendering, discovery files and asset packaging. `scripts/dev.mjs` and `scripts/server.mjs` serve the build locally.

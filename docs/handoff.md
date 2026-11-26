@@ -6,7 +6,7 @@
 
 ## Phase 6 unified analytics
 
-Phase 6 added the typed learning event contract and stable page and content IDs with consented analytics. Synthetic local verification covered ChatGPT referrals, the registered campaign, locale redirects, practice engagement and withdrawal. Live GA4 ingestion and account settings are pending the authorized release. [Measurement contract](analytics.md#unified-consented-analytics-and-attribution)
+Phase 6 added the typed learning event contract and stable page and content IDs with consented analytics. Synthetic local verification covered ChatGPT referrals, the registered campaign, locale redirects, practice engagement and withdrawal. The same specification now drives local GA4 check, sync and verify commands. Live configuration checks require property access. Ingestion checks follow an authorized release. [GA4 configuration runbook](analytics.md#reproducible-ga4-configuration)
 
 ## Phase 5 Astro candidate
 

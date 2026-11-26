@@ -5,7 +5,7 @@ import { gzipSync, constants as zlib } from 'node:zlib';
 import { publicFiles, generatedFiles, fingerprintOnlyAssets, legacyAssetAliases } from './public-files.mjs';
 import { build as buildAstro } from 'astro';
 import { transform } from 'lightningcss';
-import { minify } from 'vite';
+import { build as bundle, minify } from 'vite';
 import { dtzStudyArchive, fullStudyContent, renderNotFound } from './pages.mjs';
 import { outputFile, sitemapXml } from '../src/publishing/model.ts';
 import { dtzGermanArchives } from './dtz-hub.mjs';
@@ -30,7 +30,7 @@ function compactGzip(input) {
 
 export async function build() {
   // Check every source and parent before copying; never follow a symlink outside this repo.
-  for (const file of [...publicFiles, '_headers', '_redirects', ...miniPackLibraries.map(name => learnerData(name, 'json'))]) {
+  for (const file of [...publicFiles, '_headers', '_redirects', 'src/analytics/schema.ts', ...miniPackLibraries.map(name => learnerData(name, 'json'))]) {
     let entry = path.join(root, file);
     while (entry !== root) {
       if ((await lstat(entry)).isSymbolicLink()) throw new Error(`Refusing to publish symlink: ${file}`);
@@ -125,7 +125,16 @@ async function writeRelease(output) {
   // Compile allowlisted browser modules and CSS, retaining their public paths.
   for (const file of [...publicFiles, ...generatedFiles].filter(name => /\.(?:js|css)$/.test(name))) {
     const target = path.join(output, file);
-    const source = await readFile(target, 'utf8');
+    let source;
+    if (file === 'src/analytics-contract.js') {
+      const [result] = await bundle({
+        root, configFile: false, publicDir: false, logLevel: 'warn', envDir: false,
+        build: { lib: { entry: path.join(root, file), formats: ['es'] }, write: false, minify: false },
+      });
+      const [chunk] = result.output;
+      if (result.output.length !== 1 || chunk.type !== 'chunk') throw new Error('Expected one compiled analytics contract.');
+      source = chunk.code;
+    } else source = await readFile(target, 'utf8');
     if (file.endsWith('.css')) {
       const { code } = transform({
         filename: file,

@@ -10,8 +10,10 @@ test('GA4 consent module is present on learning pages, not loaded directly from 
     assert.doesNotMatch(html, /<script[^>]+src="https:\/\/www\.googletagmanager\.com/, file);
   }
   const asset = await readFile('dist/src/analytics.js', 'utf8');
-  assert.match(asset, /G-R1YH6T64JM/);
+  const { measurementId } = await import('../dist/src/analytics-contract.js');
+  assert.equal(measurementId, 'G-R1YH6T64JM');
   assert.doesNotMatch(asset, /G-3XSNDN7FE4/);
+  assert.doesNotMatch(await readFile('dist/src/analytics-contract.js', 'utf8'), /565704627|customDimensions|Active Study Time|Visible active study/);
   assert.match(asset, /sanitizeLearningEvent/);
 });
 

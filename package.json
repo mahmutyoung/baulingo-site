@@ -9,6 +9,9 @@
     "dev": "node scripts/dev.mjs",
     "preview": "node scripts/dev.mjs --production",
     "build": "node scripts/build.mjs",
+    "analytics:check": "node scripts/sync-ga4.ts check",
+    "analytics:sync": "node scripts/sync-ga4.ts sync",
+    "analytics:verify": "node scripts/sync-ga4.ts verify",
     "check:astro": "astro check",
     "test": "node --test --test-isolation=none tests/*.test.mjs"
   },
