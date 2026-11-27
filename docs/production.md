@@ -4,6 +4,16 @@ The current Astro release is live on `baulingo.app`. The approved homepage layou
 
 The [long-term roadmap](roadmap.md) owns product priorities. The next product milestone is one embedded demand/preference experiment with a defined evidence method. This document records delivery operations and verification; no measurement pipeline has been added by the roadmap update.
 
+## Reporting release — 27 November 2026, 15:59 UTC
+
+The owner authorized committing, pushing and deploying the reporting handoff. Source commit `68ca33e2e3ac930be442c61ee21b8a77258184cd` adds worldwide keyword research, enforced Desktop OAuth, scheduled local snapshots and the qualified opportunity workflow. Generated reports, credentials and scheduler state remain outside Git and the static release. No educational content, consent behavior, paid services or collection settings changed.
+
+Fresh local verification passed all **190 Node tests**, reporting TypeScript checks, OAuth validation tests, Astro checks (nine files; no diagnostics), the production build and Wrangler dry run. Relative documentation links and diff checks passed. A literal scan of 1,243 source/output/report files found no matches for the current Google refresh token, client secret or Cloudflare reporting token; this is a targeted check, not a general secret audit. Dependencies and the lockfile are unchanged. [Linux CI run 46029390381](https://github.com/mahmutyoung/baulingo-site/actions/runs/46029390381) also passed the clean install, Astro checks, tests and build.
+
+The authorized push triggered Cloudflare build `e215a2ac-c7c1-4ea6-a2e8-8f938408591e`, which succeeded for that commit. Independent deployment inspection confirmed deployment `26c53f6f-ce64-41a8-be0a-ca5eb5f8388c`, created at `2026-11-27T15:58:10.768901Z`, serving version `822d0977-3ca2-4f10-a75f-b10a6422ef20` at 100%. Previous version: `6c1aa69b-9551-4b56-b545-27ba6feb47bc`. This used the existing Git-linked main-site deployment; the separate WWW Worker was not redeployed.
+
+Post-deployment HTTP checks passed at 15:59 UTC: public/learning/legal routes returned 200; documentation, developer review, reports, scripts and a missing path returned 404; WWW preserved the path/query in its 301; workers.dev retained noindex; robots referenced the sitemap. Live analytics, cookie-consent module and the 297-URL sitemap matched the verified build by SHA-256. Evidence is retained locally in `.dev/release-68ca33e/` and `.dev/release-68ca33e-deployments.json`. These are HTTP/asset checks, not a new browser interaction or live event-ingestion audit. The [remaining analytics gaps](handoff.md#analytics-completion-and-seo-growth--27-november-2026) remain open. Later documentation-only commits can trigger equivalent builds; inspect deployment metadata for the latest active revision.
+
 ## Local reporting verification — 27 November 2026
 
 ### Remote build and active production verified — 27 November, 09:17 UTC

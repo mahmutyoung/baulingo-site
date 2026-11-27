@@ -2,6 +2,8 @@
 
 ## Analytics completion and SEO growth — 27 November 2026
 
+Reporting source commit `68ca33e` was pushed and deployed with owner authorization. Linux CI and the Cloudflare build passed, active deployment was independently checked, and post-release HTTP/asset checks passed. [Release evidence](production.md#reporting-release--27-november-2026-1559-utc). This release does not close the measurement/dashboard limitations below.
+
 Continuation: Desktop OAuth now verifies Analytics, Search Console and Ads scopes. Actual worldwide German-learning research with Turkish/English/German query seeds succeeded for the Baulingo production Ads customer, currency TRY. The combined report has **1,778 unique keyword wordings from 1,862 observations**, retaining missing values and conflicts. Read the local package identified by `.dev/reports/latest-worldwide-keywords.json`; it contains Markdown, JSON, CSV and a small content-priority review. `worldwide` and all families are the default. The Desktop fix is a standing [AGENTS.md rule](../AGENTS.md#required-google-authorization-workflow), enforced by `npm run analytics:auth`, with persisted tests. [Live retrieval and operating state](analytics.md#live-keyword-exports-and-scheduled-snapshots)
 
 Remote clean-install/build and active production are now verified independently: `origin/main` is `ae9e33f`; Ubuntu CI and the Cloudflare build succeeded; deployment `7141503b-15c0-4488-a572-9c026fb369c6` serves version `6c1aa69b-9551-4b56-b545-27ba6feb47bc` at 100%. Production routing, discovery files and packaged analytics/cookie assets passed HTTP/hash checks. [Recorded evidence](production.md#remote-build-and-active-production-verified--27-november-0917-utc)
