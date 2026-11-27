@@ -4,6 +4,10 @@ The current Astro release is live on `baulingo.app`. The approved homepage layou
 
 The [long-term roadmap](roadmap.md) owns product priorities. The next product milestone is one embedded demand/preference experiment with a defined evidence method. This document records delivery operations and verification; no measurement pipeline has been added by the roadmap update.
 
+## Local reporting verification — 27 November 2026
+
+The local Cloudflare analytics integration passed 173 Node tests, the reporting TypeScript check, the Astro check and the static build. Read-only live queries verified resource/dataset access and generated local traffic, performance and catalog reports; production Worker queries returned empty results. Credential exclusion and report-integrity checks are recorded in [analytics operations](analytics.md#final-local-verification--27-november-2026). Dashboard agreement, positive Worker results and exact-boundary clean-period GA4 coverage remain unverified. These are local reporting changes, not a website release; no deployment, domain/plan change, new collection endpoint or consent change was performed.
+
 ## Live deployment
 
 ### Page-view fix — 26 November 2026

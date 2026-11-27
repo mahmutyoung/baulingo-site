@@ -1,6 +1,12 @@
 # Website implementation handoff
 
+Final reporting verification, 27 November: 173 tests, reporting typecheck, Astro check and build passed. The current credential was absent from generated report files scanned. Dashboard comparison, exact UTC GA4 extraction/clean live coverage, positive Worker evidence, token-policy scope and regional/rule-scope checks remain open. See [final verification and manual checks](analytics.md#final-local-verification--27-november-2026). Do not describe the entire analytics handoff as fully verified while these gaps remain.
+
+Cloudflare reporting update, 27 November: local read-only check, traffic and performance commands export dataset capabilities, browser/edge traffic, performance, Worker outcomes and catalog rollups. Production collection and page-view duplicate checks are recorded in [analytics operations](analytics.md). `seo:combined --cloudflare <browser-pages.json>` adds descriptive Cloudflare page evidence. `cloudflare:coverage` validates compatible exported evidence and reports unavailable when gates fail; exact UTC GA4 extraction and positive live clean-period joins remain pending, along with opportunity extensions. These local tools do not establish visitor learning outcomes, change tracking, or require deployment. Preserve unknown classifications and sampled/empty-result qualifications.
+
 ## Current status — 26 November 2026
+
+Phase 11 feasibility review (27 November): Analytics Engine could support coarse learning-action counts, but implementation is recommended to remain deferred until the clean GA4 baseline and a concrete experiment question justify it. Free-plan eligibility, privacy/consent treatment, abuse controls and duplicate semantics would need verification for any future endpoint. [Investigation and sources](analytics.md#phase-11-investigation--27-november-2026). This review added no collection or infrastructure.
 
 The Astro and TypeScript site is live at `https://baulingo.app`. The main Cloudflare Worker serves the allowlisted static build in `dist/`. The separate WWW Worker preserves paths and queries when redirecting to the apex. Browser-local progress, drafts and exam attempts stay on the device. [Production release](production.md#release--26-november-2026) · [Current architecture](architecture.md)
 

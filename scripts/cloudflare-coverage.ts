@@ -1,0 +1,33 @@
+import { readFile, mkdir, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { contentReport } from './cloudflare-content.ts';
+import { toCsv, dateRange } from './seo-performance.ts';
+import { writeSnapshot } from './cloudflare-output.ts';
+type Json=Record<string,any>;
+function browserReport(cf:Json){if(cf.metadata?.dataset!=='rumPageloadEventsAdaptiveGroups'||cf.metadata?.timeZone!=='UTC')throw new Error('Expected UTC Cloudflare browser page report.');dateRange('custom',cf.metadata.end,cf.metadata.start);return contentReport(cf);}
+export function joinCloudflare(rows:Json[],cf:Json,period:Json){
+ const report=browserReport(cf);if(cf.metadata.start!==period.startDate||cf.metadata.end!==period.endDate)throw new Error('Cloudflare period must match the combined report.');
+ const measures=new Map(report.rollups.page_id.map(r=>[r.page_id,r]));const present=new Set(rows.map(r=>r.page_id));
+ const extra=report.rows.filter(r=>r.page_id&&!present.has(r.page_id)).filter((r,i,a)=>a.findIndex(x=>x.page_id===r.page_id)===i).map(r=>({page_id:r.page_id,content_id:r.content_id,content_language:r.content_language,content_format:r.content_format,content_category:r.content_category,collection_id:r.collection_id,level:r.level,canonical_url:r.canonical_url,original_url:r.original_url,impressions:null,clicks:null,ctr:null,position:null,google_organic_sessions:null,content_viewers:null,learning_started:null,learning_completed:null,active_study_seconds:null}));
+ return {rows:[...rows,...extra].map(r=>({...r,cloudflare_page_views:r.page_id?measures.get(r.page_id)?.count??null:null,cloudflare_visits:r.page_id?measures.get(r.page_id)?.visits??null:null})),metadata:cf.metadata,unmatched:report.unmatched,limitations:['Same named dates use UTC for Cloudflare, Pacific for Search Console and Europe/Berlin for GA4. These daily boundaries differ.','Sources measure different populations; absent evidence is unknown, not zero. No consent rate, individual reconstruction or event inflation is performed.']};
+}
+export function coverage(cf:Json,ga:Json){
+ const report=browserReport(cf),c=cf.metadata,g=ga?.metadata;
+ if(!g||g.property!=='565704627'||g.metric!=='page_view_eventCount'||g.start!==c.start||g.end!==c.end||g.timeZone!==c.timeZone||g.complete!==true||!Array.isArray(ga.rows))throw new Error('GA4 export must contain compatible complete UTC page-view evidence for property 565704627.');
+ if(c.start<'2026-11-27')throw new Error('Clean GA4 baseline starts 2026-11-27.');
+ if(g.duplicatePageViewsVerified!==true)throw new Error('GA4 duplicate page views must be verified resolved.');
+ if(g.thresholded!==false||g.sampled!==false||g.dataLoss!==false)throw new Error('GA4 quality restrictions must be explicitly checked before a coverage comparison.');
+ const counts=new Map<string,number>();for(const row of ga.rows){if(typeof row.page_id!=='string'||!Number.isFinite(row.page_views)||row.page_views<0||counts.has(row.page_id))throw new Error('Invalid or duplicate GA4 page evidence.');counts.set(row.page_id,row.page_views);}
+ const rows:Json[]=report.rollups.page_id.map(r=>{const n=counts.get(r.page_id);return {...r,cloudflare_page_views:r.count,ga4_page_views:n??null,relative_measurement_coverage:n!==undefined&&r.count>0?n/r.count:null};});
+ return {metadata:{extractedAt:new Date().toISOString(),cloudflare:c,ga4:g,status:'complete',definition:'GA4 observed page views / Cloudflare observed browser page views at the same page ID and UTC period.',limitations:['Indicative relative measurement coverage, not a consent acceptance rate; values above 1 are possible.','Browser blocking, sampling and navigation definitions differ. Synthetic verification traffic may be present.','No rejected-visitor subtraction, individual behavior reconstruction or scaling of learning totals.']},rows,unmatched:report.unmatched,unmatchedGa4:ga.rows.filter((r:Json)=>!rows.some(x=>x.page_id===r.page_id))};
+}
+async function main(){
+ const args=process.argv.slice(2);if(args.includes('--help')){console.log('Usage: npm run cloudflare:coverage -- <browser-pages.json> [compatible-ga4-pageviews.json] [--output directory]\nRequires matching complete UTC page-view evidence and a verified clean GA4 baseline. Missing compatible evidence produces an unavailable snapshot. No API credentials are read by this comparison command.');return;}
+ const positional:string[]=[];let outputRoot='.dev/cloudflare/coverage';for(let i=0;i<args.length;i++){if(args[i]==='--output'&&args[i+1]&&!args[i+1].startsWith('--'))outputRoot=args[++i];else if(args[i].startsWith('--'))throw new Error('Unknown or incomplete option: '+args[i]);else positional.push(args[i]);}
+ const [input,gaInput]=positional;if(!input||positional.length>2)throw new Error('Usage: npm run cloudflare:coverage -- <browser-pages.json> [compatible-ga4-pageviews.json] [--output directory]');
+ const cf=JSON.parse(await readFile(input,'utf8'));let result:Json;
+ try{browserReport(cf);if(cf.metadata.start<'2026-11-27')throw new Error('Clean GA4 baseline starts 2026-11-27.');if(cf.metadata.end>=new Date().toISOString().slice(0,10))throw new Error('Period must contain only complete days.');if(!gaInput)throw new Error('Compatible complete UTC GA4 page-view export unavailable. Berlin daily exports cannot be relabelled UTC.');result=coverage(cf,JSON.parse(await readFile(gaInput,'utf8')));}catch(e){result={metadata:{extractedAt:new Date().toISOString(),status:'unavailable',cloudflare:cf.metadata,reason:e instanceof Error?e.message:'Coverage unavailable.'},rows:[]};}
+ const dir=join(outputRoot,new Date().toISOString().replace(/[:.]/g,'-'));await mkdir(dir,{recursive:true});await writeFile(join(dir,'coverage.json'),JSON.stringify(result,null,2)+'\n');await writeFile(join(dir,'coverage.csv'),toCsv(result.rows,['page_id','content_language','cloudflare_page_views','ga4_page_views','relative_measurement_coverage']));await writeFile(join(dir,'report.md'),`# Measurement coverage\n\nStatus: ${result.metadata.status}.\n\n${result.metadata.reason??result.metadata.definition}\n\nRelative coverage is not a consent acceptance rate.\n`);await writeSnapshot(dir,'coverage',[{name:'coverage',dataset:'cross-source browser page views',status:result.metadata.status,rows:result.rows.length,error:result.metadata.reason??null}]);console.log(`${result.metadata.status}: ${result.metadata.reason??'compatible page-view comparison'}. Output: ${dir}`);
+}
+if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href)main().catch(e=>{console.error(e instanceof Error?e.message:'Coverage failed.');process.exitCode=1;});

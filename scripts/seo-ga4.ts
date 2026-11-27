@@ -4,6 +4,7 @@ import { pathToFileURL } from 'node:url';
 import { dateRange, toCsv } from './seo-performance.ts';
 import { mapReport, mapUrl } from './seo-content.ts';
 import { catalog } from '../src/publishing/catalog.ts';
+import { joinCloudflare } from './cloudflare-coverage.ts';
 
 type Json = Record<string, any>;
 export function validatePeriod(start: string, end: string) {
@@ -34,8 +35,8 @@ export function joinPages(search: Json[], sessions: Json[], events: Json[]) {
 }
 const filter = (fieldName: string, value: string) => ({ filter: { fieldName, stringFilter: { matchType: 'EXACT', value } } });
 async function main() {
-  const [input] = process.argv.slice(2);
-  if (!input || process.argv.length !== 3) throw new Error('Usage: npm run seo:combined -- <unfiltered-page-report.json>');
+  const [input,flag,cloudflareInput] = process.argv.slice(2);
+  if (!input || (flag && (flag!=='--cloudflare'||!cloudflareInput)) || process.argv.length>5) throw new Error('Usage: npm run seo:combined -- <unfiltered-page-report.json> [--cloudflare browser-pages.json]');
   const source = JSON.parse(await readFile(input, 'utf8'));
   const meta = source.metadata;
   if (meta?.property !== 'sc-domain:baulingo.app' || JSON.stringify(meta?.dimensions) !== '["page"]' || JSON.stringify(meta?.filters) !== '[]' || meta?.dataState !== 'final' || meta?.searchType !== 'web' || !Array.isArray(source.rows)) throw new Error('Input must be a finalized unfiltered web page report.');
@@ -43,6 +44,8 @@ async function main() {
   const berlinToday = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Berlin', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
   if (meta.endDate >= berlinToday) throw new Error('GA4 reporting period must end before today in the property time zone.');
   const token = process.env.BAULINGO_GA4_ACCESS_TOKEN?.trim(); if (!token) throw new Error('Set BAULINGO_GA4_ACCESS_TOKEN using docs/analytics.md.');
+  const cloudflareSource=cloudflareInput?JSON.parse(await readFile(cloudflareInput,'utf8')):undefined;
+  if(cloudflareSource)joinCloudflare([],cloudflareSource,meta);
   const quota = process.env.BAULINGO_GA4_QUOTA_PROJECT?.trim();
   async function report(dims: string[], metrics: string[], dimensionFilter?: Json) {
     const rows: Json[] = [], metadata: Json[] = []; let offset = 0;
@@ -67,6 +70,7 @@ async function main() {
   const eventFilter = { orGroup: { expressions: ['content_viewed', 'learning_started', 'learning_completed', 'study_time'].map(name => filter('eventName', name)) } };
   const pageEvents = await report(['customEvent:page_id', 'eventName'], ['eventCount', 'totalUsers', 'customEvent:duration_seconds'], eventFilter);
   const contentEvents = await report(['customEvent:content_id', 'eventName'], ['eventCount', 'totalUsers', 'customEvent:duration_seconds'], eventFilter);
+  const pageViews = await report(['customEvent:page_id'], ['eventCount'], filter('eventName','page_view'));
   const quality: Json[] = [], sessions: Json[] = [];
   for (const row of acquisition.rows) {
     const mapped = row.landingPage.startsWith('/') ? mapUrl('https://baulingo.app' + row.landingPage) : null;
@@ -83,13 +87,16 @@ async function main() {
     if (row.eventName === 'study_time') item.active_study_seconds = row['customEvent:duration_seconds'];
     eventMap.set(id, item);
   }
-  const mapped = mapReport(source), rows = joinPages(mapped.rows.filter((row: Json) => !row.page_id || row.normalized_url === row.canonical_url), sessions, [...eventMap.values()]);
+  const mapped = mapReport(source);let rows:Json[] = joinPages(mapped.rows.filter((row: Json) => !row.page_id || row.normalized_url === row.canonical_url), sessions, [...eventMap.values()]);
+  const cf=cloudflareSource?joinCloudflare(rows,cloudflareSource,meta):null;if(cf)rows=cf.rows;
   const excludedAliases = mapped.rows.filter((row: Json) => row.page_id && row.normalized_url !== row.canonical_url);
   const output = { metadata: { source: meta, ga4Property: '565704627', extractedAt: new Date().toISOString(), ga4TimeZone: 'Europe/Berlin', searchConsoleTimeZone: 'America/Los_Angeles', limitations: ['GA4 measures consenting users; Search Console measures Google Search visibility. Dates use different time zones, and sessions do not equal clicks.', 'No search query is attributed to any learning event.', 'Missing rows are unknown, not zero. Returning learner sequences and conversion funnels are unavailable in this report.', 'Distinct users cannot be summed across content or pages; completion event counts are not a conversion rate.'], reportMetadata: { acquisition: acquisition.metadata, pageEvents: pageEvents.metadata, contentEvents: contentEvents.metadata } }, rows, contentEvents: contentEvents.rows, quality, excludedAliases };
   const dir = join('.dev/seo-combined', new Date().toISOString().replace(/[:.]/g, '-')); await mkdir(dir, { recursive: true });
+  Object.assign(output,{cloudflare:cf,ga4PageViews:{metadata:{property:'565704627',start:meta.startDate,end:meta.endDate,timeZone:'Europe/Berlin',metric:'page_view_eventCount',complete:true,duplicatePageViewsVerified:true,reportMetadata:pageViews.metadata,limitations:'Berlin property dates; incompatible with UTC coverage ratios. Clean periods and completed-day checks applied.'},rows:pageViews.rows.map((r:Json)=>({page_id:r['customEvent:page_id'],page_views:r.eventCount}))}});
   await writeFile(join(dir, 'combined.json'), JSON.stringify(output, null, 2) + '\n');
   const cols = ['original_url','canonical_url','page_id','content_id','content_format','content_category','collection_id','level','content_language','clicks','impressions','ctr','position','google_organic_sessions','content_viewers','learning_started','learning_completed','active_study_seconds','returning_learner_engagement','learning_conversion_rate'];
-  await writeFile(join(dir, 'pages.csv'), toCsv(rows, cols));
+  await writeFile(join(dir, 'pages.csv'), toCsv(rows, [...cols,'cloudflare_page_views','cloudflare_visits']));
+  await writeFile(join(dir,'ga4-pageviews.json'),JSON.stringify((output as Json).ga4PageViews,null,2)+'\n');
   console.log(`${rows.length} search page rows; ${quality.length} GA4 identity issues; ${excludedAliases.length} canonical aliases excluded. Output: ${dir}`);
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main().catch(error => { console.error(error instanceof Error ? error.message : 'Combined report failed.'); process.exitCode = 1; });

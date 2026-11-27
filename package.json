@@ -12,6 +12,7 @@
     "analytics:check": "node scripts/sync-ga4.ts check",
     "analytics:sync": "node scripts/sync-ga4.ts sync",
     "analytics:verify": "node scripts/sync-ga4.ts verify",
+    "analytics:typecheck": "tsc -p scripts/tsconfig.analytics.json",
     "check:astro": "astro check",
     "test": "node --test --test-isolation=none tests/*.test.mjs",
     "seo:performance": "node scripts/seo-performance.ts",
@@ -19,10 +20,15 @@
     "seo:map": "node scripts/seo-content.ts",
     "seo:combined": "node scripts/seo-ga4.ts",
     "seo:opportunities": "node scripts/seo-opportunities.ts",
-    "seo:check": "node scripts/seo-check.ts"
+    "seo:check": "node scripts/seo-check.ts",
+    "cloudflare:check": "node scripts/cloudflare-report.ts check",
+    "cloudflare:traffic": "node scripts/cloudflare-report.ts traffic",
+    "cloudflare:performance": "node scripts/cloudflare-report.ts performance",
+    "cloudflare:coverage": "node scripts/cloudflare-coverage.ts"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.12",
+    "@types/node": "24.19.4",
     "astro": "7.4.13",
     "lightningcss": "1.33.0",
     "typescript": "5.9.3",
