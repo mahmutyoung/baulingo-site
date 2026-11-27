@@ -1,5 +1,21 @@
 [
   {
+    "id": "non-blocking-consent",
+    "title": "Non-blocking consent notice",
+    "date": "2026-11-27",
+    "summary": "The analytics choice appears without blocking learning or moving keyboard focus. The footer still opens preferences.",
+    "files": ["src/cookie-consent.js", "src/cookie-consent.css"],
+    "steps": [
+      {
+        "id": "notice",
+        "title": "Use the page before choosing",
+        "path": "/?lang=tr",
+        "focus": "#cookie-consent",
+        "check": "Confirm the notice leaves the page usable, then reject or accept. Open footer settings to change the choice."
+      }
+    ]
+  },
+  {
     "id": "site-wide-cookie-settings",
     "title": "Çerez ayarları",
     "date": "2026-11-26",

@@ -1,21 +1,21 @@
 const copy = {
   en: {
-    title: 'Cookie settings', intro: 'Essential storage remembers your choices and progress. With your permission, Google Analytics measures visits and use of learning activities.',
-    reject: 'Reject all', configure: 'Configure', accept: 'Accept all',
+    title: 'Help us improve Baulingo', intro: 'Optional analytics help us understand which learning materials are useful.',
+    reject: 'Decline', configure: 'Privacy settings', accept: 'Accept analytics', settings: 'Cookie settings',
     essential: 'Essential storage', always: 'Always on', analytics: 'Google Analytics',
     details: 'Measures visits, referral sources, exercise outcomes and approximate study time.',
     back: 'Back', save: 'Save preferences', privacy: 'Privacy policy', legal: 'Legal notice',
   },
   tr: {
-    title: 'Çerez ayarları', intro: 'Zorunlu depolama tercihlerini ve ilerlemeni hatırlar. İzin verirsen Google Analytics ziyaretleri ve alıştırmaların kullanımını ölçer.',
-    reject: 'Tümünü reddet', configure: 'Ayarla', accept: 'Tümünü kabul et',
+    title: 'Baulingo’yu geliştirmemize yardımcı ol', intro: 'İsteğe bağlı analizler, hangi öğrenme materyallerinin faydalı olduğunu anlamamıza yardımcı olur.',
+    reject: 'Reddet', configure: 'Gizlilik ayarları', accept: 'Analizi kabul et', settings: 'Çerez ayarları',
     essential: 'Zorunlu depolama', always: 'Her zaman açık', analytics: 'Google Analytics',
     details: 'Ziyaretleri, yönlendirme kaynaklarını, alıştırma sonuçlarını ve yaklaşık çalışma süresini ölçer.',
     back: 'Geri', save: 'Tercihleri kaydet', privacy: 'Gizlilik politikası', legal: 'Yasal bildirim',
   },
   de: {
-    title: 'Cookie-Einstellungen', intro: 'Notwendige Speicherung merkt sich deine Auswahl und deinen Lernfortschritt. Mit deiner Zustimmung misst Google Analytics Besuche und die Nutzung von Übungen.',
-    reject: 'Alle ablehnen', configure: 'Konfigurieren', accept: 'Alle akzeptieren',
+    title: 'Hilf uns, Baulingo zu verbessern', intro: 'Optionale Analysen helfen uns zu verstehen, welche Lernmaterialien nützlich sind.',
+    reject: 'Ablehnen', configure: 'Datenschutzeinstellungen', accept: 'Analyse akzeptieren', settings: 'Cookie-Einstellungen',
     essential: 'Notwendige Speicherung', always: 'Immer aktiv', analytics: 'Google Analytics',
     details: 'Misst Besuche, Verweisquellen, Übungsergebnisse und die ungefähre Lernzeit.',
     back: 'Zurück', save: 'Auswahl speichern', privacy: 'Datenschutz', legal: 'Impressum',
@@ -29,14 +29,15 @@ export function mountCookieConsent(readChoice, saveChoice) {
   style.href = '/src/cookie-consent.css';
   document.head.append(style);
 
-  const dialog = document.createElement('dialog');
+  const dialog = document.createElement('section');
   dialog.id = 'cookie-consent';
   dialog.setAttribute('aria-labelledby', 'cookie-title');
-  dialog.innerHTML = `<h2 id="cookie-title" tabindex="-1" autofocus>${t.title}</h2>
+  dialog.hidden = true;
+  dialog.innerHTML = `<h2 id="cookie-title">${t.title}</h2>
     <div data-cookie-summary><p>${t.intro}</p>
       <div class="cookie-actions"><button type="button" data-cookie="reject">${t.reject}</button>
-      <button type="button" data-cookie="configure">${t.configure}</button>
       <button type="button" data-cookie="accept">${t.accept}</button></div>
+      <button type="button" class="cookie-configure" data-cookie="configure">${t.configure}</button>
     </div>
     <div data-cookie-config hidden>
       <div class="cookie-category"><strong>${t.essential}</strong><span>${t.always}</span></div>
@@ -44,8 +45,8 @@ export function mountCookieConsent(readChoice, saveChoice) {
         <p id="cookie-analytics-info">${t.details}</p></div>
       <div class="cookie-actions"><button type="button" data-cookie="back">${t.back}</button>
         <button type="button" data-cookie="save">${t.save}</button></div>
-    </div>
-    <div class="cookie-links"><a href="/privacy/">${t.privacy}</a><a href="/impressum/">${t.legal}</a></div>`;
+      <div class="cookie-links"><a href="/privacy/">${t.privacy}</a><a href="/impressum/">${t.legal}</a></div>
+    </div>`;
   document.body.append(dialog);
   const summary = dialog.querySelector('[data-cookie-summary]');
   const config = dialog.querySelector('[data-cookie-config]');
@@ -58,7 +59,7 @@ export function mountCookieConsent(readChoice, saveChoice) {
   }
   function open(configure = false) {
     showConfig(configure);
-    if (!dialog.open) dialog.showModal();
+    dialog.hidden = false;
   }
   button('configure').onclick = () => { showConfig(true); checkbox.focus(); };
   button('back').onclick = () => { showConfig(false); button('configure').focus(); };
@@ -69,10 +70,9 @@ export function mountCookieConsent(readChoice, saveChoice) {
   const settings = document.createElement('button');
   settings.type = 'button';
   settings.className = 'cookie-settings';
-  settings.setAttribute('aria-haspopup', 'dialog');
   settings.setAttribute('aria-controls', dialog.id);
-  settings.textContent = t.title;
-  settings.onclick = () => open(true);
+  settings.textContent = t.settings;
+  settings.onclick = () => { open(true); checkbox.focus(); };
   const footer = document.querySelector('footer');
   if (footer) footer.append(settings);
   else {
@@ -91,5 +91,5 @@ export function mountCookieConsent(readChoice, saveChoice) {
       observer.observe(document.body, { childList: true });
     }
   }
-  return { open, close: () => dialog.close() };
+  return { open, close: () => { dialog.hidden = true; } };
 }

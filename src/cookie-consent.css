@@ -1,10 +1,11 @@
-#cookie-consent{box-sizing:border-box;width:min(36rem,calc(100% - 2rem));max-height:calc(100% - 2rem);overflow:auto;padding:clamp(1rem,4vw,1.75rem);border:1px solid #78866a;border-radius:12px;background:#fffdf9;color:#29372e;font:1rem/1.45 BaulingoSans,system-ui,sans-serif}
-#cookie-consent::backdrop{background:#15221996}
+#cookie-consent{position:fixed;z-index:1000;bottom:1rem;right:1rem;box-sizing:border-box;width:min(36rem,calc(100% - 2rem));max-height:calc(100% - 2rem);overflow:auto;padding:clamp(1rem,4vw,1.75rem);border:1px solid #78866a;border-radius:12px;box-shadow:0 4px 24px #15221930;background:#fffdf9;color:#29372e;font:1rem/1.45 BaulingoSans,system-ui,sans-serif}
+#cookie-consent[hidden]{display:none}
 #cookie-consent h2{margin:0 0 .65rem;font-size:1.5rem;color:inherit}
 #cookie-consent p{margin:0 0 1rem}
 .cookie-actions{display:flex;gap:.5rem}
 .cookie-actions button{flex:1;min-height:44px;border:1px solid #29372e;border-radius:7px;padding:.5rem;background:#fffdf9;color:#29372e;font:600 .9rem/1.25 BaulingoSans,system-ui,sans-serif;cursor:pointer}
 .cookie-actions button:hover{background:#eef1e8}
+.cookie-configure{display:block;margin:.5rem auto 0;padding:.5rem;border:0;background:none;color:inherit;font:inherit;text-decoration:underline;cursor:pointer}
 .cookie-category{border-top:1px solid #d7ddd1;padding:.65rem 0}
 .cookie-category span{display:block}
 .cookie-category label{display:flex;gap:.5rem;align-items:center;min-height:44px;font-weight:600;cursor:pointer}
@@ -16,4 +17,4 @@
 .cookie-settings{padding:0 .5rem;border:0;background:none;font:inherit;font-size:.875rem;cursor:pointer}
 .cookie-footer{text-align:center;padding:.5rem}
 #cookie-consent :focus-visible,.cookie-settings:focus-visible{outline:2px solid #425b3c;outline-offset:3px}
-@media(max-width:32rem){.cookie-actions{flex-direction:column}}
+@media(max-width:32rem){[data-cookie-config] .cookie-actions{flex-direction:column} #cookie-consent{bottom:.5rem;right:.5rem;width:calc(100% - 1rem)}}
