@@ -8,6 +8,12 @@ The [long-term roadmap](roadmap.md) owns product priorities. The next product mi
 
 The local Cloudflare analytics integration passed 173 Node tests, the reporting TypeScript check, the Astro check and the static build. Read-only live queries verified resource/dataset access and generated local traffic, performance and catalog reports; production Worker queries returned empty results. Credential exclusion and report-integrity checks are recorded in [analytics operations](analytics.md#final-local-verification--27-november-2026). Dashboard agreement, positive Worker results and exact-boundary clean-period GA4 coverage remain unverified. These are local reporting changes, not a website release; no deployment, domain/plan change, new collection endpoint or consent change was performed.
 
+### Cloudflare clean-install failure reproduced and checked
+
+The owner supplied a 26 November Cloudflare build log failing during `npm ci` with npm 10.9.2, before the site build, because eight nested `@emnapi/core`/`@emnapi/runtime` entries were missing from the lockfile. An isolated copy of revision `2f4cdef` reproduced those same missing-package errors with npm 10.9.2. The repaired lockfile in local commit `3840842` passed npm 10.9.2 clean-install validation. A fresh archive of that commit then passed a real `npm ci` (274 packages installed) and `npm run build` in ignored `.dev/clean-install-3840842/`.
+
+This verifies clean installation independently of the existing `node_modules`. It ran on Windows with Node 24.19.0; the supplied Cloudflare log used Linux with Node 24.22.1. It is not a successful remote-build or deployment result. Cloudflare must build a revision containing the repaired lockfile; retrying the old revision cannot pick up the local fix. No push or deployment was performed.
+
 ## Live deployment
 
 ### Page-view fix — 26 November 2026
