@@ -7,5 +7,5 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["cloudflare-*.ts", "seo-ga4.ts", "seo-opportunities.ts"]
+  "include": ["cloudflare-*.ts", "seo-ga4.ts", "seo-opportunities.ts", "keywords.ts", "ga4-report.ts", "analytics-snapshot.ts"]
 }

@@ -10,6 +10,7 @@ test('small samples do not produce recommendations', () => {
 test('identifies a low CTR investigation only on a mapped page with sufficient exposure', () => {
   const report = opportunities({ metadata:meta, rows:[{ keys:['almanca','https://baulingo.app/'], impressions:120, clicks:1, ctr:1/120, position:8 }] });
   assert.equal(report.opportunities[0].category, 'title_and_metadata');
+  assert.equal(report.opportunities[0].action, 'improve_title_or_description');
   assert.equal(report.opportunities[0].page_id, 'home-tr');
   assert.equal(report.opportunities[0].confidence, 'low');
 });

@@ -5,6 +5,7 @@ import { dateRange, toCsv } from './seo-performance.ts';
 import { mapReport, mapUrl } from './seo-content.ts';
 import { catalog } from '../src/publishing/catalog.ts';
 import { joinCloudflare } from './cloudflare-coverage.ts';
+import { writeSnapshot, localReportRoot } from './cloudflare-output.ts';
 
 type Json = Record<string, any>;
 export function validatePeriod(start: string, end: string) {
@@ -35,8 +36,10 @@ export function joinPages(search: Json[], sessions: Json[], events: Json[]) {
 }
 const filter = (fieldName: string, value: string) => ({ filter: { fieldName, stringFilter: { matchType: 'EXACT', value } } });
 async function main() {
-  const [input,flag,cloudflareInput] = process.argv.slice(2);
-  if (!input || (flag && (flag!=='--cloudflare'||!cloudflareInput)) || process.argv.length>5) throw new Error('Usage: npm run seo:combined -- <unfiltered-page-report.json> [--cloudflare browser-pages.json]');
+  const [input,...args] = process.argv.slice(2);const opts:Json={};
+  for(let i=0;i<args.length;i+=2){if(!['--cloudflare','--output'].includes(args[i])||!args[i+1])throw new Error('Use --cloudflare or --output with a value.');opts[args[i].slice(2)]=args[i+1];}
+  const cloudflareInput=opts.cloudflare;
+  if (!input) throw new Error('Usage: npm run seo:combined -- <unfiltered-page-report.json> [--cloudflare browser-pages.json] [--output directory]');
   const source = JSON.parse(await readFile(input, 'utf8'));
   const meta = source.metadata;
   if (meta?.property !== 'sc-domain:baulingo.app' || JSON.stringify(meta?.dimensions) !== '["page"]' || JSON.stringify(meta?.filters) !== '[]' || meta?.dataState !== 'final' || meta?.searchType !== 'web' || !Array.isArray(source.rows)) throw new Error('Input must be a finalized unfiltered web page report.');
@@ -91,12 +94,14 @@ async function main() {
   const cf=cloudflareSource?joinCloudflare(rows,cloudflareSource,meta):null;if(cf)rows=cf.rows;
   const excludedAliases = mapped.rows.filter((row: Json) => row.page_id && row.normalized_url !== row.canonical_url);
   const output = { metadata: { source: meta, ga4Property: '565704627', extractedAt: new Date().toISOString(), ga4TimeZone: 'Europe/Berlin', searchConsoleTimeZone: 'America/Los_Angeles', limitations: ['GA4 measures consenting users; Search Console measures Google Search visibility. Dates use different time zones, and sessions do not equal clicks.', 'No search query is attributed to any learning event.', 'Missing rows are unknown, not zero. Returning learner sequences and conversion funnels are unavailable in this report.', 'Distinct users cannot be summed across content or pages; completion event counts are not a conversion rate.'], reportMetadata: { acquisition: acquisition.metadata, pageEvents: pageEvents.metadata, contentEvents: contentEvents.metadata } }, rows, contentEvents: contentEvents.rows, quality, excludedAliases };
-  const dir = join('.dev/seo-combined', new Date().toISOString().replace(/[:.]/g, '-')); await mkdir(dir, { recursive: true });
+  const dir = join(localReportRoot(opts.output??'.dev/seo-combined'), new Date().toISOString().replace(/[:.]/g, '-')); await mkdir(dir, { recursive: true });
   Object.assign(output,{cloudflare:cf,ga4PageViews:{metadata:{property:'565704627',start:meta.startDate,end:meta.endDate,timeZone:'Europe/Berlin',metric:'page_view_eventCount',complete:true,duplicatePageViewsVerified:true,reportMetadata:pageViews.metadata,limitations:'Berlin property dates; incompatible with UTC coverage ratios. Clean periods and completed-day checks applied.'},rows:pageViews.rows.map((r:Json)=>({page_id:r['customEvent:page_id'],page_views:r.eventCount}))}});
   await writeFile(join(dir, 'combined.json'), JSON.stringify(output, null, 2) + '\n');
   const cols = ['original_url','canonical_url','page_id','content_id','content_format','content_category','collection_id','level','content_language','clicks','impressions','ctr','position','google_organic_sessions','content_viewers','learning_started','learning_completed','active_study_seconds','returning_learner_engagement','learning_conversion_rate'];
   await writeFile(join(dir, 'pages.csv'), toCsv(rows, [...cols,'cloudflare_page_views','cloudflare_visits']));
   await writeFile(join(dir,'ga4-pageviews.json'),JSON.stringify((output as Json).ga4PageViews,null,2)+'\n');
+  const qualityRestricted=[acquisition,pageEvents,contentEvents,pageViews].some(r=>r.metadata.some((p:Json)=>p.metadata?.subjectToThresholding||p.metadata?.dataLossFromOtherRow||p.metadata?.samplingMetadatas?.length));
+  await writeSnapshot(dir,'combined',[{name:'combined',dataset:'GA4 and Search Console',status:qualityRestricted?'partial':'complete',rows:rows.length,note:'Descriptive join of differently timed source days; not an exactly aligned conversion report.'}]);
   console.log(`${rows.length} search page rows; ${quality.length} GA4 identity issues; ${excludedAliases.length} canonical aliases excluded. Output: ${dir}`);
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main().catch(error => { console.error(error instanceof Error ? error.message : 'Combined report failed.'); process.exitCode = 1; });

@@ -6,6 +6,14 @@ The [long-term roadmap](roadmap.md) owns product priorities. The next product mi
 
 ## Local reporting verification — 27 November 2026
 
+### Remote build and active production verified — 27 November, 09:17 UTC
+
+Read-only GitHub inspection confirmed `origin/main` at `ae9e33f94158f097fdb12044842542ea38cc5dc3`. Remote `package-lock.json` blob `116596efd621f9933683a68daa7e08c40eb8b0a2` equals the local repaired lockfile. [Ubuntu CI run 45923362348](https://github.com/mahmutyoung/baulingo-site/actions/runs/45923362348) completed successfully, including Node 24 setup, `npm ci`, Astro checks, tests, build and artifact upload. This establishes a successful Linux clean install/build, separately from the earlier Windows check.
+
+The Cloudflare GitHub check reports build `ddcc7df3-1244-4a2f-9435-0b66ec3ff33c` successful for that revision and version `6c1aa69b-9551-4b56-b545-27ba6feb47bc`. A separate authenticated Cloudflare deployment read confirms deployment `7141503b-15c0-4488-a572-9c026fb369c6`, created at `2026-11-27T01:35:37.079153Z`, serves that version at 100%. The revision-to-version association comes from the successful build check; version metadata alone does not expose a Git SHA. [Cloudflare build](https://dash.cloudflare.com/f79d2839a11db7e10fab2b9f9f5635ec/workers/services/view/baulingo-site/production/builds/ddcc7df3-1244-4a2f-9435-0b66ec3ff33c)
+
+Live HTTP checks passed for Turkish/English homepages, DTZ mock exam, case topic and legal pages (200); docs, developer review and a missing path (404); WWW query-preserving HTTPS apex redirect (301); workers.dev `noindex`; robots sitemap discovery; and all 297 sitemap locations matching the current catalog. Production analytics, cookie module and sitemap SHA-256 hashes match the fresh local `dist/` output. The analytics module is transformed during packaging, so comparing it directly with untransformed `src/analytics.js` would be the wrong comparison. Local evidence is in ignored `.dev/handoff-2026-11-27/`. These checks read an existing deployment; no push, retry, deployment or external setting change was performed.
+
 The local Cloudflare analytics integration passed 173 Node tests, the reporting TypeScript check, the Astro check and the static build. Read-only live queries verified resource/dataset access and generated local traffic, performance and catalog reports; production Worker queries returned empty results. Credential exclusion and report-integrity checks are recorded in [analytics operations](analytics.md#final-local-verification--27-november-2026). Dashboard agreement, positive Worker results and exact-boundary clean-period GA4 coverage remain unverified. These are local reporting changes, not a website release; no deployment, domain/plan change, new collection endpoint or consent change was performed.
 
 ### Cloudflare clean-install failure reproduced and checked

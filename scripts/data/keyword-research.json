@@ -1,0 +1,34 @@
+{
+  "apiVersion": "v26",
+  "learnerTargetLanguage": "de",
+  "defaultSegment": "worldwide",
+  "customer": {"id":"4715501548","name":"Baulingo","currencyCode":"TRY","verifiedAt":"2026-11-27"},
+  "segments": [
+    {"id":"worldwide","queryLanguages":["tr","en","de"],"adsLanguage":null,"market":"worldwide","geoTargets":[]},
+    {"id":"tr-DE","queryLanguage":"tr","adsLanguage":"languageConstants/1037","market":"DE","geoTargets":["geoTargetConstants/2276"]},
+    {"id":"tr-TR","queryLanguage":"tr","adsLanguage":"languageConstants/1037","market":"TR","geoTargets":["geoTargetConstants/2792"]},
+    {"id":"de-DE","queryLanguage":"de","adsLanguage":"languageConstants/1001","market":"DE","geoTargets":["geoTargetConstants/2276"]},
+    {"id":"de-TR","queryLanguage":"de","adsLanguage":"languageConstants/1001","market":"TR","geoTargets":["geoTargetConstants/2792"]},
+    {"id":"en-DE","queryLanguage":"en","adsLanguage":"languageConstants/1000","market":"DE","geoTargets":["geoTargetConstants/2276"]},
+    {"id":"en-TR","queryLanguage":"en","adsLanguage":"languageConstants/1000","market":"TR","geoTargets":["geoTargetConstants/2792"]}
+  ],
+  "families": [
+    {"id":"general","path":"/","seeds":{"tr":["Almanca öğrenmek"],"de":["Deutsch lernen"],"en":["learn German"]}},
+    {"id":"free-courses","path":"/konular/almanca-a1/","seeds":{"tr":["ücretsiz Almanca kursu"],"de":["kostenlos Deutsch lernen"],"en":["free German course"]}},
+    {"id":"a1","path":"/konular/almanca-a1/","seeds":{"tr":["Almanca A1 alıştırmaları"],"de":["Deutsch A1 Übungen"],"en":["German A1 exercises"]}},
+    {"id":"a2","path":"/konular/almanca-a2/","seeds":{"tr":["Almanca A2 alıştırmaları"],"de":["Deutsch A2 Übungen"],"en":["German A2 exercises"]}},
+    {"id":"b1","path":"/konular/almanca-b1/","seeds":{"tr":["Almanca B1 alıştırmaları"],"de":["Deutsch B1 Übungen"],"en":["German B1 exercises"]}},
+    {"id":"grammar","path":"/konular/","seeds":{"tr":["Almanca dil bilgisi"],"de":["deutsche Grammatik Übungen"],"en":["German grammar exercises","German grammar practice"]}},
+    {"id":"articles","path":"/konular/articles/","seeds":{"tr":["der die das alıştırmaları","Almanca artikel alıştırmaları"],"de":["der die das Übungen"],"en":["German articles exercises"]}},
+    {"id":"cases","path":"/konular/cases/","seeds":{"tr":["Almanca Akkusativ Dativ","Almanca Akkusativ Dativ alıştırmaları"],"de":["Akkusativ Dativ Übungen"],"en":["German cases exercises"]}},
+    {"id":"sentences","path":"/","seeds":{"tr":["Almanca cümle kurma","Almanca cümle sırası"],"de":["deutsche Sätze bilden Übungen","Wortstellung Übungen","Satzbau Übungen"],"en":["German sentence builder","German word order exercises"]}},
+    {"id":"everyday","path":"/konular/almanca-a1/","seeds":{"tr":["günlük Almanca konuşmalar"],"de":["Deutsch im Alltag"],"en":["everyday German phrases"]}},
+    {"id":"vocabulary","path":"/dtz-kelime-kalip-cumle/","seeds":{"tr":["Almanca B1 kelimeler"],"de":["Deutsch B1 Wortschatz"],"en":["German B1 vocabulary"]}},
+    {"id":"reading","path":"/dtz-deneme-sinavi/","seeds":{"tr":["Almanca B1 okuma anlama"],"de":["B1 Leseverstehen Übungen"],"en":["German B1 reading comprehension"]}},
+    {"id":"speaking","path":"/dtz-deneme-sinavi/","seeds":{"tr":["Almanca B1 konuşma sınavı"],"de":["DTZ Sprechen Übungen"],"en":["German B1 speaking practice"]}},
+    {"id":"dtz","path":"/dtz-deneme-sinavi/","seeds":{"tr":["DTZ deneme sınavı"],"de":["DTZ Prüfung Modelltest","DTZ Prüfung","Deutsch Test für Zuwanderer"],"en":["DTZ exam practice"]}},
+    {"id":"letters","path":"/dtz-mektup-yazma/","seeds":{"tr":["Almanca B1 mektup yazma","Almanca mektup örnekleri"],"de":["DTZ Brief schreiben Übungen","B1 Brief schreiben"],"en":["German B1 letter writing"]}},
+    {"id":"integration","path":"/dtz-sinavi/","seeds":{"tr":["entegrasyon kursu Almanca sınavı"],"de":["Integrationskurs Deutsch Test"],"en":["German integration course exam"]}},
+    {"id":"tools","path":"/","seeds":{"tr":["interaktif Almanca alıştırmaları"],"de":["interaktive Deutsch Übungen"],"en":["interactive German learning tools"]}}
+  ]
+}

@@ -5,6 +5,9 @@ import { catalog } from '../src/publishing/catalog.ts';
 import { mapUrl } from './seo-content.ts';
 import { dateRange } from './seo-performance.ts';
 import { cloudflareFindings } from './cloudflare-opportunities.ts';
+import { writeSnapshot, localReportRoot } from './cloudflare-output.ts';
+import { keywordFindings } from './keywords.ts';
+import keywordConfig from './data/keyword-research.json' with { type: 'json' };
 
 type Json = Record<string, any>;
 const key = (query: string, page: string) => JSON.stringify([query, page]);
@@ -102,23 +105,32 @@ export function opportunities(current: Json, previous?: Json, combined?: Json, i
     }
   }
   if(inputs.cloudflare)candidates.push(...cloudflareFindings(inputs.cloudflare,current.metadata));
+  if(inputs.keywords)for(const item of keywordFindings(inputs.keywords,keywordConfig.families)){
+    item.observed_visibility=current.rows.filter((r:Json)=>r.keys[0].toLocaleLowerCase('tr')===item.query.toLocaleLowerCase('tr'));
+    item.ga4_engagement=engagement.get(item.page_id)??null;
+    item.cloudflare_evidence=inputs.cloudflare?.traffic?.rows.filter((r:Json)=>r.page_id===item.page_id)??null;
+    candidates.push(item);
+  }
+  const actions:Record<string,string>={title_and_metadata:'improve_title_or_description',content_improvements:'improve_existing_page',internal_linking_improvements:'improve_internal_linking',indexing_and_technical_fixes:'investigate_technical_issue'};
+  for(const item of candidates)item.action??=actions[item.category]??'collect_more_evidence';
   candidates.sort((a,b) => (b.impressions ?? 0) - (a.impressions ?? 0));
-  return { metadata:{ extractedAt:new Date().toISOString(), search:current.metadata, previous:previous?.metadata ?? null, ga4Available:!!combined, indexingExtractedAt:indexing?.extractedAt ?? null, pageComparison:pageNow ? {current:pageNow.metadata,previous:pageBefore.metadata} : null, thresholds:{ lowCtrImpressions:100, lowCtr:0.02, maxPosition:20, overlapPageImpressions:30, indexingMaxAgeDays:30, previousPageImpressions:100, currentPageImpressions:50, declineRatio:0.6, improvedPositionDelta:3, organicSessionsForReview:50, learningStartsForLinkReview:20 }, futureKeywordPlanner:null, limitations:['Search Console impressions are visibility, not total keyword search volume.', 'Query rows can be anonymized or omitted; page/query aggregation differs from property totals.', 'Thresholds flag review candidates, not causal findings or ranking guarantees.', 'Engagement is page-level and cannot be attributed to an individual query.', 'No inference is made for missing GA4 data or absent prior rows.'] }, status:candidates.length ? 'Review candidates found; validate intent and search results before action.' : 'Insufficient evidence for automated opportunities under the current thresholds.', opportunities:candidates, unmatched };
+  return { metadata:{ extractedAt:new Date().toISOString(), search:current.metadata, previous:previous?.metadata ?? null, ga4Available:!!combined, indexingExtractedAt:indexing?.extractedAt ?? null, pageComparison:pageNow ? {current:pageNow.metadata,previous:pageBefore.metadata} : null, thresholds:{ lowCtrImpressions:100, lowCtr:0.02, maxPosition:20, overlapPageImpressions:30, indexingMaxAgeDays:30, previousPageImpressions:100, currentPageImpressions:50, declineRatio:0.6, improvedPositionDelta:3, organicSessionsForReview:50, learningStartsForLinkReview:20 }, keywordPlanner:inputs.keywords?.metadata ?? null, limitations:['Search Console impressions are visibility, not total keyword search volume.', 'Query rows can be anonymized or omitted; page/query aggregation differs from property totals.', 'Thresholds flag review candidates, not causal findings or ranking guarantees.', 'Engagement is page-level and cannot be attributed to an individual query.', 'No inference is made for missing GA4 data or absent prior rows.'] }, status:candidates.length ? 'Review candidates found; validate intent and search results before action.' : 'Insufficient evidence for automated opportunities under the current thresholds.', opportunities:candidates, unmatched };
 }
 async function main() {
   const args = process.argv.slice(2), positional: string[] = [], options: Record<string,string> = {};
-  for (let i=0;i<args.length;i++) { if (args[i].startsWith('--')) { const name=args[i].slice(2); if (!['indexing','page-current','page-previous','cloudflare'].includes(name) || !args[i+1] || args[i+1].startsWith('--')) throw new Error('Invalid option: '+args[i]); options[name]=args[++i]; } else positional.push(args[i]); }
+  for (let i=0;i<args.length;i++) { if (args[i].startsWith('--')) { const name=args[i].slice(2); if (!['indexing','page-current','page-previous','cloudflare','keywords','output'].includes(name) || !args[i+1] || args[i+1].startsWith('--')) throw new Error('Invalid option: '+args[i]); options[name]=args[++i]; } else positional.push(args[i]); }
   if (!positional[0] || positional.length > 3) throw new Error('Usage: npm run seo:opportunities -- <query-page.json> [previous-query-page.json|-] [combined.json] [--indexing file] [--page-current file --page-previous file]');
   const current = JSON.parse(await readFile(positional[0], 'utf8'));
   const previous = positional[1] && positional[1] !== '-' ? JSON.parse(await readFile(positional[1], 'utf8')) : undefined;
   const combined = positional[2] ? JSON.parse(await readFile(positional[2], 'utf8')) : undefined;
-  const inputs = Object.fromEntries(await Promise.all(Object.entries(options).map(async ([name,file]) => [name === 'page-current' ? 'currentPage' : name === 'page-previous' ? 'previousPage' : name, JSON.parse(await readFile(file,'utf8'))])));
+  const inputs = Object.fromEntries(await Promise.all(Object.entries(options).filter(([name])=>name!=='output').map(async ([name,file]) => [name === 'page-current' ? 'currentPage' : name === 'page-previous' ? 'previousPage' : name, JSON.parse(await readFile(file,'utf8'))])));
   const result = opportunities(current, previous, combined, inputs);
-  Object.assign(result.metadata,{cloudflareEvidence:inputs.cloudflare?Object.fromEntries(Object.entries(inputs.cloudflare).map(([name,report])=>[name,(report as Json).metadata])):null});
-  const dir = join('.dev/seo-opportunities', new Date().toISOString().replace(/[:.]/g, '-')); await mkdir(dir, { recursive:true });
+  Object.assign(result.metadata,{keywordPlanner:inputs.keywords?.metadata??null,cloudflareEvidence:inputs.cloudflare?Object.fromEntries(Object.entries(inputs.cloudflare).map(([name,report])=>[name,(report as Json).metadata])):null});
+  const dir = join(localReportRoot(options.output??'.dev/seo-opportunities'), new Date().toISOString().replace(/[:.]/g, '-')); await mkdir(dir, { recursive:true });
   await writeFile(join(dir, 'opportunities.json'), JSON.stringify(result, null, 2) + '\n');
   const lines = ['# SEO opportunity review', '', result.status, '', `Period: ${result.metadata.search.startDate} to ${result.metadata.search.endDate}.`, `GA4 evidence: ${combined ? 'available at page level' : 'unavailable'}.`, '', ...result.opportunities.flatMap((item: Json) => [`## ${item.category}: ${item.query ?? item.page_id ?? 'Page review'}`, '', item.evidence, '', `Page: ${item.ranking_page ?? item.ranking_pages.map((page: Json) => page.page).join(', ')}`, '', `Existing content: ${item.existing_content ?? 'See individual pages in JSON.'}`, '', `Historical comparison: ${item.historical_trend ? JSON.stringify(item.historical_trend) : 'unavailable'}.`, '', `Page-level GA4: ${item.ga4_engagement ? JSON.stringify(item.ga4_engagement) : 'unavailable'}.`, '', item.problem, '', item.proposed_improvement, '', `Confidence: ${item.confidence}; effort: ${item.effort}.`, '']), 'Review the JSON for source details, unmatched URLs and limitations.', ''];
   await writeFile(join(dir, 'report.md'), lines.join('\n'));
+  await writeSnapshot(dir,'opportunities',[{name:'opportunities',dataset:'qualified SEO evidence',status:'complete',rows:result.opportunities.length,note:'Successful analysis does not mean strong evidence or approved content priorities.'}]);
   console.log(`${result.status} ${result.opportunities.length} candidates; ${result.unmatched.length} unmatched rows. Output: ${dir}`);
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main().catch(error => { console.error(error instanceof Error ? error.message : 'Opportunity analysis failed.'); process.exitCode = 1; });

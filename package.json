@@ -10,6 +10,8 @@
     "preview": "node scripts/dev.mjs --production",
     "build": "node scripts/build.mjs",
     "analytics:check": "node scripts/sync-ga4.ts check",
+    "analytics:auth": "powershell.exe -NoProfile -File scripts/google-auth.ps1",
+    "analytics:auth:test": "powershell.exe -NoProfile -File tests/google-auth.validation.ps1",
     "analytics:sync": "node scripts/sync-ga4.ts sync",
     "analytics:verify": "node scripts/sync-ga4.ts verify",
     "analytics:typecheck": "tsc -p scripts/tsconfig.analytics.json",
@@ -24,7 +26,16 @@
     "cloudflare:check": "node scripts/cloudflare-report.ts check",
     "cloudflare:traffic": "node scripts/cloudflare-report.ts traffic",
     "cloudflare:performance": "node scripts/cloudflare-report.ts performance",
-    "cloudflare:coverage": "node scripts/cloudflare-coverage.ts"
+    "cloudflare:coverage": "node scripts/cloudflare-coverage.ts",
+    "keywords:check": "node scripts/keywords.ts check",
+    "keywords:research": "node scripts/keywords.ts research",
+    "keywords:historical": "node scripts/keywords.ts historical",
+    "keywords:import": "node scripts/keywords.ts import",
+    "keywords:map": "node scripts/keywords.ts map",
+    "keywords:report": "node scripts/keywords.ts report",
+    "analytics:extract": "node scripts/ga4-report.ts",
+    "analytics:snapshot": "node scripts/analytics-snapshot.ts",
+    "analytics:schedule": "powershell.exe -NoProfile -File scripts/schedule-analytics.ps1"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.12",

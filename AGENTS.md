@@ -45,6 +45,23 @@ Use Astro and TypeScript at build time and serve static HTML/CSS and native Java
 
 ## Local workflow
 
+### Required Google authorization workflow
+
+- Reuse the existing **Desktop app** OAuth client from Google Cloud project `baulingo-web`. Its client JSON stays outside Git. Do not create or substitute a Web application client, another Cloud project or a default gcloud OAuth client to troubleshoot authorization.
+- Before starting sign-in, inspect the existing grant and the recorded troubleshooting in `docs/analytics.md`. An enabled API, brand verification, API access approval and OAuth scope authorization are distinct checks. Do not ask the owner to repeat a completed verification without evidence that it is required.
+- Use `npm run analytics:auth` for an authorized credential renewal. `scripts/google-auth.ps1` validates the Desktop client and project, preserves the existing client identity, requests the required scopes explicitly, and verifies the resulting grant. Do not use `--no-launch-browser` with `--client-id-file`; this installed gcloud version rejects that combination. Use the normal Desktop browser/localhost callback flow.
+- Use the canonical Windows ADC profile at `%APPDATA%/gcloud` by default. Do not silently select old ignored `.dev/gcloud-cli/config` or `config-edit` profiles: those retained narrower scopes and caused misleading 403 failures. Use another profile only when explicitly selected and verified for the intended operation.
+- Required read/research scopes are `cloud-platform`, `analytics.readonly`, `webmasters.readonly` and `adwords`, with their full `https://www.googleapis.com/auth/` prefixes. Do not request `analytics.edit` for reporting. Keep tokens in memory or the credential store; never print them or commit client secrets.
+- If authorization fails, capture the exact error and inspect the repository's earlier fix before retrying. Do not guess a different client type or claim OAuth works because verification succeeded. Continue independent authorized work while a required owner sign-in is pending.
+- The owner's confirmed `Google hasn't verified this app` screen is an OAuth sensitive-scope warning, not evidence of an incorrect Desktop client. For the owner's own previously validated Baulingo client, Google's single-user Ads workflow allows **Advanced → Go to the app (unsafe)** to reach consent. Explain that brand/API approval and OAuth scope verification are separate. Do not generalize this instruction to unfamiliar third-party apps; verify the granted scopes after the localhost callback.
+
+### Keyword research scope
+
+- Research **German learning** through Turkish, English and German search queries worldwide. The current default is one combined report, with no country or Ads-language filter. Do not split the requested report by language, Germany or Turkey unless the owner asks for a comparison.
+- Preserve original keyword wording, actual request targeting and source metrics. German is the learner's target language; the three query languages are ways of searching for German-learning material.
+
+### Build and preview
+
 Use Node 24 and install the locked npm dependencies with `npm ci`. Python is optional for asset re-encoding.
 
 ```powershell
